@@ -1,0 +1,14 @@
+{
+  "name": "riplwealth.com",
+  "type": "module",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "astro": "^5.14.1",
+    "parse5": "^7.3.0"
+  }
+}
