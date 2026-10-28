@@ -29,7 +29,7 @@ export const reviewTopics={
 const baseRisk='Investing involves risk, including possible loss of principal.';
 const buffer='Buffers cover only specified losses, can depend on purchase timing and holding period, and usually limit upside. Losses remain possible.';
 const daf='DAF gifts are irrevocable; the sponsor controls the assets. Deductions depend on eligibility, limits, and your circumstances. Coordinate with your tax professional.';
-export const videos=[
+const originalVideos=[
  ['Builder',"Everything I make goes back into the business. What’s left for me?",'Build a second engine beside the company.','A personal investment plan can help connect business success to goals outside the business.',baseRisk],
  ['Builder','My CPA files my taxes. Nobody’s actually planning them.','One quarterback for the financial team.','Coordinate your CPA, attorney, banker, insurance, and investment decisions.','RIPL does not provide tax or legal advice; your CPA and attorney guide those decisions.'],
  ['Builder','I’ll get serious about investing when things slow down.','Give time a place in the plan.','Explore the tradeoffs of waiting, while protecting the cash the business needs.',baseRisk+' Starting earlier does not guarantee an outcome.'],
@@ -47,6 +47,16 @@ export const videos=[
  ['Steward','I want my kids set up without taking away their drive.','Build a family framework around wealth.','Clarify values, responsibilities, and the conversations that should come before a transfer.','Estate documents and legal structures require advice from your attorney. No approach guarantees a family outcome.'],
  ['Steward','My money’s safe, but it isn’t doing anything.','Give safety a purpose, too.','Match each dollar to the time you need it and the job you want it to do.','Cash can serve important liquidity needs. Inflation affects purchasing power; investing introduces risk of loss.']
 ].map((v,i)=>({id:i+1,stage:v[0],title:v[1],answer:v[2],summary:v[3],risk:v[4],src:'',duration:'30–60 sec planned'}));
+export const videos = [
+ [0,'The One-Engine Plane','5mGcHdBkbM4'],
+ [1,'Filing Isn’t Planning','nO3Q11UhlOI'],
+ [4,'Give Your Cash a Job Description','pEZf5wGZhtQ'],
+ [5,'Open the Box',''],
+ [8,'Call Before You Sign','8uHdWpxZd8M'],
+ [9,'Wade In, Don’t Dive',''],
+ [12,'Giving on Purpose','dFqZwnZoUBg'],
+ [15,'The Ice Cube on the Counter','']
+].map(([index,shortTitle,youtubeId],i)=>({...originalVideos[index],id:i+1,shortTitle,youtubeId,duration:youtubeId?'Watch video':'Coming soon'}));
 export function topicsFor(answers,stage){
  const topics=[];
  if(answers[0]!==1)topics.push('Whether tax planning could be more proactive alongside your CPA');
