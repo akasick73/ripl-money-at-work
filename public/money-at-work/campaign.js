@@ -7,7 +7,7 @@ try{sessionStorage.setItem('ripl_utm',JSON.stringify(attribution))}catch{}
 const queryString=()=>new URLSearchParams(attribution).toString();
 // Only book an introductory conversation; this public page never receives tax returns.
 const BOOKING_URL='https://calendly.com/adam-riplwealth/30-minute-zoom-meeting';
-const INTRO_YOUTUBE_ID='';
+const INTRO_YOUTUBE_ID='rymxeDtHfNU';
 const TRANSITION_YOUTUBE_ID='';
 function linkWithUtm(url){const u=new URL(url);for(const [k,v] of Object.entries(attribution))u.searchParams.set(k,v);return u.href}
 for(const a of document.querySelectorAll('[data-book]')){
