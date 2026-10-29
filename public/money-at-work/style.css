@@ -131,3 +131,21 @@
  .team-about-photo img{aspect-ratio:1.6;object-fit:cover}
 }
 @media(max-width:360px){.hero-v71 h1{font-size:27px}}
+
+/* V7.2 - mobile hero cleanup and quiz consistency */
+.hero-v71 .eyebrow{white-space:nowrap;letter-spacing:.06em}
+.hero-v71-actions{display:flex;flex-direction:column;align-items:stretch;gap:6px;max-width:350px}
+.hero-v71-actions .button{width:100%}
+.hero-quiz-note{text-align:center;font-size:12px;margin:0;color:var(--muted)}
+.quiz-shell .options button{color:var(--navy)!important;-webkit-text-fill-color:var(--navy);font-weight:600}
+.quiz-shell .options button.selected,.quiz-shell .options button[aria-pressed="true"]{background:#efebfa;border:2px solid var(--navy);color:var(--navy)!important}
+.quiz-shell .options button:hover{border-color:var(--purple);background:#f8f5fd}
+.quiz-shell .quiz-nav .button.primary{background:var(--navy);color:white;-webkit-text-fill-color:white}
+@media(max-width:560px){
+ .hero-v71 .eyebrow{font-size:clamp(8px,2.15vw,10px);letter-spacing:.025em;white-space:nowrap}
+ .hero-v71-image{height:auto!important;max-height:none!important;overflow:visible!important;min-height:0!important;display:flex;align-items:center;justify-content:center;padding:12px 8px 0}
+ .hero-v71-image img{display:block;width:auto!important;max-width:80%!important;height:auto!important;max-height:230px!important;object-fit:contain!important;object-position:center!important;margin:0 auto}
+ .hero-v71-actions{margin:6px auto 0;max-width:320px;width:100%;gap:5px}
+ .hero-v71-actions .button{min-height:46px}
+ .quiz-shell .options button{color:var(--navy)!important}
+}
