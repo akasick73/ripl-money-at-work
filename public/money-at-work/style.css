@@ -6,3 +6,42 @@
 .video-actions{display:none}.hero-desktop-actions{display:flex;flex-wrap:wrap}.hero-desktop-actions .button{flex:1 1 43%;white-space:normal}.hero-desktop-actions .text-button{flex:1 1 100%}.button.text-button{color:var(--navy);background:transparent;border:1px solid var(--line);text-decoration:underline;text-underline-offset:3px}.hero-quiz-link{display:inline-block;margin-top:13px;color:var(--purple);font-size:13px;font-weight:700}.mobile-cta a{flex:1;min-width:0}.mobile-cta a:nth-child(2){background:#eeeafa;color:var(--navy)}.mobile-cta a:last-child{background:#fff;color:var(--navy);border:1px solid #d8cfe8}
 @media(max-width:820px){.hero{grid-template-columns:1fr;gap:0}.hero .video-slot{grid-row:1}.hero .video-actions{display:grid;grid-row:2;gap:9px;margin-top:13px}.video-actions .button{width:100%;min-height:47px;padding:11px 13px;font-size:13px}.video-actions .micro{margin:0 0 7px;text-align:center;font-size:11px}.hero-copy{grid-row:3;margin-top:15px}.hero-desktop-actions{display:none}.hero-quiz-link{font-size:13px}.mobile-cta{gap:6px}.mobile-cta a{font-size:11px;padding:8px 3px}}
 @media(max-width:560px){.hero{padding-top:12px}.video-actions .button{min-height:45px}.video-actions .button.text-button{border-color:transparent;min-height:35px}.hero .lead{margin-bottom:10px}.hero h1{margin-bottom:12px}.hero-quiz-link{margin-top:3px}}
+
+/* V6.5: headline is before intro video on every screen; existing three CTAs are retained */
+.hero-intro{padding-top:34px}.hero-intro h1{max-width:1040px;margin:0;font-size:clamp(36px,5.1vw,64px);line-height:1.14}.hero{padding-top:24px}.hero-copy .lead{margin-top:0}.tax-contact-actions{display:grid;gap:11px;margin-top:20px}.tax-contact-actions .button{margin-top:0!important;white-space:normal}.tax-contact-actions .button.outline{background:#fff}.primary-offer{scroll-margin-top:100px}
+@media(max-width:820px){.hero-intro{padding-top:22px}.hero-intro h1{font-size:clamp(32px,7vw,48px)}.hero{padding-top:20px}.hero .video-slot{grid-row:1}.hero .video-actions{grid-row:2}.hero .hero-copy{grid-row:3}}
+@media(max-width:560px){.hero-intro h1{font-size:clamp(31px,8.0vw,42px);line-height:1.18}.hero-intro .eyebrow{font-size:9px}.hero{padding-top:15px}.tax-contact-actions .button{min-height:54px}}
+
+/* V6.6: all three hero actions are equally sized, full buttons */
+.hero-desktop-actions .button{flex:1 1 100%;text-decoration:none}.video-actions .button{width:100%;text-decoration:none}@media(max-width:560px){.video-actions .button{min-height:48px;border-color:var(--purple);padding:12px 14px}}
+
+/* V6.7: iPhone first-screen composition. Retain every CTA; use three full buttons. */
+@media(max-width:560px){
+  .nav{min-height:62px}
+  .brand img{width:88px}
+  .brand small{font-size:6px}
+  .nav-cta{font-size:10px;padding:9px 10px}
+  .hero-intro{padding-top:11px}
+  .hero-intro .eyebrow{display:none}
+  .hero-intro h1{font-size:clamp(28px,7.4vw,36px);line-height:1.07;letter-spacing:-.05em;margin:0}
+  .hero{padding-top:11px;padding-bottom:34px}
+  .hero .video-slot{aspect-ratio:16/9;border-radius:11px}
+  .hero .video-actions{margin-top:10px;gap:7px}
+  .video-actions .button{min-height:43px;padding:9px 12px;font-size:13px;border-radius:8px}
+  .video-actions .micro{margin:2px 0 0;font-size:10px;line-height:1.4}
+  .hero .hero-copy{margin-top:20px}
+  .mobile-cta{padding-top:8px;padding-bottom:max(8px,env(safe-area-inset-bottom))}
+  .mobile-cta a{min-height:44px}
+  #tax-evaluation{scroll-margin-top:24px}
+}
+@media(max-width:380px){
+  .hero-intro h1{font-size:28px}
+  .video-actions .button{min-height:41px}
+}
+
+/* V6.8: Quiz is a high-visibility, accessible secondary entry point. */
+.quiz-section{scroll-margin-top:80px}
+.quiz-shell{border:2px solid var(--gold, #c4a66e);box-shadow:0 14px 42px rgba(36,27,75,.08)}
+.quiz-promise{font-weight:700;color:var(--purple,#49318a);font-size:clamp(14px,1.4vw,17px);margin-top:12px}
+.quiz-header h2{max-width:720px}
+@media(max-width:560px){.quiz-section{padding-top:35px;padding-bottom:35px}.quiz-shell{padding:20px 16px}.quiz-header h2{font-size:clamp(27px,7vw,36px)}.quiz-promise{line-height:1.4}}

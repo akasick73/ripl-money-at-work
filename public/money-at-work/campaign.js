@@ -4,11 +4,11 @@ const attributionKeys=['utm_source','utm_medium','utm_campaign','utm_content','u
 const source=new URLSearchParams(location.search);const saved=(()=>{try{return JSON.parse(sessionStorage.getItem('ripl_utm')||'{}')}catch{return {}}})();
 const attribution={};for(const k of attributionKeys){const v=source.get(k)||saved[k];if(v)attribution[k]=String(v).slice(0,180)}
 try{sessionStorage.setItem('ripl_utm',JSON.stringify(attribution))}catch{}
-const queryString=()=>new URLSearchParams(attribution).toString();
+
 // Only book an introductory conversation; this public page never receives tax returns.
 const BOOKING_URL='https://calendly.com/adam-riplwealth/30-minute-zoom-meeting';
 const INTRO_YOUTUBE_ID='ONoWDcglifw';
-const TRANSITION_YOUTUBE_ID='';
+
 function linkWithUtm(url){const u=new URL(url);for(const [k,v] of Object.entries(attribution))u.searchParams.set(k,v);return u.href}
 for(const a of document.querySelectorAll('[data-book]')){
   const dest=new URL(linkWithUtm(BOOKING_URL));
@@ -18,7 +18,7 @@ for(const a of document.querySelectorAll('[data-book]')){
   a.rel='noopener noreferrer';
 }
 function videoEmbed(container,id,label){if(!id)return;const frame=document.createElement('iframe');frame.src=`https://www.youtube-nocookie.com/embed/${encodeURIComponent(id)}?rel=0`;frame.title=label;frame.loading='lazy';frame.allow='accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture';frame.allowFullscreen=true;container.replaceChildren(frame);container.classList.add('has-video')}
-videoEmbed($('#intro-video'),INTRO_YOUTUBE_ID,'Introduction to Adam and RIPL');videoEmbed($('#transition-video'),TRANSITION_YOUTUBE_ID,'Business transition planning');
+videoEmbed($('#intro-video'),INTRO_YOUTUBE_ID,'Introduction to Adam and RIPL');
 let step=0;const answers=[];
 function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function render(){const q=questions[step];$('#step-label').textContent=`Question ${step+1} of ${questions.length}`;$('#progress-fill').style.width=`${step/questions.length*100}%`;
@@ -28,5 +28,5 @@ $('#quiz-content').addEventListener('click',e=>{const b=e.target.closest('[data-
 $('#filters').addEventListener('click',e=>{const b=e.target.closest('[data-stage]');if(!b)return;document.querySelectorAll('#filters button').forEach(x=>{x.classList.toggle('active',x===b);x.setAttribute('aria-pressed',String(x===b))});document.querySelectorAll('[data-video-stage]').forEach(c=>c.hidden=b.dataset.stage!=='All'&&c.dataset.videoStage!==b.dataset.stage)});
 // Quiz navigation stays on-page; booking links receive the ad UTM parameters.
 // Event instrumentation contains no financial information or personal data.
-window.dataLayer=window.dataLayer||[];window.dataLayer.push({event:'ripl_landing_view',version:'gc-v6-2',...attribution});
+window.dataLayer=window.dataLayer||[];window.dataLayer.push({event:'ripl_landing_view',version:'gc-v6-8',...attribution});
 render();
