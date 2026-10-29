@@ -175,8 +175,8 @@
   .quiz-shell{padding-top:16px}
 }
 
-/* V7.6: identical headline typography across all three lines; no horizontal scaling. */
-.hero-v71 h1 span,.hero-v71 h1 em{font:inherit;letter-spacing:inherit;line-height:inherit;display:block;white-space:nowrap;transform:none;width:auto}
-.hero-v71 h1 em{color:var(--purple);font-style:normal}
-@media(max-width:560px){.hero-v71 h1{font-size:clamp(21px,6.4vw,35px);letter-spacing:-.045em;line-height:1.12}}
-@media(max-width:360px){.hero-v71 h1{font-size:6.2vw}}
+/* V7.9: three equally styled hero lines with no narrow-screen word wrapping. */
+.hero-v71 h1 > span,.hero-v71 h1 > em{display:block;font:inherit;letter-spacing:inherit;line-height:inherit;white-space:nowrap;transform:none;width:auto}
+.hero-v71 h1 > em{color:var(--purple);font-style:normal}
+@media(max-width:560px){.hero-v71 h1{font-size:clamp(29px,9.1vw,49px);line-height:1.08;letter-spacing:-.055em}}
+@media(max-width:350px){.hero-v71 h1{font-size:9vw}}
