@@ -69,3 +69,65 @@
 .about-photo img{display:block;width:100%;height:auto;max-height:none;object-fit:contain;object-position:center center;margin-inline:auto}
 @media(max-width:820px){.about-photo{width:min(100%,410px);max-width:410px;margin-inline:auto;justify-self:center}.about-photo img{margin-inline:auto;object-position:center}}
 @media(max-width:560px){.about-photo{width:min(100%,340px);max-width:340px;margin-inline:auto}.about-photo img{width:100%;height:auto}.about-photo span{text-align:center}}
+
+/* V7.1: purposeful three-line hero, portrait, and compact mobile quiz */
+.hero-v71{display:grid;grid-template-columns:1.18fr .82fr;grid-template-areas:"copy image" "actions actions";align-items:end;column-gap:20px;padding-top:42px;padding-bottom:26px}
+.hero-v71-copy{grid-area:copy;align-self:center;padding-block:18px}
+.hero-v71 h1{font-family:var(--sans);font-weight:800;letter-spacing:-.055em;font-size:clamp(38px,4.3vw,65px);line-height:1.075;margin:12px 0 20px;color:#20202a}
+.hero-v71 h1 span,.hero-v71 h1 em{display:block;white-space:nowrap}
+.hero-v71 h1 em{color:var(--purple);font-style:normal}
+.hero-v71-description{color:var(--muted);max-width:530px;font-size:16px;line-height:1.55}
+.hero-v71-image{grid-area:image;display:flex;align-items:end;justify-content:center;max-width:430px;width:100%;margin:auto}
+.hero-v71-image img{display:block;width:min(100%,410px);height:auto;object-fit:contain}
+.hero-v71-actions{grid-area:actions;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:2px}
+.hero-v71-actions .button{padding-inline:10px;min-height:52px}
+.hero-v71-actions .tax-hero-action{background:var(--gold);border-color:var(--gold);color:#211831}
+.intro-video-section{display:grid;grid-template-columns:.7fr 1.3fr;align-items:center;gap:30px;padding-top:40px;padding-bottom:55px}
+.intro-video-section .video-slot{aspect-ratio:16/9}
+.intro-video-copy p:not(.eyebrow){color:var(--muted)}
+.quiz-section{padding-top:32px;padding-bottom:40px}
+.quiz-shell{max-width:880px;padding:28px 30px;border:1px solid #e1d8e9;box-shadow:0 10px 26px rgba(36,27,75,.055)}
+.quiz-header h2{font-family:var(--sans);font-weight:800;font-size:clamp(25px,3vw,35px);letter-spacing:-.04em;margin:8px 0 7px}
+.quiz-header p.quiz-intro{font-size:14px;color:var(--muted);margin:0}
+.quiz-header p.quiz-promise{font-size:12px;margin:5px 0 0;color:var(--purple)}
+.quiz-progress{padding-top:11px;margin:13px 0 14px}
+.track{margin-top:6px;height:5px}
+.quiz-shell .question-title{font-family:var(--sans);font-size:clamp(19px,2.4vw,25px);font-weight:700;margin-bottom:7px}
+.quiz-shell .hint{margin-bottom:10px}
+.quiz-shell .options{gap:7px}
+.quiz-shell .options button{min-height:45px;padding:11px 13px;font-size:14px}
+.quiz-shell .fine{margin-top:13px}
+.team-about-photo{background:#f0ecf5;border-radius:14px;overflow:hidden;display:block;max-width:none}
+.team-about-photo img{width:100%;height:auto;max-height:none;aspect-ratio:1.5;object-fit:cover;object-position:center}
+@media(max-width:820px){
+.hero-v71{grid-template-columns:1.15fr .85fr;gap:8px;padding-top:20px}
+.hero-v71 h1{font-size:clamp(30px,5vw,43px)}
+.hero-v71-description{font-size:14px}
+.intro-video-section{grid-template-columns:1fr;gap:12px}
+}
+@media(max-width:560px){
+ .hero-v71{grid-template-columns:1fr .7fr;grid-template-areas:"copy copy" "image image" "actions actions";padding-top:17px;padding-bottom:12px;row-gap:0}
+ .hero-v71-copy{padding:0}
+ .hero-v71 .eyebrow{font-size:9px;margin-bottom:6px}
+ .hero-v71 h1{font-size:clamp(29px,7.6vw,39px);margin:0 0 10px;line-height:1.10}
+ .hero-v71-description{font-size:13px;line-height:1.4;margin-bottom:3px}
+ .hero-v71-image{max-height:210px;overflow:hidden;justify-content:center}
+ .hero-v71-image img{width:min(66%,235px);height:auto;object-fit:contain;object-position:center top}
+ .hero-v71-actions{grid-template-columns:1fr;gap:7px;margin-top:7px}
+ .hero-v71-actions .button{min-height:44px;padding:9px 12px;font-size:13px}
+ .quiz-section{padding-top:16px;padding-bottom:26px}
+ .quiz-shell{padding:18px 15px;border-radius:13px}
+ .quiz-header h2{font-size:25px;line-height:1.12;margin:5px 0}
+ .quiz-header p.quiz-intro{font-size:12px;line-height:1.35}
+ .quiz-header p.quiz-promise{font-size:11px;margin-top:5px;line-height:1.35}
+ .quiz-progress{margin:10px 0 12px;padding-top:8px}
+ .quiz-shell .question-title{font-size:19px;line-height:1.28}
+ .quiz-shell .hint{font-size:12px;line-height:1.35}
+ .quiz-shell .options button{font-size:13px;line-height:1.35;min-height:43px;padding:9px 11px}
+ .intro-video-section{padding-top:24px;padding-bottom:35px}
+ .intro-video-copy h2{font-size:26px;margin-bottom:6px}
+ .intro-video-copy p:not(.eyebrow){font-size:13px;line-height:1.45;margin-bottom:0}
+ .team-about-photo{width:100%;max-width:none}
+ .team-about-photo img{aspect-ratio:1.6;object-fit:cover}
+}
+@media(max-width:360px){.hero-v71 h1{font-size:27px}}

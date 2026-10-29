@@ -28,5 +28,5 @@ $('#quiz-content').addEventListener('click',e=>{const b=e.target.closest('[data-
 $('#filters').addEventListener('click',e=>{const b=e.target.closest('[data-stage]');if(!b)return;document.querySelectorAll('#filters button').forEach(x=>{x.classList.toggle('active',x===b);x.setAttribute('aria-pressed',String(x===b))});document.querySelectorAll('[data-video-stage]').forEach(c=>c.hidden=b.dataset.stage!=='All'&&c.dataset.videoStage!==b.dataset.stage)});
 // Quiz navigation stays on-page; booking links receive the ad UTM parameters.
 // Event instrumentation contains no financial information or personal data.
-window.dataLayer=window.dataLayer||[];window.dataLayer.push({event:'ripl_landing_view',version:'gc-v6-9',...attribution});
+window.dataLayer=window.dataLayer||[];window.dataLayer.push({event:'ripl_landing_view',version:'gc-v7-1',...attribution});
 render();
