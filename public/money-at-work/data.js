@@ -1,67 +1,54 @@
-export const config = {calendarUrl: 'https://calendly.com/adam-riplwealth/30min', email: 'adam@riplwealth.com', endpoint: 'https://formsubmit.co/ajax/adam@riplwealth.com'};
-export const stages = ['Builder','Accumulator','Navigator','Steward'];
-export const questions = [
- {title:'Do you know what you paid in taxes, but wonder whether a better plan was possible?',hint:'A rough sense is enough. No numbers needed.',options:['Yes','No','Not sure']},
- {title:'Is more than a few months of cash sitting in your business account?',hint:'Cash can have a good reason to be there. We’ll start with what it’s for.',options:['Yes','No','Not sure']},
- {title:'Does your CPA mostly file your taxes, rather than plan with you during the year?',hint:'Think about when those conversations usually happen.',options:['Yes','No','Not sure']},
- {title:'If you stepped away for six months, would your money keep working without you?',hint:'Think about your personal finances as well as your company.',options:['Yes','No','Not sure']},
- {title:'Which sounds most like your life right now?',hint:'Choose the closest fit, even if more than one feels familiar.',options:['I’m building. Most of what I earn goes back into the business.','I’m earning well. I want the money outside my business to have a plan.','I’m facing a transition: a sale, retirement, or a big financial decision.','I’m thinking about family, giving, and what comes next for my wealth.']},
- {title:'What would you most like your money to help you do next?',hint:'Choose the priority that matters most today.',options:['Build a foundation beyond the business.','Turn strong income into lasting personal wealth.','Navigate a major change with a clear plan.','Make a lasting difference for my family or causes.']},
- {title:'When an extra dollar comes in, what is your first instinct?',hint:'Neither is better. This helps us understand how you approach decisions.',options:['Safety: keep a reserve and know exactly where it is.','Opportunity: put it toward the next possibility.']}
+export const config={calendarUrl:'https://calendly.com/adam-riplwealth/30-minute-zoom-meeting',email:'adam@riplwealth.com',endpoint:'https://formsubmit.co/ajax/adam@riplwealth.com',version:'v3'};
+export const stages=['Builder','Accumulator','Navigator','Steward'];
+export const stageLabels={Builder:'Building the business',Accumulator:'Growing personal wealth',Navigator:'Making a big change',Steward:'Giving & legacy'};
+export const questions=[
+ {title:'When does tax planning usually happen?',hint:'Think about planning ahead, rather than preparing the return.',options:['Throughout the year, before big decisions','Mostly near year-end','Mostly when it’s time to file','I’m not sure']},
+ {title:'Does the cash in your business have a clear job?',hint:'Operating reserves, taxes, and upcoming expenses all count as important jobs.',options:['Yes. I know what we need and what the rest is for.','Some of it. There’s extra cash without a plan.','I’m not sure how much needs to stay available.']},
+ {title:'Who connects the financial moving pieces?',hint:'Your investments, CPA, cash, insurance, and legal planning.',options:['A professional helps coordinate the whole picture.','I’m the one keeping everyone connected.','Nobody consistently, or I’m not sure.']},
+ {title:'How much of your financial future depends on the business?',hint:'Think about income and wealth outside the company.',options:['Most of it','Some of it','Very little','I’m not sure']},
+ {title:'Which question would you most like to work through?',hint:'Pick one. This will shape your starting point.',options:['Are my tax and investment decisions working together?','What should I do with extra business cash?','How do I build wealth outside the business?','How do I prepare for a sale or big transition?','How can I be more intentional with giving?','Who can help me coordinate all of this?']},
+ {title:'Which best describes where you are today?',hint:'Choose your closest fit. There’s no “better” stage.',options:['Building: most of my energy goes into the business.','Accumulating: strong income, and more money to organize.','Navigating: a sale, retirement, or major change.','Stewarding: family, giving, and what wealth makes possible.']},
+ {title:'When an extra dollar comes in, what feels most natural?',hint:'This is a conversation preference, not an investment risk assessment.',options:['Safety: keep a reserve and know where it is.','Opportunity: put it toward the next possibility.']}
+];
+export const descriptions={Builder:'You’re building the business. A personal financial foundation can grow alongside it.',Accumulator:'Your work is creating options. Now the pieces need a shared purpose.',Navigator:'Your next chapter brings new decisions. A clear order can help.',Steward:'You’re thinking about the people and causes your wealth can serve.'};
+export const startingPoints=[
+ {key:'tax',title:'Connect the tax plan to the investment plan.',why:'You chose tax coordination as your first priority. A useful conversation starts with the decisions ahead of you, and who needs to be involved before they happen.',step:'Write down one financial decision coming up this year. Ask your CPA and advisor what should be coordinated before you act.',questions:['Which upcoming decisions should we review together?','Who is responsible for coordinating that conversation?','What information does each professional need?'],videoId:2,meeting:'How can my tax and investment decisions work from the same plan?'},
+ {key:'cash',title:'Give the cash a job before choosing an investment.',why:'You chose business cash as your first priority. The starting point is understanding what needs to stay available and what might have a longer time frame.',step:'List what your cash needs to cover: operating expenses, taxes, known commitments, and a reserve. Bring that list to a planning conversation.',questions:['What does the business need this money to do?','When might I need it back?','Which dollars, if any, can support longer-term personal goals?'],videoId:3,meeting:'How much cash should stay available, and what is the rest for?'},
+ {key:'independence',title:'Start building a second engine.',why:'You chose wealth outside the business as your first priority. Begin by describing the life you want your company’s success to support.',step:'Write down one personal goal beyond the business and when you hope to reach it. Consider what resources you already have outside the company.',questions:['What would I like the business to make possible for me?','How dependent is that goal on a future sale?','What could a separate personal plan look like?'],videoId:1,meeting:'How do I build personal wealth alongside the business?'},
+ {key:'transition',title:'Get the right people involved before the next signature.',why:'You chose a sale or transition as your first priority. Some decisions affect the choices available later, so begin with the timeline and the people involved.',step:'Sketch the milestones you can see ahead. Identify the CPA, attorney, and advisor who should review the financial implications before commitments are made.',questions:['Which decisions are coming up first?','Who needs to weigh in before anything is signed?','What would life and income after the transition look like?'],videoId:5,meeting:'What should I coordinate before a sale or major transition?'},
+ {key:'giving',title:'Start with the purpose behind the gift.',why:'You chose giving as your first priority. Your charitable intentions, assets, and broader financial plan deserve to be considered together.',step:'List the people or causes you want to support and the timing you have in mind. Bring those intentions to your advisor and tax professional.',questions:['What do I want my giving to accomplish?','Which assets and time frames deserve a closer look?','How does giving fit my own long-term needs?'],videoId:7,meeting:'How can my giving fit into my broader financial plan?'},
+ {key:'coordination',title:'Give the financial team a quarterback.',why:'You chose coordination as your first priority. A useful first step is making responsibilities visible, so every decision doesn’t have to pass through you.',step:'List the professionals you already work with and one decision that needs their input. Identify who will connect the conversation and follow up.',questions:['Who sees the whole picture?','Where am I still acting as the go-between?','Who owns the next step after advice is given?'],videoId:2,meeting:'Who can help coordinate my CPA, investments, and other financial decisions?'}
 ];
 export function score(answers){
- if(answers.length!==questions.length || answers.some((v,i)=>!Number.isInteger(v)||v<0||v>=questions[i].options.length)) throw new Error('Complete all questions');
- const points=[0,0,0,0];points[answers[4]]+=2;points[answers[5]]+=1;
- return {stage:stages[points.indexOf(Math.max(...points))],tendency:answers[6]===0?'Safety':'Opportunity',secondary:answers[4]!==answers[5]?stages[answers[5]]:null};
+ if(!Array.isArray(answers)||answers.length!==questions.length||questions.some((q,i)=>!Number.isInteger(answers[i])||answers[i]<0||answers[i]>=q.options.length))throw new Error('Complete all seven questions.');
+ return {stage:stages[answers[5]],tendency:answers[6]===0?'Safety':'Opportunity',priority:answers[4]};
 }
-export const descriptions={
- Builder:'You’re putting your energy into building the business. The next question is how to build a financial foundation for yourself alongside it.',
- Accumulator:'Your hard work is creating income and options. The next step is connecting the pieces so that cash, investments, and planning have a shared purpose.',
- Navigator:'A change is on the horizon, or already here. The order of your decisions matters, especially when your business and personal life are changing together.',
- Steward:'You’re thinking about what your wealth can make possible for others. Family, giving, and a thoughtful legacy are becoming part of the plan.'
-};
-export const reviewTopics={
- Builder:['A personal financial plan that keeps getting postponed','Dependence on the business for future income','Tax and exit questions that need a longer runway'],
- Accumulator:['Cash without a clear purpose or time frame','Investment decisions disconnected from tax planning','Accounts that don’t work toward the same goal'],
- Navigator:['Tax and legal decisions made in the wrong order','Money invested without a clear spending timeline','A transition without a personal income plan'],
- Steward:['Giving decisions disconnected from the broader plan','Family intentions that haven’t been put into words','Cash and investments without a defined next purpose']
-};
-const baseRisk='Investing involves risk, including possible loss of principal.';
-const buffer='Buffers cover only specified losses, can depend on purchase timing and holding period, and usually limit upside. Losses remain possible.';
-const daf='DAF gifts are irrevocable; the sponsor controls the assets. Deductions depend on eligibility, limits, and your circumstances. Coordinate with your tax professional.';
-const originalVideos=[
- ['Builder',"Everything I make goes back into the business. What’s left for me?",'Build a second engine beside the company.','A personal investment plan can help connect business success to goals outside the business.',baseRisk],
- ['Builder','My CPA files my taxes. Nobody’s actually planning them.','One quarterback for the financial team.','Coordinate your CPA, attorney, banker, insurance, and investment decisions.','RIPL does not provide tax or legal advice; your CPA and attorney guide those decisions.'],
- ['Builder','I’ll get serious about investing when things slow down.','Give time a place in the plan.','Explore the tradeoffs of waiting, while protecting the cash the business needs.',baseRisk+' Starting earlier does not guarantee an outcome.'],
- ['Builder','If I sell someday, will the IRS take a huge bite?','Explore QSBS eligibility before a sale.','Some qualifying C-corporation stock may receive favorable federal tax treatment.','QSBS has strict company, stock, acquisition-date, and holding-period requirements. Many businesses do not qualify. State treatment may differ. Review with your tax professional.'],
- ['Accumulator','I’ve got too much cash sitting in the business account.','Every dollar gets a job.','Separate Today, Tomorrow, and Beyond so reserves and longer-term money each have a purpose.','Cash needs depend on operating expenses, taxes, obligations, and your plans. Investing reserves can create liquidity risk.'],
- ['Accumulator','I want my money in the market, but I hate paying tax on the gains.','Bring tax planning into the portfolio.','Explore direct indexing and tax-loss harvesting alongside your CPA.','Tax benefits are not guaranteed. Wash-sale rules, fees, tracking differences, and your tax situation matter; investments can lose value.'],
- ['Accumulator','I want growth, but I can’t stomach another 2022.','Understand the cushion and the cap.','Explore the tradeoffs of market exposure through buffered ETFs.',buffer],
- ['Accumulator','I’ve got accounts everywhere and no plan connecting them.','One plan. Every account with a job.','Use SAGE™ to connect the moving pieces to what you want your money to do.',baseRisk+' A coordinated plan does not remove market risk.'],
- ['Navigator','I’m about to sell my business. What do I do first?','Get the right people working in order.','Coordinate tax, legal, and investment planning before key sale decisions.','RIPL coordinates with your tax and legal professionals. Sale terms and available strategies depend on your circumstances.'],
- ['Navigator','I just got a big check and I’m scared to put it all in at once.','Make a plan before choosing an investment.','Discuss a timeline and whether structured notes or buffered ETFs have a role.','Structured notes can lose principal, carry issuer credit risk, and be difficult to sell. '+buffer],
- ['Navigator','I’m about to stop getting a paycheck for the first time.','Build a plan for your next paycheck.','Connect spending needs, reserves, and investments to a retirement income plan.','Investment income and returns are not guaranteed. Withdrawals, inflation, and market losses can affect how long money lasts.'],
- ['Navigator','My big income year is going to crush me on taxes.','Bring charitable intentions into the plan.','Consider whether donor-advised fund timing fits a high-income year.',daf+' Giving costs money; a deduction does not make a gift free.'],
- ['Steward','I give a lot, but I’m not sure I’m doing it smart.','Give with a plan, grant over time.','Explore a donor-advised fund for coordinating ongoing charitable intentions.',daf],
- ['Steward','I’m sitting on stock with huge gains. Selling it hurts.','Consider the assets behind the gift.','Explore giving appreciated stock through a donor-advised fund.',daf+' Asset acceptance and tax treatment vary.'],
- ['Steward','I want my kids set up without taking away their drive.','Build a family framework around wealth.','Clarify values, responsibilities, and the conversations that should come before a transfer.','Estate documents and legal structures require advice from your attorney. No approach guarantees a family outcome.'],
- ['Steward','My money’s safe, but it isn’t doing anything.','Give safety a purpose, too.','Match each dollar to the time you need it and the job you want it to do.','Cash can serve important liquidity needs. Inflation affects purchasing power; investing introduces risk of loss.']
-].map((v,i)=>({id:i+1,stage:v[0],title:v[1],answer:v[2],summary:v[3],risk:v[4],src:'',duration:'30–60 sec planned'}));
-export const videos = [
- [0,'The One-Engine Plane','5mGcHdBkbM4'],
- [1,'Filing Isn’t Planning','nO3Q11UhlOI'],
- [4,'Give Your Cash a Job Description','pEZf5wGZhtQ'],
- [5,'Open the Box',''],
- [8,'Call Before You Sign','8uHdWpxZd8M'],
- [9,'Wade In, Don’t Dive',''],
- [12,'Giving on Purpose','dFqZwnZoUBg'],
- [15,'The Ice Cube on the Counter','']
-].map(([index,shortTitle,youtubeId],i)=>({...originalVideos[index],id:i+1,shortTitle,youtubeId,duration:youtubeId?'Watch video':'Coming soon'}));
-export function topicsFor(answers,stage){
- const topics=[];
- if(answers[0]!==1)topics.push('Whether tax planning could be more proactive alongside your CPA');
- if(answers[1]!==1)topics.push('Which cash is needed for the business, and which has a different job');
- if(answers[2]!==1)topics.push('Who coordinates planning conversations throughout the year');
- if(answers[3]!==0)topics.push('How much your personal financial plan depends on your daily work');
- return [...topics,...reviewTopics[stage]].slice(0,3);
+export function insights(answers){
+ const list=[];
+ if(answers[0]===0)list.push('You already make room for tax planning during the year. Keep your investment decisions connected to those conversations.');
+ else if(answers[0]===1)list.push('You usually plan near year-end. It may help to identify decisions that need a conversation earlier.');
+ else if(answers[0]===2)list.push('Tax conversations mostly happen at filing time. Ask what could be discussed before the next major decision.');
+ else list.push('You’re unsure when tax planning happens. Clarifying who does what is a useful first step.');
+ if(answers[1]===0)list.push('Your cash already has defined jobs. Revisit those jobs when the business or your goals change.');
+ else if(answers[1]===1)list.push('Some extra cash doesn’t yet have a plan. Its purpose and time frame come before the choice of investment.');
+ else list.push('You’re unsure how much cash should stay available. Start with the business’s obligations and reserve needs.');
+ if(answers[2]===0)list.push('You already have help connecting the pieces. A clear owner for each next step can keep the team aligned.');
+ else list.push(answers[2]===1?'You’re doing the coordination yourself. That is another responsibility on an already full plate.':'Coordination isn’t clearly assigned. Defining that responsibility could be a useful conversation.');
+ if(answers[3]===0)list.push('Much of your future depends on the business. A personal plan can make that dependence easier to understand.');
+ else if(answers[3]===3)list.push('You’re unsure how dependent your future is on the business. Mapping income and assets outside it can help clarify the picture.');
+ return list;
 }
+const buffer='Buffers cover only specified losses, may depend on purchase timing and holding period, and usually limit upside. Losses remain possible.';
+const daf='DAF gifts are irrevocable and controlled by the sponsor. Deductions depend on eligibility, limits, and your circumstances. Coordinate with your tax professional.';
+export const videos=[
+ {id:1,stage:'Builder',title:'Everything I make goes back into the business. What’s left for me?',shortTitle:'The One-Engine Plane',youtubeId:'5mGcHdBkbM4',summary:'Explore a personal financial plan that can grow alongside the company you’re building.',risk:'Investing outside the business still involves risk, including possible loss of principal.'},
+ {id:2,stage:'Builder',title:'My CPA files my taxes. Nobody’s actually planning them.',shortTitle:'Filing Isn’t Planning',youtubeId:'nO3Q11UhlOI',summary:'See what it means to coordinate your CPA, advisor, and other professionals around upcoming decisions.',risk:'RIPL does not provide tax or legal advice. Your CPA and attorney guide those decisions.'},
+ {id:3,stage:'Accumulator',title:'I’ve got too much cash sitting in the business account.',shortTitle:'Give Your Cash a Job Description',youtubeId:'pEZf5wGZhtQ',summary:'Give Today, Tomorrow, and Beyond different jobs, starting with the cash the business needs.',risk:'Reserve needs depend on your obligations and plans. Investing operating reserves can create liquidity risk.'},
+ {id:4,stage:'Accumulator',title:'I want my money in the market, but I hate paying tax on the gains.',shortTitle:'Open the Box',youtubeId:'',summary:'Explore direct indexing and tax-loss harvesting alongside your CPA.',risk:'Tax benefits are not guaranteed. Wash-sale rules, fees, tracking differences, and your tax situation matter. Investments can lose value.'},
+ {id:5,stage:'Navigator',title:'I’m about to sell my business. What do I do first?',shortTitle:'Call Before You Sign',youtubeId:'8uHdWpxZd8M',summary:'Put tax, legal, and investment conversations in order before a major transition.',risk:'RIPL coordinates with your tax and legal professionals. Available strategies depend on your circumstances and sale terms.'},
+ {id:6,stage:'Navigator',title:'I just got a big check and I’m scared to put it all in at once.',shortTitle:'Wade In, Don’t Dive',youtubeId:'',summary:'Start with your goals and timeline before considering whether structured notes or buffered ETFs have a role.',risk:'Structured notes can lose principal, carry issuer credit risk, and be difficult to sell. '+buffer},
+ {id:7,stage:'Steward',title:'I give a lot, but I’m not sure I’m doing it smart.',shortTitle:'Giving on Purpose',youtubeId:'dFqZwnZoUBg',summary:'Explore whether a donor-advised fund fits your charitable intentions and broader financial plan.',risk:daf},
+ {id:8,stage:'Steward',title:'My money’s safe, but it isn’t doing anything.',shortTitle:'The Ice Cube on the Counter',youtubeId:'',summary:'Match each dollar to the time you need it and the purpose you want it to serve.',risk:'Cash serves important liquidity needs. Inflation affects purchasing power; investing introduces risk of loss.'}
+];
+export function orderedVideos(filter='All'){return videos.filter(v=>filter==='All'||v.stage===filter).sort((a,b)=>Number(Boolean(b.youtubeId))-Number(Boolean(a.youtubeId))||a.id-b.id);}
+export function summaryText(answers){const r=score(answers),p=startingPoints[r.priority];return `MY MONEY STARTING POINT\nRIPL Wealth | Give every dollar a job.\n\n${p.title}\n\nMy priority: ${questions[4].options[answers[4]]}\nMy stage: ${r.stage}\nMy tendency: ${r.tendency}\n\nA practical first step:\n${p.step}\n\nQuestions to bring:\n${p.questions.map((q,i)=>`${i+1}. ${q}`).join('\n')}\n\nBased on my answers:\n${insights(answers).map(x=>'- '+x).join('\n')}\n\nTalk with Adam: ${config.calendarUrl}\nEmail: ${config.email}\n\nThis is an educational conversation guide, not an assessment of tax savings or individualized investment, tax, or legal advice. Investing involves risk, including possible loss of principal.`;}
