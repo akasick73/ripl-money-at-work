@@ -65,3 +65,6 @@ Review draft first-person copy and current business/contact statements before pu
 - `data-focus-video` clicks record a `topic_selected` event through the existing local analytics hooks; an analytics collector is **not** configured.
 - Source-level JavaScript syntax checks passed. Astro compilation was not verified in this environment because dependencies could not be installed. After importing to GitHub/Cloudflare, run `npm ci && npm run build` and verify in the Cloudflare preview before publishing.
 - Verify the live FormSubmit delivery and Calendly booking yourself in a controlled test; no live submission or booking was made.
+
+
+V5.1: See `V5.1-CREDIBILITY-CHANGES.md` for the new credibility section and prelaunch checks.
