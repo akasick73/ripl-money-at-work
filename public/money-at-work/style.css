@@ -10,3 +10,25 @@
 @media(max-width:480px){.hero h1{font-size:38px}.hero{padding-top:17px;gap:15px}.quiz-promise{display:none}.quiz-intro{margin-bottom:7px}.quiz-explain{margin-bottom:10px}.progress-wrap{padding-top:7px;margin-bottom:11px}.quiz-card{padding-top:16px}.hero-support{margin-bottom:12px}}
 #video-player iframe{aspect-ratio:9/16;width:min(100%,36.5dvh,360px);margin:auto}
 @media(min-width:700px){#video-dialog[open]{display:grid;grid-template-columns:minmax(230px,1fr) 1.1fr;gap:0 28px}#video-dialog>.dialog-top{grid-column:1/-1}.video-detail{padding-top:0}}
+
+/* V4: clearer first impression, human trust and question-led navigation */
+.hero h1{max-width:630px}
+.hero-actions{display:flex;align-items:center;flex-wrap:wrap;gap:15px;margin:0 0 9px}
+.hero-actions .button{padding:15px 19px;white-space:normal;text-align:center}
+.hero-review-link{color:var(--purple);font-weight:650;text-decoration:underline;text-decoration-color:#c29b45;text-underline-offset:5px;font-size:13px}
+.hero-reassurance{font-size:11px;color:var(--muted);margin:0 0 22px;line-height:1.7}
+.recognition{padding-top:78px;padding-bottom:70px}
+.recognition-header{max-width:720px;margin-bottom:26px}
+.recognition-header h2{font-family:var(--serif);font-weight:500;line-height:1.05;font-size:clamp(36px,4.2vw,57px);margin:12px 0 14px}
+.recognition-header em{color:var(--purple)}
+.recognition-header>p:last-child{color:var(--muted);font-size:14px;line-height:1.7}
+.recognition-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.recognition-grid a{display:flex;flex-direction:column;min-height:228px;padding:25px 23px;border:1px solid var(--line);border-radius:10px;background:white;text-decoration:none;color:var(--ink);transition:transform .2s,border-color .2s,box-shadow .2s}
+.recognition-grid a:hover,.recognition-grid a:focus-visible{transform:translateY(-3px);border-color:var(--gold);box-shadow:0 12px 24px #221c4a0e}
+.recognition-grid span{font-size:10px;letter-spacing:1.2px;color:var(--purple);font-weight:700}
+.recognition-grid h3{font-family:var(--serif);font-size:26px;line-height:1.16;font-weight:600;margin:15px 0 11px}
+.recognition-grid p{font-size:12px;line-height:1.7;color:var(--muted);margin-bottom:18px}
+.recognition-grid strong{font-size:12px;color:var(--purple);margin-top:auto}
+.recognition-footer{margin-top:22px;font-size:13px;color:var(--muted)}
+.recognition-footer a{color:var(--purple);font-weight:650}
+@media(max-width:760px){.recognition{padding-top:46px;padding-bottom:40px}.recognition-grid{grid-template-columns:1fr;gap:12px}.recognition-grid a{min-height:0;padding:20px}.recognition-grid h3{font-size:24px}.hero-actions{align-items:stretch;flex-direction:column;gap:12px}.hero-actions .button{width:100%}.hero-review-link{text-align:center}.hero-reassurance{text-align:center}}

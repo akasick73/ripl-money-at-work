@@ -54,3 +54,14 @@ Before paid traffic, verify one intended test inquiry arrives and one intended t
 Quiz answers are not automatically attached to Calendly bookings. Visitors can explicitly send them in a separate inquiry. There is no CRM/database or server-side booking webhook. Analytics hooks exist but no collector is installed; local events alone do not provide reporting. See the research plan before interpreting conversion data.
 
 Review draft first-person copy and current business/contact statements before publishing. Third-party services and browser privacy settings can affect embeds and forms; direct calendar, YouTube, and email alternatives are provided.
+
+## V4 conversion improvements (October 2026)
+
+- Hero makes the business-owner problem concrete and adds a direct 30-minute Zoom booking CTA alongside the optional ungated review.
+- Three recognizable owner questions bridge the first impression and the relevant existing videos.
+- Stronger service messaging emphasizes specific behaviors, without unverified testimonials or performance claims.
+- Responsive design rules for the new question cards and hero actions.
+- Existing quiz, results, video library, dialogs, Calendly link, email contact, and disclosures retained.
+- `data-focus-video` clicks record a `topic_selected` event through the existing local analytics hooks; an analytics collector is **not** configured.
+- Source-level JavaScript syntax checks passed. Astro compilation was not verified in this environment because dependencies could not be installed. After importing to GitHub/Cloudflare, run `npm ci && npm run build` and verify in the Cloudflare preview before publishing.
+- Verify the live FormSubmit delivery and Calendly booking yourself in a controlled test; no live submission or booking was made.

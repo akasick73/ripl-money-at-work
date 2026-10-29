@@ -69,4 +69,12 @@ $('#contact-form').addEventListener('submit',async e=>{e.preventDefault();if(sta
  finally{clearTimeout(timer);state.sending=false;$('#send-button').disabled=false;}
 });
 if('IntersectionObserver' in window){let pastHero=false,atContact=false;const update=()=>{const visible=pastHero&&!atContact;$('.mobile-bar').hidden=!visible;document.body.classList.toggle('mobile-bar-visible',visible);};new IntersectionObserver(entries=>{pastHero=!entries[0].isIntersecting&&entries[0].boundingClientRect.bottom<0;update();},{threshold:0}).observe($('.hero'));new IntersectionObserver(entries=>{atContact=entries[0].isIntersecting;update();},{threshold:0}).observe($('#contact'));}
+document.querySelectorAll('[data-focus-video]').forEach(link=>link.addEventListener('click',e=>{
+  const id=Number(link.dataset.focusVideo);const target=document.querySelector(`[data-video="${id}"]`);
+  if(target){e.preventDefault();document.querySelectorAll('#filters [data-stage]').forEach(b=>{b.classList.toggle('active',b.dataset.stage==='All');b.setAttribute('aria-pressed',String(b.dataset.stage==='All'));});renderVideos();
+    document.getElementById('videos').scrollIntoView({behavior:'smooth',block:'start'});
+    const refreshed=document.querySelector(`[data-video="${id}"]`);if(refreshed){setTimeout(()=>refreshed.focus({preventScroll:true}),400);}
+    track('topic_selected',{video_id:id});
+  }
+}));
 renderQuestion();renderVideos();track('landing_view');

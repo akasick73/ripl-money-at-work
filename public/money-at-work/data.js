@@ -1,4 +1,4 @@
-export const config={calendarUrl:'https://calendly.com/adam-riplwealth/30-minute-zoom-meeting',email:'adam@riplwealth.com',endpoint:'https://formsubmit.co/ajax/adam@riplwealth.com',version:'v3'};
+export const config={calendarUrl:'https://calendly.com/adam-riplwealth/30-minute-zoom-meeting',email:'adam@riplwealth.com',endpoint:'https://formsubmit.co/ajax/adam@riplwealth.com',version:'v4'};
 export const stages=['Builder','Accumulator','Navigator','Steward'];
 export const stageLabels={Builder:'Building the business',Accumulator:'Growing personal wealth',Navigator:'Making a big change',Steward:'Giving & legacy'};
 export const questions=[
