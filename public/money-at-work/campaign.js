@@ -27,5 +27,5 @@ function finish(){const result=score(answers),p=startingPoints[result.priority];
 $('#quiz-content').addEventListener('click',e=>{const b=e.target.closest('[data-answer]');if(b){answers[step]=Number(b.dataset.answer);render();return}if(e.target.closest('#back-step')&&step>0){step--;render()}if(e.target.closest('#next-step')&&answers[step]!==undefined){if(step===questions.length-1)finish();else{step++;render()}}if(e.target.closest('#restart-quiz')){step=0;answers.length=0;$('#results').hidden=true;$('#quiz-progress').hidden=false;render()}});
 // Quiz navigation stays on-page; booking links receive the ad UTM parameters.
 // Event instrumentation contains no financial information or personal data.
-window.dataLayer=window.dataLayer||[];window.dataLayer.push({event:'ripl_landing_view',version:'gc-v7-3',...attribution});
+window.dataLayer=window.dataLayer||[];window.dataLayer.push({event:'ripl_landing_view',version:'gc-v7-5',...attribution});
 render();
