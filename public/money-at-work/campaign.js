@@ -1,80 +1,32 @@
-import {config,stages,stageLabels,questions,score,descriptions,startingPoints,insights,videos,orderedVideos,summaryText} from './data.js';
-const $=s=>document.querySelector(s), esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const state={step:0,answers:[],result:null,filter:'All',topic:null,started:false,sending:false,calendarLoaded:false,calendarLoading:false,bookingObserved:false};
-const attribution={},params=new URLSearchParams(location.search),utmKeys=['utm_source','utm_medium','utm_campaign','utm_content','utm_term'];
-for(const k of utmKeys)if(params.has(k))attribution[k]=params.get(k).slice(0,200);
-try{const saved=JSON.parse(sessionStorage.getItem('ripl_campaign_attribution')||'{}');for(const k of utmKeys)if(!attribution[k]&&typeof saved[k]==='string')attribution[k]=saved[k].slice(0,200);sessionStorage.setItem('ripl_campaign_attribution',JSON.stringify(attribution));}catch{}
-// These hooks do not send analytics anywhere. Connect an approved collector to dataLayer if desired.
-// Never put contact details, quiz answers, financial stages, or Calendly event URLs in analytics.
-function track(event,details={}){const safe={event:`ripl_${event}`,version:config.version,...details};window.dataLayer=window.dataLayer||[];window.dataLayer.push(safe);window.dispatchEvent(new CustomEvent('ripl:campaign',{detail:safe}));}
-function focusQuiz(){const heading=$('.question-title');heading?.focus({preventScroll:true});}
-function renderQuestion(focus=false){const q=questions[state.step],selected=state.answers[state.step];
- $('#step-label').textContent=`Question ${state.step+1} of ${questions.length}`;$('.progress').setAttribute('aria-valuenow',String(state.step));$('.progress i').style.width=`${state.step/questions.length*100}%`;
- $('#quiz-content').innerHTML=`<h3 class="question-title" tabindex="-1">${esc(q.title)}</h3><p class="hint">${esc(q.hint)}</p><div class="options" role="group" aria-label="${esc(q.title)}">${q.options.map((a,i)=>`<button class="answer ${selected===i?'chosen':''}" data-answer="${i}" type="button" aria-pressed="${selected===i}"><span class="answer-dot" aria-hidden="true"></span><span>${esc(a)}</span></button>`).join('')}</div><div class="quiz-nav"><button class="back" type="button" ${state.step===0?'disabled':''}>← Back</button><button class="button next" type="button" ${selected===undefined?'disabled':''}>${state.step===questions.length-1?'See my starting point':'Continue'} <span aria-hidden="true">→</span></button></div>`;
- if(focus)focusQuiz();
+import {questions,score,startingPoints,videos} from './data.js';
+const $=s=>document.querySelector(s);
+const attributionKeys=['utm_source','utm_medium','utm_campaign','utm_content','utm_term'];
+const source=new URLSearchParams(location.search);const saved=(()=>{try{return JSON.parse(sessionStorage.getItem('ripl_utm')||'{}')}catch{return {}}})();
+const attribution={};for(const k of attributionKeys){const v=source.get(k)||saved[k];if(v)attribution[k]=String(v).slice(0,180)}
+try{sessionStorage.setItem('ripl_utm',JSON.stringify(attribution))}catch{}
+const queryString=()=>new URLSearchParams(attribution).toString();
+// Only book an introductory conversation; this public page never receives tax returns.
+const BOOKING_URL='https://calendly.com/adam-riplwealth/30-minute-zoom-meeting';
+const INTRO_YOUTUBE_ID='';
+const TRANSITION_YOUTUBE_ID='';
+function linkWithUtm(url){const u=new URL(url);for(const [k,v] of Object.entries(attribution))u.searchParams.set(k,v);return u.href}
+for(const a of document.querySelectorAll('[data-book]')){
+  const dest=new URL(linkWithUtm(BOOKING_URL));
+  const type=a.dataset.bookType; if(type)dest.searchParams.set('utm_content',type==='tax'?'tax_evaluation_request':'intro_call');
+  a.href=dest.href;
+  a.target='_blank';
+  a.rel='noopener noreferrer';
 }
-$('#quiz-content').addEventListener('click',e=>{const answer=e.target.closest('[data-answer]');if(answer){state.answers[state.step]=Number(answer.dataset.answer);if(!state.started){state.started=true;track('quiz_start');}renderQuestion();$(`[data-answer="${answer.dataset.answer}"]`).focus({preventScroll:true});return;}
- if(e.target.closest('.next')){if(state.answers[state.step]===undefined)return;track('quiz_step_complete',{step:state.step+1});if(state.step===questions.length-1)finishQuiz();else{state.step++;renderQuestion(true);}}
- if(e.target.closest('.back')&&state.step>0){state.step--;renderQuestion(true);}
-});
-function cardMarkup(v){return `<article class="video-card ${v.youtubeId?'':'is-placeholder'}"><a class="video-trigger" href="${v.youtubeId?'https://youtu.be/'+v.youtubeId:'#contact'}" data-video="${v.id}" aria-label="${v.youtubeId?'Watch':'Read about'} ${esc(v.shortTitle)}"><div class="video-art"><img src="/money-at-work/images/adam.webp" ${v.youtubeId?`data-poster="${v.youtubeId}"`:''} alt="" loading="lazy" width="480" height="270"/><div class="video-shade"></div><span class="video-label">${v.stage}</span><span class="video-play" aria-hidden="true">${v.youtubeId?'▶':'+'}</span><span class="video-status">${v.youtubeId?'Watch with Adam':'Video coming soon'}</span></div><div class="video-copy"><h3>${esc(v.title)}</h3><p class="short-title">${esc(v.shortTitle)}</p></div></a><p class="risk">${esc(v.risk)}</p></article>`;}
-function loadPosters(scope=document){for(const img of scope.querySelectorAll('img[data-poster]')){img.addEventListener('error',()=>{img.src='/money-at-work/images/adam.webp';},{once:true});img.src=`https://i.ytimg.com/vi/${img.dataset.poster}/hqdefault.jpg`;img.removeAttribute('data-poster');}}
-function renderVideos(){const selected=orderedVideos(state.filter),ready=selected.filter(v=>v.youtubeId).length;$('#video-grid').innerHTML=selected.map(cardMarkup).join('');$('#video-count').textContent=`${ready} ${ready===1?'video':'videos'} ready to watch${selected.length>ready?' · '+(selected.length-ready)+' coming soon':''}`;loadPosters($('#video-grid'));}
-$('#filters').addEventListener('click',e=>{const b=e.target.closest('[data-stage]');if(!b)return;state.filter=b.dataset.stage;document.querySelectorAll('#filters button').forEach(x=>{x.classList.toggle('active',x===b);x.setAttribute('aria-pressed',String(x===b));});renderVideos();});
-function finishQuiz(){state.result=score(state.answers);const p=startingPoints[state.result.priority],v=videos.find(x=>x.id===p.videoId);
- $('.progress').setAttribute('aria-valuenow',String(questions.length));$('.progress i').style.width='100%';$('#step-label').textContent='Your starting point is ready';
- $('#quiz-content').innerHTML=`<div class="quiz-done"><h3>Let’s start with<br/><em>${['tax coordination','your business cash','life beyond the business','your next chapter','giving with purpose','connecting the pieces'][state.result.priority]}.</em></h3><p>Your practical first step and a relevant video are ready below.</p><a class="button" href="#results">See my starting point ↓</a><div><button class="restart" data-review type="button">Review my answers</button></div></div>`;
- $('#results').hidden=false;$('#results').innerHTML=`<div class="result-shell"><div class="result-top"><p class="eyebrow">A STARTING POINT, BASED ON WHAT MATTERS TO YOU</p><p class="result-stage">${state.result.stage} · ${state.result.tendency}</p></div><div class="result-main"><div><h2 id="result-title" tabindex="-1">${esc(p.title)}</h2><p>${esc(p.why)}</p><div class="first-step"><strong>ONE PRACTICAL FIRST STEP</strong><p>${esc(p.step)}</p></div><p class="eyebrow">THREE QUESTIONS TO BRING</p><ul class="result-questions">${p.questions.map(x=>`<li>${esc(x)}</li>`).join('')}</ul><details class="result-insights"><summary>How your other answers fit in</summary><p>${esc(descriptions[state.result.stage])} ${state.result.tendency==='Safety'?'You lean toward keeping a clear reserve.':'You lean toward exploring new possibilities.'} These preferences begin a conversation; they do not determine an investment recommendation.</p><ul>${insights(state.answers).map(x=>`<li>${esc(x)}</li>`).join('')}</ul></details><div class="result-actions"><a class="button" href="${config.calendarUrl}" data-book data-placement="result">Talk through my next step ↗</a><button class="text-button" type="button" data-save-result>Save my starting point ↓</button><button class="text-button" type="button" data-share-result>Ask Adam about this →</button></div><p id="save-status" role="status"></p></div><div class="result-video"><p class="eyebrow">A GOOD PLACE TO START WATCHING</p>${cardMarkup(v)}<p class="form-note">Selected for the question you chose. You can explore every stage below.</p></div></div><div class="result-footer"><p>This is an educational conversation guide, not a finding about your taxes or a personalized investment recommendation.</p><button class="restart" data-review type="button">Review my answers</button></div></div>`;
- $('.quiz-share').hidden=false;loadPosters($('#results'));track('quiz_complete');$('#results').scrollIntoView({behavior:'smooth',block:'start'});$('#result-title').focus({preventScroll:true});
-}
-function reviewAnswers(){state.step=0;state.result=null;$('#results').hidden=true;$('.quiz-share').hidden=true;$('#contact-form [name=include_result]').checked=false;renderQuestion(true);$('#quiz').scrollIntoView({behavior:'smooth',block:'start'});}
-function saveResult(){if(!state.result)return;const blob=new Blob([summaryText(state.answers)],{type:'text/plain;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='My-RIPL-Money-Starting-Point.txt';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);$('#save-status').textContent='Your starting point is ready to keep. No email required.';track('result_saved');}
-function askAboutResult(){if(!state.result)return;$('#contact-form [name=include_result]').checked=true;$('#contact-message').value=startingPoints[state.result.priority].meeting;goToQuestion();}
-function goToQuestion(){if($('#video-dialog').open)$('#video-dialog').close();if($('#booking-dialog').open)$('#booking-dialog').close();$('#contact-form').scrollIntoView({behavior:'smooth',block:'center'});$('#contact-message').focus({preventScroll:true});}
-let lastVideoTrigger=null,lastBookTrigger=null;
-function openVideo(id,trigger){const v=videos.find(x=>x.id===id);if(!v)return;state.topic=v;lastVideoTrigger=trigger;
- $('#video-title').textContent=v.title;$('#video-stage').textContent=v.stage+' · '+v.shortTitle;$('#video-answer').textContent=v.summary;$('#video-risk').textContent=v.risk;
- const origin=encodeURIComponent(location.origin);$('#video-player').innerHTML=v.youtubeId?`<iframe src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(v.youtubeId)}?rel=0&playsinline=1&origin=${origin}" title="${esc(v.shortTitle)}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe><a class="youtube-fallback" href="https://youtu.be/${v.youtubeId}" target="_blank" rel="noopener">Open on YouTube ↗</a>`:`<div class="placeholder-player"><span>RIPL</span><p>This video is coming soon. You can still bring this question to Adam.</p></div>`;
- $('#video-dialog').showModal();document.body.classList.add('modal-open');track(v.youtubeId?'video_open':'topic_preview',{video_id:v.id});
-}
-$('.dialog-close').addEventListener('click',()=>$('#video-dialog').close());
-$('#video-dialog').addEventListener('close',()=>{$('#video-player').replaceChildren();if(!$('#booking-dialog').open)document.body.classList.remove('modal-open');lastVideoTrigger?.focus({preventScroll:true});});
-$('#video-question').addEventListener('click',()=>{if(state.topic)$('#contact-message').value=state.topic.title;goToQuestion();});
-function calendarUrl(){const u=new URL(config.calendarUrl);for(const [k,v] of Object.entries(attribution))u.searchParams.set(k,v);u.searchParams.set('primary_color','43378a');u.searchParams.set('hide_gdpr_banner','0');return u.href;}
-let calendlyPromise=null;
-function loadCalendly(){if(window.Calendly?.initInlineWidget)return Promise.resolve();if(calendlyPromise)return calendlyPromise;
- calendlyPromise=new Promise((resolve,reject)=>{const script=document.createElement('script');script.src='https://assets.calendly.com/assets/external/widget.js';script.async=true;let settled=false;const timer=setTimeout(()=>{if(settled)return;settled=true;calendlyPromise=null;script.remove();reject(new Error('timeout'));},12000);script.onload=()=>{if(settled)return;settled=true;clearTimeout(timer);if(window.Calendly?.initInlineWidget)resolve();else{calendlyPromise=null;script.remove();reject(new Error('missing widget'));}};script.onerror=()=>{if(settled)return;settled=true;clearTimeout(timer);calendlyPromise=null;script.remove();reject(new Error('unavailable'));};document.head.append(script);});return calendlyPromise;}
-async function openBooking(trigger){lastBookTrigger=$('#video-dialog').open?lastVideoTrigger:trigger;if($('#video-dialog').open)$('#video-dialog').close();$('#booking-dialog').showModal();document.body.classList.add('modal-open');$('.calendar-fallback').href=calendarUrl();$('.booking-context').hidden=!state.result;track('calendar_open',{placement:trigger?.dataset.placement||'unknown'});
- if(state.calendarLoaded||state.calendarLoading)return;state.calendarLoading=true;$('#calendar-status').textContent='Loading available times. You can also open the calendar above.';
- try{await loadCalendly();if(!$('#booking-dialog').open)return;$('#calendar-embed').replaceChildren();$('#calendar-embed').classList.add('is-ready');window.Calendly.initInlineWidget({url:calendarUrl(),parentElement:$('#calendar-embed')});state.calendarLoaded=true;$('#calendar-status').textContent='Choose a time below. Your appointment is booked only after Calendly confirms it.';}
- catch{$('#calendar-status').textContent='The calendar couldn’t load here. Use “Open calendar in a new tab” above to choose your time.';}finally{state.calendarLoading=false;}
-}
-$('.booking-close').addEventListener('click',()=>$('#booking-dialog').close());
-$('#booking-dialog').addEventListener('close',()=>{document.body.classList.remove('modal-open');lastBookTrigger?.focus({preventScroll:true});});
-$('#share-before-call').addEventListener('click',askAboutResult);
-window.addEventListener('message',e=>{if(e.origin!=='https://calendly.com'||typeof e.data!=='object'||!e.data)return;const frame=$('#calendar-embed iframe');if(!frame||e.source!==frame.contentWindow)return;
- if(e.data.event==='calendly.date_and_time_selected')track('calendar_time_selected');
- if(e.data.event==='calendly.event_scheduled'&&!state.bookingObserved){state.bookingObserved=true;track('booking_confirmed');$('#booking-success').hidden=false;$('#calendar-status').textContent='Calendly confirmed your appointment.';}
-});
-for(const dialog of document.querySelectorAll('dialog'))dialog.addEventListener('click',e=>{if(e.target!==dialog)return;const r=dialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)dialog.close();});
-document.addEventListener('click',e=>{const book=e.target.closest('[data-book]');if(book){e.preventDefault();openBooking(book);return;}const v=e.target.closest('[data-video]');if(v){e.preventDefault();openVideo(Number(v.dataset.video),v);return;}if(e.target.closest('[data-review]'))reviewAnswers();if(e.target.closest('[data-save-result]'))saveResult();if(e.target.closest('[data-share-result]'))askAboutResult();});
-$('#contact-form').addEventListener('submit',async e=>{e.preventDefault();if(state.sending)return;const form=e.currentTarget,f=new FormData(form);if(f.get('website'))return;if(!form.reportValidity())return;
- const name=String(f.get('name')||'').trim(),email=String(f.get('email')||'').trim(),message=String(f.get('message')||'').trim();if(!name||!message){$('#form-status').textContent='Please add your name and a short question.';return;}
- const include=Boolean(state.result&&f.get('include_result'));
- const payload={name,email,message,consent:'Requested a response from Adam at RIPL.',campaign_attribution:JSON.stringify(attribution),page:location.origin+location.pathname,_subject:'RIPL: a business owner’s money question',_template:'table'};
- if(include){payload.stage=state.result.stage;payload.tendency=state.result.tendency;payload.starting_point=startingPoints[state.result.priority].title;payload.quiz_answers=questions.map((q,i)=>`${i+1}. ${q.title}\n${q.options[state.answers[i]]}`).join('\n\n');payload.consent+=' Explicitly chose to include completed quiz answers and result.';}
- state.sending=true;$('#send-button').disabled=true;$('#form-status').textContent='Sending your question…';const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),18000);
- try{const response=await fetch(config.endpoint,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(payload),signal:controller.signal});const data=await response.json();if(!response.ok||!(data.success===true||data.success==='true'))throw new Error('unconfirmed');$('#form-status').textContent='Your question was sent to Adam. Thanks for starting the conversation.';track('inquiry_sent');form.reset();}
- catch{$('#form-status').textContent='We couldn’t confirm delivery. Your message is still here. Please try again or email adam@riplwealth.com directly.';}
- finally{clearTimeout(timer);state.sending=false;$('#send-button').disabled=false;}
-});
-if('IntersectionObserver' in window){let pastHero=false,atContact=false;const update=()=>{const visible=pastHero&&!atContact;$('.mobile-bar').hidden=!visible;document.body.classList.toggle('mobile-bar-visible',visible);};new IntersectionObserver(entries=>{pastHero=!entries[0].isIntersecting&&entries[0].boundingClientRect.bottom<0;update();},{threshold:0}).observe($('.hero'));new IntersectionObserver(entries=>{atContact=entries[0].isIntersecting;update();},{threshold:0}).observe($('#contact'));}
-document.querySelectorAll('[data-focus-video]').forEach(link=>link.addEventListener('click',e=>{
-  const id=Number(link.dataset.focusVideo);const target=document.querySelector(`[data-video="${id}"]`);
-  if(target){e.preventDefault();document.querySelectorAll('#filters [data-stage]').forEach(b=>{b.classList.toggle('active',b.dataset.stage==='All');b.setAttribute('aria-pressed',String(b.dataset.stage==='All'));});renderVideos();
-    document.getElementById('videos').scrollIntoView({behavior:'smooth',block:'start'});
-    const refreshed=document.querySelector(`[data-video="${id}"]`);if(refreshed){setTimeout(()=>refreshed.focus({preventScroll:true}),400);}
-    track('topic_selected',{video_id:id});
-  }
-}));
-renderQuestion();renderVideos();track('landing_view');
+function videoEmbed(container,id,label){if(!id)return;const frame=document.createElement('iframe');frame.src=`https://www.youtube-nocookie.com/embed/${encodeURIComponent(id)}?rel=0`;frame.title=label;frame.loading='lazy';frame.allow='accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture';frame.allowFullscreen=true;container.replaceChildren(frame);container.classList.add('has-video')}
+videoEmbed($('#intro-video'),INTRO_YOUTUBE_ID,'Introduction to Adam and RIPL');videoEmbed($('#transition-video'),TRANSITION_YOUTUBE_ID,'Business transition planning');
+let step=0;const answers=[];
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function render(){const q=questions[step];$('#step-label').textContent=`Question ${step+1} of ${questions.length}`;$('#progress-fill').style.width=`${step/questions.length*100}%`;
+$('#quiz-content').innerHTML=`<h3 class="question-title">${esc(q.title)}</h3><p class="hint">${esc(q.hint)}</p><div class="options">${q.options.map((o,i)=>`<button type="button" data-answer="${i}" class="${answers[step]===i?'selected':''}" aria-pressed="${answers[step]===i}">${esc(o)}</button>`).join('')}</div><div class="quiz-nav"><button type="button" id="back-step" ${step===0?'disabled':''}>← Back</button><button class="button primary" type="button" id="next-step" ${answers[step]===undefined?'disabled':''}>${step===questions.length-1?'See my starting point':'Continue →'}</button></div>`}
+function finish(){const result=score(answers),p=startingPoints[result.priority];$('#quiz-progress').hidden=true;$('#quiz-content').innerHTML=`<h3>Your starting point: ${esc(p.title)}</h3><p>${esc(p.why)}</p><h4>One useful first step</h4><p>${esc(p.step)}</p><button type="button" id="restart-quiz">Retake the quiz</button>`;$('#results').hidden=false;$('#results').innerHTML=`<h3>Three questions to take into your next conversation</h3><ul>${p.questions.map(q=>`<li>${esc(q)}</li>`).join('')}</ul><a class="button outline" href="#booking">Talk through my starting point →</a><p class="fine">Your answers have not been sent to RIPL. This is an educational conversation guide, not an assessment of tax savings or a personalized recommendation.</p>`;window.dataLayer?.push({event:'ripl_quiz_complete'});}
+$('#quiz-content').addEventListener('click',e=>{const b=e.target.closest('[data-answer]');if(b){answers[step]=Number(b.dataset.answer);render();return}if(e.target.closest('#back-step')&&step>0){step--;render()}if(e.target.closest('#next-step')&&answers[step]!==undefined){if(step===questions.length-1)finish();else{step++;render()}}if(e.target.closest('#restart-quiz')){step=0;answers.length=0;$('#results').hidden=true;$('#quiz-progress').hidden=false;render()}});
+$('#filters').addEventListener('click',e=>{const b=e.target.closest('[data-stage]');if(!b)return;document.querySelectorAll('#filters button').forEach(x=>{x.classList.toggle('active',x===b);x.setAttribute('aria-pressed',String(x===b))});document.querySelectorAll('[data-video-stage]').forEach(c=>c.hidden=b.dataset.stage!=='All'&&c.dataset.videoStage!==b.dataset.stage)});
+// Quiz navigation stays on-page; booking links receive the ad UTM parameters.
+// Event instrumentation contains no financial information or personal data.
+window.dataLayer=window.dataLayer||[];window.dataLayer.push({event:'ripl_landing_view',version:'gc-v6-2',...attribution});
+render();
