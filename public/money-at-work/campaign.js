@@ -27,5 +27,22 @@ function finish(){const result=score(answers),p=startingPoints[result.priority];
 $('#quiz-content').addEventListener('click',e=>{const b=e.target.closest('[data-answer]');if(b){answers[step]=Number(b.dataset.answer);render();return}if(e.target.closest('#back-step')&&step>0){step--;render()}if(e.target.closest('#next-step')&&answers[step]!==undefined){if(step===questions.length-1)finish();else{step++;render()}}if(e.target.closest('#restart-quiz')){step=0;answers.length=0;$('#results').hidden=true;$('#quiz-progress').hidden=false;render()}});
 // Quiz navigation stays on-page; booking links receive the ad UTM parameters.
 // Event instrumentation contains no financial information or personal data.
-window.dataLayer=window.dataLayer||[];window.dataLayer.push({event:'ripl_landing_view',version:'gc-v7-5',...attribution});
+window.dataLayer=window.dataLayer||[];window.dataLayer.push({event:'ripl_landing_view',version:'gc-v8-0',...attribution});
 render();
+
+// Load the YouTube player only after a visitor chooses a video.
+const videoGrid=document.querySelector('#video-grid');
+videoGrid?.addEventListener('click',event=>{
+  const trigger=event.target.closest('button[data-video-id]');
+  if(!trigger)return;
+  const id=trigger.dataset.videoId;
+  if(!/^[a-zA-Z0-9_-]{11}$/.test(id))return;
+  const container=trigger.closest('[data-video-container]');
+  if(!container)return;
+  const frame=document.createElement('iframe');
+  frame.src=`https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0`;
+  frame.title=trigger.getAttribute('aria-label')||'Video';
+  frame.allow='accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; web-share';
+  frame.allowFullscreen=true;
+  container.replaceChildren(frame);
+});

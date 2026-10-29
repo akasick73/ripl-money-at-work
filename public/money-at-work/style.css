@@ -180,3 +180,17 @@
 .hero-v71 h1 > em{color:var(--purple);font-style:normal}
 @media(max-width:560px){.hero-v71 h1{font-size:clamp(29px,9.1vw,49px);line-height:1.08;letter-spacing:-.055em}}
 @media(max-width:350px){.hero-v71 h1{font-size:9vw}}
+
+/* V8: playable inline video tiles + proportionally sized footer */
+.video-thumb .video-play-button{position:relative;display:block;width:100%;height:100%;border:0;padding:0;background:#251d48;cursor:pointer;overflow:hidden;text-align:left}
+.video-thumb .video-play-button img{width:100%;height:100%;object-fit:cover;transition:transform .2s ease}
+.video-thumb .video-play-button:hover img{transform:scale(1.025)}
+.video-thumb .video-play-button:focus-visible{outline:4px solid var(--gold);outline-offset:-4px}
+.video-thumb iframe{display:block;width:100%;height:100%;border:0}
+.footer-top{display:grid;grid-template-columns:1fr auto;gap:32px;align-items:start;padding-bottom:30px}
+.footer-brand{display:inline-flex;align-items:flex-start;width:max-content;max-width:100%}
+.footer-brand img{display:block;width:128px;max-width:100%;height:auto;object-fit:contain}
+.footer-top>div{text-align:right;line-height:1.7}
+.footer-top strong{display:block;margin-bottom:5px}
+.footer-disclosures{padding-top:26px;line-height:1.7}
+@media(max-width:560px){.footer-top{display:grid;grid-template-columns:1fr;gap:20px}.footer-top>div{margin:0;text-align:left}.footer-brand img{width:116px}.footer-disclosures{padding-top:22px}}
