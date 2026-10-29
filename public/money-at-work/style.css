@@ -61,3 +61,11 @@
   .start .offer{padding:22px}
   .booking{padding:44px 0}
 }
+
+/* V7.0 - Requested headline and faithful headshot layout */
+.hero-intro h1 .headline-main{color:var(--ink)}
+.hero-intro h1 em{color:var(--purple)}
+.about-photo{background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:none}
+.about-photo img{display:block;width:100%;height:auto;max-height:none;object-fit:contain;object-position:center center;margin-inline:auto}
+@media(max-width:820px){.about-photo{width:min(100%,410px);max-width:410px;margin-inline:auto;justify-self:center}.about-photo img{margin-inline:auto;object-position:center}}
+@media(max-width:560px){.about-photo{width:min(100%,340px);max-width:340px;margin-inline:auto}.about-photo img{width:100%;height:auto}.about-photo span{text-align:center}}
