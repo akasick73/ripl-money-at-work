@@ -11,3 +11,5 @@ V8.6 incorporates the approved six-section layout, 20-minute embedded Calendly b
 `noindex,nofollow` remains in place for this preview. No historical CHANGES.md files.
 
 V8.7 update: Replaced pending hero intro with the user's approximately one-minute YouTube video. Click-to-play on-page; no autoplay before visitor interaction. Video: https://youtu.be/ibtJjhboaiA
+
+V8.8: Replaced Sound Familiar? with the approved three concise opportunity cards and precise bold emphasis. Added supplied 20-minute meeting video (zkmZXQdjKd4) near the final booking section with on-page click-to-play. All other V8.7 content preserved. The AI-assisted tax review and investment-company language include clarifying disclosures.

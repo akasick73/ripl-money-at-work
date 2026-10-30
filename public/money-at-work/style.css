@@ -278,3 +278,21 @@
 .hero-video-link:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
 .hero-video-slot:has(iframe){aspect-ratio:16/9;background:#16141c;border-radius:12px;overflow:hidden}
 .hero-video-slot iframe{display:block;width:100%;height:100%;border:0}
+
+/* V8.8: succinct business-owner opportunities and meeting explainer */
+.opportunity-grid article{display:flex;flex-direction:column;gap:8px;min-width:0;background:#fff;border:1px solid #e6dfd5;border-top:4px solid var(--gold);padding:26px 23px;border-radius:14px;box-shadow:0 10px 30px rgba(36,27,75,.035)}
+.opportunity-grid article:nth-child(3){border-top-color:var(--purple);background:linear-gradient(150deg,#fff,#f5f1fb)}
+.opportunity-grid .opportunity-number{font-weight:800;color:var(--purple);font-size:14px;letter-spacing:.08em}
+.opportunity-grid h3{font-size:21px;margin:0;line-height:1.25}
+.opportunity-grid p{font-size:14px;line-height:1.6;margin:0;color:#4c475a}
+.opportunity-grid strong{font-weight:800;color:var(--navy)}
+.opportunity-disclosure{max-width:1020px;margin:17px 0 0;font-size:11px;line-height:1.55;color:var(--muted)}
+.meeting-video-row{display:grid;grid-template-columns:1fr minmax(250px,390px);align-items:center;gap:28px;margin-top:30px;padding-top:26px;border-top:1px solid #d8cfe1}
+.meeting-video-copy strong{font-size:19px;color:var(--navy)}
+.meeting-video-copy p{font-size:14px;margin:6px 0 0;color:#514a60}
+.meeting-video-player{aspect-ratio:16/9;background:#251d48;border-radius:12px;overflow:hidden}
+.meeting-video-player iframe{display:block;width:100%;height:100%;border:0}
+.meeting-video-button{width:100%;height:100%;padding:0;border:0;background:#251d48;display:block;position:relative;cursor:pointer}
+.meeting-video-button img{width:100%;height:100%;object-fit:cover}
+.meeting-video-button span{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);display:grid;place-items:center;width:54px;height:54px;background:#241b4be8;color:#fff;border-radius:50%;font-size:22px}
+@media(max-width:720px){.opportunity-grid article{padding:22px}.meeting-video-row{grid-template-columns:1fr;gap:16px}.meeting-video-player{max-width:460px}}

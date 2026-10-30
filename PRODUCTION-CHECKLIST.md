@@ -25,3 +25,5 @@
 
 ## New 40-second intro video
 Use `MEET-ADAM-40-SECOND-SCRIPT.md` in the ZIP. Natural delivery, camera-facing, no autoplay.
+
+V8.8 QA: confirm exact three-card copy/bold on desktop and iPhone; check video zkmZXQdjKd4 plays in-page; review AI-assisted tax and investment-company claims with compliance.
