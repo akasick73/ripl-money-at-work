@@ -1,1 +1,1 @@
-RIPL landing page source. Install dependencies with npm ci and build with npm run build. Tax evaluation fee is described in the tax evaluation explanation. Please review for compliance before publishing.
+RIPL Wealth V8.2 conversion-focused landing-page source. Astro 5 project. Run npm ci and npm run build. See PRODUCTION-CHECKLIST.md for launch requirements, video recordings, placeholders, compliance and analytics setup. Preview is noindex. No historical CHANGES.md files.
