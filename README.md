@@ -31,3 +31,5 @@ V9.0 approved updates:
 - All V8.9 copy, 20-minute call video, quiz, booking links, photos, and disclosures are retained.
 
 Validation: JS syntax and source structural checks passed. Astro production build not verified: dependency installation timed out in the build environment. Please run npm ci && npm run build in a network-enabled environment and review iPhone layout before deployment.
+
+V9.1: Approved hero image overlay refinement. Full photograph remains the video click target; floating purple label with gold play icon is horizontally centered and inset 16–18px above bottom, no full-width button bar or face obstruction. All other V9.0 content unchanged.
