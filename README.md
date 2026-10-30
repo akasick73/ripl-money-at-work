@@ -23,3 +23,11 @@ V8.8: Replaced Sound Familiar? with the approved three concise opportunity cards
 - Removed separate intro link.
 - Relocated the 20-minute meeting explainer thumbnail and player between “Let's find your next step” and “Bring a question”; removed its separate section.
 - Preserved approved three-card copy, existing quiz, tax evaluation, booking flow and disclosures.
+
+
+V9.0 approved updates:
+- Entire authentic studio hero photograph is a keyboard-accessible video trigger. A low-profile gold play icon and "Meet Adam · 1 minute" label sit across the bottom edge of the photo; no centered play control.
+- Section and card headlines are uppercase, bold, and use the RIPL sans-serif, with responsive sizing. Body copy and buttons remain in their approved capitalization.
+- All V8.9 copy, 20-minute call video, quiz, booking links, photos, and disclosures are retained.
+
+Validation: JS syntax and source structural checks passed. Astro production build not verified: dependency installation timed out in the build environment. Please run npm ci && npm run build in a network-enabled environment and review iPhone layout before deployment.
