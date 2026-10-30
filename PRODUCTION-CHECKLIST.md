@@ -32,3 +32,9 @@ This is a working production list, **not** a list of completed assets. Do not pu
 
 ## Measurement definitions
 Existing page pushes `ripl_landing_view`, `ripl_quiz_start`, `ripl_quiz_complete` (with general result category only), `ripl_quiz_cta_click`, `ripl_booking_click`, `ripl_tax_evaluation_interest`, and `ripl_video_start` into `window.dataLayer` for future tag-manager configuration. Do not treat these events as confirmed leads or meetings. CRM must separately record qualified appointments and resulting new accounts/AUM.
+
+## About Adam photo placeholder
+- [ ] Replace `public/money-at-work/images/adam-on-stage-placeholder.webp` with a genuine, approved landscape photo of Adam presenting at a small venue, photographed from the side. Current image is AI-generated and illustrative, NOT evidence of a real speaking engagement.
+- [ ] When replacing, update image path, alt text, dimensions and remove the illustrative-image caption from `src/pages/index.astro`.
+
+- HERO IMAGE (V8.4): Authentic RIPL studio photograph `public/money-at-work/images/adam-studio-hero.webp`, supplied by Adam. Review crop on iPhone and desktop; no replacement photo needed unless desired.
