@@ -52,8 +52,30 @@ function finish(){const result=score(answers),p=startingPoints[result.priority];
 $('#quiz-content').addEventListener('click',e=>{const b=e.target.closest('[data-answer]');if(b){if(!hasStarted){hasStarted=true;window.dataLayer?.push({event:'ripl_quiz_start'});}answers[step]=Number(b.dataset.answer);render();return}if(e.target.closest('#back-step')&&step>0){step--;render()}if(e.target.closest('#next-step')&&answers[step]!==undefined){if(step===questions.length-1)finish();else{step++;render()}}if(e.target.closest('#restart-quiz')){step=0;answers.length=0;$('#results').hidden=true;$('#quiz-progress').hidden=false;hasStarted=false;render()}});
 // Quiz navigation stays on-page; booking links receive the ad UTM parameters.
 // Event instrumentation contains no financial information or personal data.
-window.dataLayer=window.dataLayer||[];window.dataLayer.push({event:'ripl_landing_view',version:'gc-v8-7',...attribution});
+window.dataLayer=window.dataLayer||[];window.dataLayer.push({event:'ripl_landing_view',version:'gc-v8-9',...attribution});
 render();
+
+// Keep the authentic hero image visible until the visitor explicitly opens the video.
+const heroDialog=document.querySelector('#hero-video-dialog');
+const heroPlayer=document.querySelector('#hero-dialog-player');
+const heroClose=document.querySelector('.hero-dialog-close');
+const heroPlay=document.querySelector('[data-hero-video]');
+heroPlay?.addEventListener('click',()=>{
+  const id=heroPlay.dataset.heroVideo;
+  if(!/^[a-zA-Z0-9_-]{11}$/.test(id))return;
+  const frame=document.createElement('iframe');
+  frame.src=`https://www.youtube-nocookie.com/embed/${id}?autoplay=1&playsinline=1&rel=0`;
+  frame.title='Meet Adam — introduction video';
+  frame.allow='accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; web-share';
+  frame.allowFullscreen=true;
+  heroPlayer.replaceChildren(frame);
+  heroDialog.showModal();
+  heroClose.focus();
+  window.dataLayer?.push({event:'ripl_video_start',video_id:id,placement:'hero'});
+});
+heroClose?.addEventListener('click',()=>heroDialog.close());
+heroDialog?.addEventListener('click',event=>{if(event.target===heroDialog)heroDialog.close()});
+heroDialog?.addEventListener('close',()=>heroPlayer.replaceChildren());
 
 // Load the YouTube player only after a visitor chooses a video.
 document.addEventListener('click',event=>{
