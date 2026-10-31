@@ -404,3 +404,11 @@
   .hero-v71-image .hero-play-caption {bottom:16px!important;padding:8px 12px!important;font-size:12px!important;gap:8px!important;}
   .hero-v71-image .hero-play-icon {width:23px!important;height:23px!important;font-size:10px!important;}
 }
+
+/* V9.2: campaign-aligned headline. Preserve matching weight on iPhone. */
+.hero-v71 h1.hero-optimized-title{font-family:var(--sans);font-weight:850;text-transform:uppercase;letter-spacing:-.052em;line-height:1.07;font-size:clamp(31px,3.55vw,49px);overflow-wrap:normal;hyphens:none}
+.hero-v71 h1.hero-optimized-title span,.hero-v71 h1.hero-optimized-title em{display:block;font:inherit;letter-spacing:inherit;line-height:inherit}
+.hero-v71 h1.hero-optimized-title em{color:var(--purple);margin-top:.12em}
+@media(max-width:820px){.hero-v71 h1.hero-optimized-title{font-size:clamp(29px,5.5vw,44px)}}
+@media(max-width:560px){.hero-v71 h1.hero-optimized-title{font-size:clamp(27px,7.1vw,36px);letter-spacing:-.052em;line-height:1.09}}
+@media(max-width:360px){.hero-v71 h1.hero-optimized-title{font-size:7.1vw}}
