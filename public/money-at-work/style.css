@@ -412,3 +412,22 @@
 @media(max-width:820px){.hero-v71 h1.hero-optimized-title{font-size:clamp(29px,5.5vw,44px)}}
 @media(max-width:560px){.hero-v71 h1.hero-optimized-title{font-size:clamp(27px,7.1vw,36px);letter-spacing:-.052em;line-height:1.09}}
 @media(max-width:360px){.hero-v71 h1.hero-optimized-title{font-size:7.1vw}}
+
+/* V9.3: intentional four-line mobile headline; no forced two-line fit. */
+.mobile-hero-break{display:none}
+@media(max-width:560px){
+  .hero-v71 h1.hero-optimized-title{font-size:clamp(26px,6.9vw,34px);line-height:1.13;letter-spacing:-.045em;max-width:100%;overflow-wrap:normal;word-break:normal}
+  .hero-v71 h1.hero-optimized-title .mobile-hero-break{display:block}
+  .hero-v71 h1.hero-optimized-title em{margin-top:.20em}
+}
+
+/* V9.4: approved exact four-line phone headline */
+@media(max-width:560px){
+  .hero-v71 h1.hero-optimized-title{
+    font-size:clamp(20px,5.7vw,29px);
+    line-height:1.16;
+    letter-spacing:-.048em;
+  }
+  .hero-v71 h1.hero-optimized-title span,
+  .hero-v71 h1.hero-optimized-title em{white-space:nowrap}
+}
