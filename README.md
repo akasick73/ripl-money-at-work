@@ -23,3 +23,5 @@ For direct upload to Cloudflare Pages without a build, use the separately provid
 - Have RIPL compliance approve final copy and disclosures before promoting the page.
 - Verify video links and mobile layout on real devices.
 - This package has not been deployed to Cloudflare automatically.
+
+Mobile refinement: corrected headline nowrap/oversized cascade and horizontal overflow; adjusted hero rhythm and CTA hierarchy. Verify on actual iPhone before production deployment.
