@@ -1,20 +1,13 @@
-# RIPL Wealth — Quiz-First Landing Page
+# RIPL Wealth — Quiz-First Landing Page (Auto-Advance)
 
-This version moves Question 1 of the nine-question Financial Freedom Quiz directly under the approved emotional headline. There is no quiz-start button or welcome screen. The approved personalized results, booking integration, authentic images, four existing videos, disclosures, and supporting page sections remain.
+This version adds automatic quiz progression after an answer is selected. A personalized explanation appears directly under the selected answer, with a gold reading-progress bar lasting approximately 8–11 seconds before the next question. Visitors can pause, resume, go back, or choose Next Question Now. Background tabs pause the timer; reduced-motion settings disable automatic progression.
 
-## Deployment
+Quiz controls now use RIPL purple and gold. The temporary green deployment-test color and quiz orange have been removed. The nine questions, results, photography, booking links, and disclosures are preserved.
 
-Cloudflare Pages with GitHub: build command `npm run build`, output directory `dist`, Node 22+. Upload the ZIP contents to the repository root, not the ZIP file itself. Use the correct repository in Cloudflare Pages.
+## Deploy
 
-For direct upload, use the separate static ZIP. Do not upload this source ZIP as a static website.
+For GitHub: extract the GitHub ZIP and copy its contents into the **root of the existing repository**, replacing files. Commit and **Push origin**. Check Cloudflare for the new deployment.
 
-## Testing before launch
+For Cloudflare direct upload: use the separate Direct-Upload ZIP (compiled static output).
 
-1. Check iPhone 320–430px and desktop widths; confirm no horizontal overflow.
-2. Question 1 is visible directly on load. Complete all nine questions, use Back, change an answer, and review all four result motivations.
-3. Confirm session progress survives a reload, results print/save correctly, and the mailto fallback works.
-4. Confirm the 20-minute Calendly event and successful booking attribution in the actual environment.
-5. Verify privacy/disclosures, approved RIA copy, tracking consent and security headers with firm compliance.
-6. Record four new personal videos as the final creative step.
-
-The quiz is educational and is not individualized investment, tax, or legal advice.
+No production deployment has been performed.
