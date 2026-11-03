@@ -29,3 +29,7 @@ This ZIP contains source files only, no CHANGELOG files or dependencies. Cloudfl
 ## Alternating section backgrounds
 
 Full-bleed white and warm taupe bands now alternate beneath the quiz-first hero. The team-photo recognition section starts on white; the following sections alternate. Copy, quiz, results, media, and booking links are unchanged.
+
+## Consistent typography update
+
+This build introduces one shared heading/body/eyebrow/quote type scale across all seven alternating page sections. On mobile, section headings use 28–31 px, paragraphs 16 px, quote text 19 px, and section labels 11 px. Hero, quiz, results, wording, photography, links, and section background colors are unchanged.

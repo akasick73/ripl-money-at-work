@@ -706,3 +706,63 @@ a[data-quiz-link]:not(.quiz-entry-button):not(#adaptive-link){color:var(--purple
   .section-band .recognition-team-photo{margin-bottom:26px}
 }
 @media print{.section-band{background:transparent!important;border:0!important}}
+
+
+/* RIPL unified editorial type scale: sections below the interactive quiz.
+   This deliberately does not change hero, quiz, or results typography. */
+.section-band {
+  --ripl-section-title: clamp(34px, 3.2vw, 42px);
+  --ripl-section-body: 16px;
+  --ripl-section-subhead: 20px;
+}
+.section-band .story-section h2,
+.section-band .about h2,
+.section-band .library .section-heading h2,
+.section-band .closing-invite h2 {
+  font-family: var(--sans);
+  font-size: var(--ripl-section-title);
+  font-weight: 800;
+  line-height: 1.17;
+  letter-spacing: -.035em;
+  text-transform: uppercase;
+  overflow-wrap: break-word;
+  margin: 0 0 22px;
+}
+.section-band .story-copy p,
+.section-band .about p:not(.eyebrow),
+.section-band .library .section-heading > p:not(.eyebrow) {
+  font-family: var(--sans);
+  font-size: var(--ripl-section-body);
+  line-height: 1.72;
+  letter-spacing: normal;
+  margin-bottom: 16px;
+}
+.section-band .eyebrow {
+  font-family: var(--sans);
+  font-size: 11px;
+  line-height: 1.4;
+  letter-spacing: .12em;
+  font-weight: 800;
+  margin-bottom: 14px;
+}
+.section-band .adam-quote {
+  font-size: clamp(20px, 1.8vw, 24px);
+  line-height: 1.55;
+  letter-spacing: -.015em;
+  margin: 26px 0;
+}
+.section-band .adam-quote cite {font-size: 12px;line-height: 1.5;letter-spacing: normal;}
+.section-band .video-card h3 {font-size: var(--ripl-section-subhead);line-height: 1.32;}
+.section-band .video-card p {font-size: 14px;line-height: 1.6;}
+@media (max-width: 760px) {
+  .section-band {--ripl-section-title: clamp(28px, 7.35vw, 31px);--ripl-section-body: 16px;--ripl-section-subhead: 19px;}
+  .section-band .story-section h2,
+  .section-band .about h2,
+  .section-band .library .section-heading h2,
+  .section-band .closing-invite h2 {line-height: 1.19;letter-spacing: -.035em;margin-bottom: 19px;}
+  .section-band .story-copy p,
+  .section-band .about p:not(.eyebrow),
+  .section-band .library .section-heading > p:not(.eyebrow) {line-height: 1.68;margin-bottom: 15px;}
+  .section-band .adam-quote {font-size: 19px;line-height: 1.55;padding: 9px 0 9px 18px;margin: 22px 0;}
+  .section-band .eyebrow {font-size: 11px;margin-bottom: 12px;}
+}
