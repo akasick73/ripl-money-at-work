@@ -25,3 +25,7 @@ This is the GitHub-ready source for the RIPL business-owner landing page, includ
 - Review all public-facing copy, privacy and marketing consent language, and disclosures under the firm's compliance process before paid advertising.
 
 This ZIP contains source files only, no CHANGELOG files or dependencies. Cloudflare's build installs dependencies from `package-lock.json`.
+
+## Alternating section backgrounds
+
+Full-bleed white and warm taupe bands now alternate beneath the quiz-first hero. The team-photo recognition section starts on white; the following sections alternate. Copy, quiz, results, media, and booking links are unchanged.

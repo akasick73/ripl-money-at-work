@@ -685,3 +685,24 @@ a[data-quiz-link]:not(.quiz-entry-button):not(#adaptive-link){color:var(--purple
   #hero #results .priority-card,#hero #results .snapshot-tile,#hero #results .results-adam-note{break-inside:avoid}
   #hero #results .result-preview,#hero #results .report-unlock,#hero #results .results-locked-preview{display:none!important}
 }
+
+/* Team photograph above The Bigger Picture section */
+.recognition-team-photo{max-width:820px;margin:0 0 30px}.recognition-team-photo img{width:100%;height:auto;border-radius:14px}
+
+
+/* Full-width section rhythm: warm taupe / clean white, with contained text. */
+.section-band{width:100%;position:relative;isolation:isolate}
+.section-band--white{background:#fff}
+.section-band--warm{background:#faf7f1}
+.section-band + .section-band{border-top:1px solid rgba(55,39,84,.055)}
+.section-band > .section{padding-block:clamp(60px,7vw,88px)}
+.section-band .library{border-top:0}
+.section-band .story-section,.section-band .closing-invite{max-width:960px}
+.section-band .eyebrow{margin-bottom:14px}
+.section-band--white .video-card{background:#fdfbf8}
+@media(max-width:760px){
+  .section-band > .section{padding-top:58px;padding-bottom:62px}
+  .section-band .eyebrow{margin-bottom:13px}
+  .section-band .recognition-team-photo{margin-bottom:26px}
+}
+@media print{.section-band{background:transparent!important;border:0!important}}
