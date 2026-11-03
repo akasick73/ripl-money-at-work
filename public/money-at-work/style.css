@@ -548,3 +548,11 @@
 @media(max-width:350px){.quiz-first-headline{font-size:25px}.quiz-first-hero{padding-inline:14px}}
 
 @media print{#hero.quiz-first-hero{display:block!important;padding:0!important;margin:0!important}#hero .quiz-first-intro,#hero .quiz-first-side,#hero .quiz-first-booking{display:none!important}#hero .quiz-first-card{padding:0!important}#hero #results{border:0!important;background:#fff!important;padding:0!important;margin:0!important}}
+
+/* Deployment visibility test 2026-11-02: quiz links in bright green.
+   Keep the quiz's Next Question button and progress orange. */
+:root{--quiz-link-green:#00C853}
+#hero .quiz-first-card .quiz-header .eyebrow{color:var(--quiz-link-green)!important}
+a[data-quiz-link]:not(#adaptive-link){color:var(--quiz-link-green)!important;text-decoration-color:var(--quiz-link-green)!important}
+a.quiz-entry-button[data-quiz-link]{background:var(--quiz-link-green)!important;border-color:var(--quiz-link-green)!important;color:#081e10!important;text-decoration:none!important}
+#adaptive-cta:not([hidden]) a[href="#quiz"]{background:var(--quiz-link-green)!important;border-color:var(--quiz-link-green)!important;color:#081e10!important}
