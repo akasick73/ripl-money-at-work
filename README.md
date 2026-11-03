@@ -1,35 +1,35 @@
-# RIPL Wealth — Quiz-First Landing Page
+# RIPL Money at Work — V8.6
 
-This is the GitHub-ready source for the RIPL business-owner landing page, including the redesigned, mobile-first personalized quiz results experience.
+Astro 5 website source. Extract into your existing GitHub repository, commit and push.
 
-## Deployment
+Build: `npm ci` then `npm run build`.
 
-1. Extract the ZIP and copy its contents **into the root of your existing GitHub repository** (alongside `package.json`). Replace matching files; do not nest the ZIP's contents inside a new folder.
-2. In GitHub Desktop, verify changes appear in `src/pages/index.astro`, `public/money-at-work/campaign.js`, and `public/money-at-work/style.css`.
-3. Commit, then **Push origin**. Wait for Cloudflare to build the production branch.
-4. Refresh the live page on your phone and complete all nine questions. Confirm that the results page opens directly without showing the large hero headline above it.
+V8.6 incorporates the approved six-section layout, 20-minute embedded Calendly booking modal, genuine unchanged family photo, responsive studio-photo crop, no AI stage photo, and compact on-page video library.
 
-## Results behavior
+**Not launch-complete:** GA4 ID not supplied; email delivery provider not connected (results email controls visibly disabled); new Meet Adam recording not supplied (no nonfunctional play button); Meta tags not configured; compliance approval and real device/booking verification pending.
 
-- The completed quiz presents a compact, category-specific heading, a three-part snapshot grounded in quiz answers, and the first complete discussion priority.
-- Two additional priorities appear as deliberately locked placeholders rather than blurred actual text.
-- The visitor may optionally submit an email to unlock the full report in their browser. Marketing consent is separate and optional.
-- Lead submissions are sent to **adam@riplwealth.com** using FormSubmit's AJAX endpoint. **FormSubmit must be activated by confirming the one-time activation email** before production lead delivery works.
-- The report is not automatically emailed to visitors. After unlock, they may use the browser's Print / Save as PDF or their own email application.
-- Refreshing the page restarts the quiz. Question feedback auto-advances after approximately 5–6 seconds.
+`noindex,nofollow` remains in place for this preview. No historical CHANGES.md files.
 
-## Pre-launch checks
+V8.7 update: Replaced pending hero intro with the user's approximately one-minute YouTube video. Click-to-play on-page; no autoplay before visitor interaction. Video: https://youtu.be/ibtJjhboaiA
 
-- Verify FormSubmit activation and delivery to the inbox with a real test submission. Avoid submitting real customer information until the workflow has been verified and approved.
-- Test mobile layout, quiz completion, report unlock, PDF saving, Calendly booking, and privacy notice.
-- Review all public-facing copy, privacy and marketing consent language, and disclosures under the firm's compliance process before paid advertising.
+V8.8: Replaced Sound Familiar? with the approved three concise opportunity cards and precise bold emphasis. Added supplied 20-minute meeting video (zkmZXQdjKd4) near the final booking section with on-page click-to-play. All other V8.7 content preserved. The AI-assisted tax review and investment-company language include clarifying disclosures.
 
-This ZIP contains source files only, no CHANGELOG files or dependencies. Cloudflare's build installs dependencies from `package-lock.json`.
 
-## Alternating section backgrounds
+## V8.9 changes
+- Removed the Successful people quote.
+- Updated Explore heading to “Not ready to talk, yet? That's okay. Start here.”
+- Changed three-opportunities heading to “How to make more of what you've built”.
+- Hero studio photo now has a centered accessible play overlay opening the Meet Adam video in an on-page dialog.
+- Removed separate intro link.
+- Relocated the 20-minute meeting explainer thumbnail and player between “Let's find your next step” and “Bring a question”; removed its separate section.
+- Preserved approved three-card copy, existing quiz, tax evaluation, booking flow and disclosures.
 
-Full-bleed white and warm taupe bands now alternate beneath the quiz-first hero. The team-photo recognition section starts on white; the following sections alternate. Copy, quiz, results, media, and booking links are unchanged.
 
-## Consistent typography update
+V9.0 approved updates:
+- Entire authentic studio hero photograph is a keyboard-accessible video trigger. A low-profile gold play icon and "Meet Adam · 1 minute" label sit across the bottom edge of the photo; no centered play control.
+- Section and card headlines are uppercase, bold, and use the RIPL sans-serif, with responsive sizing. Body copy and buttons remain in their approved capitalization.
+- All V8.9 copy, 20-minute call video, quiz, booking links, photos, and disclosures are retained.
 
-This build introduces one shared heading/body/eyebrow/quote type scale across all seven alternating page sections. On mobile, section headings use 28–31 px, paragraphs 16 px, quote text 19 px, and section labels 11 px. Hero, quiz, results, wording, photography, links, and section background colors are unchanged.
+Validation: JS syntax and source structural checks passed. Astro production build not verified: dependency installation timed out in the build environment. Please run npm ci && npm run build in a network-enabled environment and review iPhone layout before deployment.
+
+V9.1: Approved hero image overlay refinement. Full photograph remains the video click target; floating purple label with gold play icon is horizontally centered and inset 16–18px above bottom, no full-width button bar or face obstruction. All other V9.0 content unchanged.
