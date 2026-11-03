@@ -1,18 +1,27 @@
-# RIPL Quiz-First — Inbox Lead Capture (FormSubmit)
+# RIPL Wealth — Quiz-First Landing Page
 
-This package preserves the quiz-first landing page, purple-and-gold auto-advance quiz, blurred results preview, and personalized full report. It replaces the previous Cloudflare/Resend backend with a static form submission to FormSubmit.
+This is the GitHub-ready source for the RIPL business-owner landing page, including the redesigned, mobile-first personalized quiz results experience.
 
-## Deploy
-1. Unzip the GitHub-ready archive. Copy the **contents** (not the containing folder) into your existing landing-page repository, replacing matching files.
-2. Commit and **Push origin** in GitHub Desktop. Wait for Cloudflare to build.
-3. Complete the nine-question quiz and enter a test email. FormSubmit sends a **one-time activation message to adam@riplwealth.com**. Open that inbox and click the activation link. If needed, check spam.
-4. After activation, submit another test and verify that the lead arrives in Adam's inbox with the results category, all nine answers, and the marketing opt-in status.
-5. Confirm the complete report unlocks, Save as PDF works, the quiz resets on refresh, and the Calendly link opens.
+## Deployment
 
-## Important behavior
-- The report unlocks on-page after FormSubmit confirms the submission. The visitor can save as PDF or use the built-in 'Email Myself My Results' mailto action. This version **does not automatically send a personalized email to the visitor**.
-- FormSubmit is a third-party service. Visitors are informed in the report form and privacy page.
-- No Cloudflare email credentials, secrets, Workers Functions, or Resend account are needed.
-- FormSubmit activation and actual delivery **cannot be verified before you activate the recipient inbox**.
-- `_captcha` is disabled for an uninterrupted quiz; a honeypot is included. Monitor spam and consider additional protections if needed.
-- Compliance/privacy review is recommended before paid promotion.
+1. Extract the ZIP and copy its contents **into the root of your existing GitHub repository** (alongside `package.json`). Replace matching files; do not nest the ZIP's contents inside a new folder.
+2. In GitHub Desktop, verify changes appear in `src/pages/index.astro`, `public/money-at-work/campaign.js`, and `public/money-at-work/style.css`.
+3. Commit, then **Push origin**. Wait for Cloudflare to build the production branch.
+4. Refresh the live page on your phone and complete all nine questions. Confirm that the results page opens directly without showing the large hero headline above it.
+
+## Results behavior
+
+- The completed quiz presents a compact, category-specific heading, a three-part snapshot grounded in quiz answers, and the first complete discussion priority.
+- Two additional priorities appear as deliberately locked placeholders rather than blurred actual text.
+- The visitor may optionally submit an email to unlock the full report in their browser. Marketing consent is separate and optional.
+- Lead submissions are sent to **adam@riplwealth.com** using FormSubmit's AJAX endpoint. **FormSubmit must be activated by confirming the one-time activation email** before production lead delivery works.
+- The report is not automatically emailed to visitors. After unlock, they may use the browser's Print / Save as PDF or their own email application.
+- Refreshing the page restarts the quiz. Question feedback auto-advances after approximately 5–6 seconds.
+
+## Pre-launch checks
+
+- Verify FormSubmit activation and delivery to the inbox with a real test submission. Avoid submitting real customer information until the workflow has been verified and approved.
+- Test mobile layout, quiz completion, report unlock, PDF saving, Calendly booking, and privacy notice.
+- Review all public-facing copy, privacy and marketing consent language, and disclosures under the firm's compliance process before paid advertising.
+
+This ZIP contains source files only, no CHANGELOG files or dependencies. Cloudflare's build installs dependencies from `package-lock.json`.

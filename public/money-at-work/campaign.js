@@ -118,28 +118,61 @@ document.addEventListener('visibilitychange',()=>{
   else advanceTimer.resume();
 });
 function resultText(){const m=motivations[answers[0]],items=observations(answers);return `${m.heading}\n\n${m.opening}\n\n${m.bridge}\n\nWHERE I'D START\n\n${items.map((x,i)=>`${i+1}. ${x.title}\n${x.body}`).join('\n\n')}\n\n${m.closing}\n${m.invitation}\n\nTalk with Adam: ${BOOKING_URL}\n\nEducational discussion prompts based on self-reported answers. Not individualized financial, tax, or legal advice. Investing involves risk, including possible loss of principal.`}
-function reportHtml(m,items){return `<div class="result-print"><p class="eyebrow">YOUR PERSONALIZED RESULTS</p><h2>${esc(m.heading)}</h2><p>${esc(m.opening)}</p><p><strong>${esc(m.bridge)}</strong></p><h3>WHERE I'D START.</h3><p>Based on your answers, here are three questions I’d encourage you to think about.</p><div class="result-cards">${items.map((x,i)=>`<article><span>0${i+1}</span><div><h4>${esc(x.title)}</h4><p>${esc(x.body)}</p></div></article>`).join('')}</div><div class="result-bridge"><h3>YOU DON'T HAVE TO FIGURE ALL OF THIS OUT YOURSELF.</h3><p>You've already proven you know how to build something successful.</p><p>My job isn't to tell you how to run your business or replace the professionals you trust. It's to help you see how the financial pieces fit together, identify decisions worth considering, and help move good ideas toward action.</p><p>You may already have a lot of this figured out. Great. That's exactly the kind of conversation I enjoy.</p><p><strong>The question is whether I can bring something valuable to the table—and whether we'd enjoy working together.</strong></p></div><h3>${esc(m.closing)}</h3><p>${esc(m.invitation)}</p><p class="fine">Educational discussion prompts based on self-reported answers. Not individualized financial, tax, or legal advice. No investment outcome is guaranteed.</p></div>`;}
+// The results presentation is intentionally compact, grounded in quiz answers,
+// and educational. No fake score, certainty, or financial recommendation.
+const resultProfiles=[
+  {title:'More Time for What Matters',focus:'Time with family and personal interests',summary:'You want your business success to create more room for the people and experiences that matter to you.'},
+  {title:'Growth on Your Terms',focus:'More control over how you grow',summary:'You enjoy building, but you also want the freedom to choose how much of your time it takes.'},
+  {title:'Your Next Chapter',focus:'Freedom to choose what comes next',summary:'You may be considering a transition, a sale, or simply more options beyond the business.'},
+  {title:'Confidence for Your Family',focus:'Providing for the people you love',summary:'You want a clearer picture of how your financial decisions support the people who matter most.'}
+];
+function snapshotItems(){
+  const timeline=questions[1].options[answers[1]];
+  const dependence=answers[3];
+  const team=answers[6];
+  return [
+    {label:'WHAT MATTERS MOST',value:resultProfiles[answers[0]].focus,icon:'✦'},
+    {label:'YOUR TIME HORIZON',value:timeline,icon:'◷'},
+    {label:'A QUESTION TO EXPLORE',value:team===1?'Who coordinates your financial team?':team===2||team===3?'Who connects the financial pieces?':dependence===0||dependence===1?'How much depends on the business?':'How do your resources support your goals?',icon:'↗'}
+  ];
+}
+function reportTop(){
+  const p=resultProfiles[answers[0]];
+  return `<div class="results-intro"><div class="results-intro-kicker"><span>YOUR PERSONALIZED RESULTS</span><span class="results-complete-mark" aria-label="Quiz complete">✓ Quiz complete</span></div><h2>${esc(p.title)}</h2><p>${esc(p.summary)}</p><div class="results-focus"><span class="results-focus-dot" aria-hidden="true"></span><span>Your focus: <strong>${esc(p.focus)}</strong></span></div></div>`;
+}
+function snapshotHtml(){
+  return `<section class="results-snapshot" aria-label="What your answers suggest"><div class="results-section-heading"><span class="results-section-eyebrow">YOUR SNAPSHOT</span><h3>What your answers suggest</h3><p>Three starting points drawn from your responses—not a financial assessment.</p></div><div class="snapshot-grid">${snapshotItems().map(x=>`<article class="snapshot-tile"><span class="snapshot-icon" aria-hidden="true">${x.icon}</span><div><span class="snapshot-label">${esc(x.label)}</span><p>${esc(x.value)}</p></div></article>`).join('')}</div></section>`;
+}
+function priorityHtml(item,i){return `<article class="priority-card"><span class="priority-number">0${i+1}</span><div><h4>${esc(item.title)}</h4><p>${esc(item.body)}</p></div></article>`;}
+function reportHtml(m,items){
+  return `<div class="result-print polished-report">${reportTop()}${snapshotHtml()}<section class="results-priorities"><div class="results-section-heading"><span class="results-section-eyebrow">WHERE I'D START</span><h3>Three conversations worth having</h3><p>These questions can help organize your next steps.</p></div><div class="priority-list">${items.map(priorityHtml).join('')}</div></section><div class="results-adam-note"><span class="results-section-eyebrow">HOW I HELP</span><h3>Good ideas deserve follow-through.</h3><p>You've already proven you know how to build something successful. My job isn't to tell you how to run your business or replace the professionals you trust. It's to help connect the financial pieces, clarify decisions worth considering, and keep the next steps moving.</p><p><strong>The question is whether I can bring something valuable to the table—and whether we'd enjoy working together.</strong></p></div><div class="results-emotional-close"><h3>${esc(m.closing)}</h3><p>${esc(m.invitation)}</p><p class="fine">Educational discussion prompts based on self-reported answers. Not individualized financial, tax, or legal advice. Investing involves risk, including possible loss of principal. No outcome is guaranteed.</p></div></div>`;
+}
+function previewHtml(m,items){
+  return `<div class="result-preview polished-report">${reportTop()}${snapshotHtml()}<section class="results-priorities"><div class="results-section-heading"><span class="results-section-eyebrow">WHERE I'D START</span><h3>Three conversations worth having</h3><p>Here's your first discussion priority. The remaining two are available in your full report.</p></div><div class="priority-list">${priorityHtml(items[0],0)}</div></section><div class="results-locked-preview" aria-label="Two additional insights available in the full report"><div class="locked-priority"><span class="priority-number">02</span><div class="locked-priority-lines"><span class="skeleton-line medium"></span><span class="skeleton-line long"></span><span class="skeleton-line short"></span></div><span class="locked-padlock" aria-hidden="true">🔒</span></div><div class="locked-priority"><span class="priority-number">03</span><div class="locked-priority-lines"><span class="skeleton-line medium"></span><span class="skeleton-line long"></span><span class="skeleton-line short"></span></div><span class="locked-padlock" aria-hidden="true">🔒</span></div></div><div class="report-unlock"><div class="unlock-head"><span class="unlock-symbol" aria-hidden="true">✉</span><div><span class="results-section-eyebrow">YOUR NEXT STEP</span><h3>Unlock your full report</h3></div></div><p>Get your remaining two discussion priorities, Adam's perspective, and your personalized next steps. Your complete report opens here after you submit your email.</p><form id="report-email-form"><label for="report-email">Email address</label><input id="report-email" name="email" type="email" autocomplete="email" inputmode="email" maxlength="254" placeholder="you@example.com" required/><div class="lead-honeypot" aria-hidden="true"><label for="report-company-site">Website (leave blank)</label><input id="report-company-site" name="website" tabindex="-1" autocomplete="off"/></div><label class="report-consent"><input type="checkbox" name="marketing" value="yes"/><span>I'd also like occasional educational emails from RIPL Wealth. Optional; not required to unlock my report.</span></label><button class="button primary report-submit" type="submit">Unlock My Complete Report →</button><p class="report-error" id="report-error" role="alert" hidden></p><p class="fine">Your email and quiz answers are sent to Adam through FormSubmit, a third-party service. Your report unlocks here; it is not automatically emailed. No sensitive financial information, please. <a href="/money-at-work-privacy/" target="_blank" rel="noopener">Privacy details</a>.</p></form><p class="unlock-secondary">Prefer a conversation? <a href="${BOOKING_BASE}" data-book data-book-type="quiz-preview">Book a free 20-minute call with Adam →</a></p></div></div>`;
+}
 function reportActions(){return `<div class="result-actions"><a class="button primary" href="${BOOKING_BASE}" data-book data-book-type="quiz-results">Book a 20-Minute Call With Adam →</a><p class="fine">Free Zoom conversation · No obligation</p><div class="result-save"><button class="button outline" type="button" id="save-results">Save Results as PDF</button><button class="button outline" type="button" id="email-results">Email Myself My Results</button></div><p class="fine">PDF uses your browser's Print / Save as PDF feature. The email button opens your own email app.</p><button class="text-button" type="button" id="restart-quiz">Retake the Quiz</button></div>`;}
 function bindResultActions(){
   $('#results [data-book]')?.addEventListener('click',openBooking);
   $('#save-results')?.addEventListener('click',()=>window.print());
   $('#email-results')?.addEventListener('click',()=>{const body=resultText();const mail=`mailto:?subject=${encodeURIComponent('My Financial Freedom Quiz Results | RIPL Wealth')}&body=${encodeURIComponent(body)}`;if(mail.length>1900){navigator.clipboard?.writeText(body).then(()=>alert('Your results were copied. Paste them into an email to yourself.')).catch(()=>alert('Use Save Results as PDF to keep your results.'));}else location.href=mail;});
-  $('#restart-quiz')?.addEventListener('click',()=>{stopAutoAdvance();answers=[];step=0;complete=false;hasStarted=false;persist();render();document.querySelector('#quiz')?.scrollIntoView({behavior:'smooth'});});
+  $('#restart-quiz')?.addEventListener('click',()=>{stopAutoAdvance();answers=[];step=0;complete=false;hasStarted=false;document.querySelector('#hero')?.classList.remove('quiz-complete');persist();render();document.querySelector('#quiz')?.scrollIntoView({behavior:'smooth'});});
 }
 function unlockReport(){
   const m=motivations[answers[0]],items=observations(answers);
   $('#results').innerHTML=reportHtml(m,items)+reportActions();
   bindResultActions();updateSticky();
+  $('#results')?.scrollIntoView({behavior:reducedMotion?'instant':'smooth',block:'start'});
   window.dataLayer?.push({event:'ripl_report_unlocked'});
 }
 function finish(track=true){
   stopAutoAdvance();
   if(answers.length!==questions.length||questions.some((q,i)=>!Number.isInteger(answers[i])||answers[i]<0||answers[i]>=q.options.length))return;
-  complete=true;persist();document.querySelector('#quiz .quiz-shell').hidden=true;
+  complete=true;persist();document.querySelector('#hero')?.classList.add('quiz-complete');document.querySelector('#quiz .quiz-shell').hidden=true;
   const m=motivations[answers[0]],items=observations(answers);
   $('#quiz-progress').hidden=true;$('#quiz-content').innerHTML='';$('#results').hidden=false;
-  // First insight is genuinely useful. The remaining report is only a visual preview until email submission succeeds.
-  $('#results').innerHTML=`<div class="result-preview"><p class="eyebrow">YOUR PERSONALIZED RESULTS</p><h2>${esc(m.heading)}</h2><p>${esc(m.opening)}</p><p><strong>${esc(m.bridge)}</strong></p><h3>WHERE I'D START.</h3><p>Based on your answers, here is the first of three questions I'd encourage you to explore.</p><div class="result-cards"><article><span>01</span><div><h4>${esc(items[0].title)}</h4><p>${esc(items[0].body)}</p></div></article></div><div class="locked-report" aria-hidden="true"><div class="locked-report-blur"><div class="result-cards">${items.slice(1).map((x,i)=>`<article><span>0${i+2}</span><div><h4>${esc(x.title)}</h4><p>${esc(x.body)}</p></div></article>`).join('')}</div><div class="result-bridge"><h3>YOU DON'T HAVE TO FIGURE ALL OF THIS OUT YOURSELF.</h3><p>Good financial decisions work better when the pieces are connected.</p></div><h3>${esc(m.closing)}</h3></div></div><div class="report-unlock"><span class="report-unlock-icon" aria-hidden="true">✉</span><h3>GET YOUR COMPLETE PERSONALIZED REPORT</h3><p>See your other two discussion priorities, the full explanation, and your next steps. Enter your email to unlock your complete report here immediately. You can save or email it to yourself afterward.</p><form id="report-email-form"><label for="report-email">Email address</label><input id="report-email" name="email" type="email" autocomplete="email" inputmode="email" maxlength="254" placeholder="you@example.com" required/><div class="lead-honeypot" aria-hidden="true"><label for="report-company-site">Website (leave blank)</label><input id="report-company-site" name="website" tabindex="-1" autocomplete="off"/></div><label class="report-consent"><input type="checkbox" name="marketing" value="yes"/><span>I'd also like occasional educational emails from RIPL Wealth. Optional; not required to receive my report.</span></label><p class="fine">Your email and quiz answers will be sent to Adam through FormSubmit, a third-party form service. The full report unlocks on this page; it is not automatically emailed to you. Don't include confidential account or tax information. <a href="/money-at-work-privacy/" target="_blank" rel="noopener">Privacy details</a>.</p><button class="button primary report-submit" type="submit">Unlock My Full Report →</button><p class="report-error" id="report-error" role="alert" hidden></p></form><p class="fine">Prefer to talk? <a href="${BOOKING_BASE}" data-book data-book-type="quiz-preview">Book a free 20-minute call with Adam</a>.</p></div></div>`;
+  // Show a useful preview and clearly labeled locked sections; no inaccessible
+  // hidden report text is inserted into the DOM before the form is submitted.
+  $('#results').innerHTML=previewHtml(m,items);
   $('#results [data-book]')?.addEventListener('click',openBooking);
   $('#report-email-form')?.addEventListener('submit',async event=>{
     event.preventDefault();const form=event.currentTarget,button=form.querySelector('button[type="submit"]'),error=$('#report-error');
@@ -177,7 +210,7 @@ function finish(track=true){
     }catch(err){error.textContent=err.message||'Please try again.';error.hidden=false;}
     finally{if(button.isConnected){button.disabled=false;button.textContent='Unlock My Full Report →';}}
   });
-  if(track){window.dataLayer?.push({event:'ripl_quiz_complete'});$('#results').scrollIntoView({behavior:'smooth',block:'start'});}updateSticky();
+  if(track){window.dataLayer?.push({event:'ripl_quiz_complete'});requestAnimationFrame(()=>$('#results')?.scrollIntoView({behavior:reducedMotion?'instant':'smooth',block:'start'}));}updateSticky();
 }
 $('#quiz-content').addEventListener('click',e=>{
   const b=e.target.closest('[data-answer]');
@@ -193,7 +226,7 @@ $('#quiz-content').addEventListener('click',e=>{
     return;
   }
 });
-window.dataLayer=window.dataLayer||[];window.dataLayer.push({event:'ripl_landing_view',version:'quiz-first-inbox-formsubmit-ripl-2026-11-03',...attribution});
+window.dataLayer=window.dataLayer||[];window.dataLayer.push({event:'ripl_landing_view',version:'quiz-first-results-polished-2026-11-03',...attribution});
 const sticky=document.querySelector('#adaptive-cta'),stickyLink=document.querySelector('#adaptive-link');
 function updateSticky(){const hero=document.querySelector('#hero'),quiz=document.querySelector('#quiz');if(!sticky||!hero||!quiz)return;const heroBottom=hero.getBoundingClientRect().bottom;const qrect=quiz.getBoundingClientRect();const quizVisible=qrect.top<window.innerHeight*.85&&qrect.bottom>100;sticky.hidden=heroBottom>0||quizVisible;if(complete){stickyLink.textContent='Book a 20-Minute Call →';stickyLink.href=BOOKING_BASE;stickyLink.removeAttribute('data-quiz-link');stickyLink.onclick=openBooking;}else{stickyLink.textContent='Take the Free Quiz →';stickyLink.href='#quiz';stickyLink.onclick=quizAction;}}
 window.addEventListener('scroll',updateSticky,{passive:true});window.addEventListener('resize',updateSticky);render();updateSticky();
