@@ -1,13 +1,18 @@
-# RIPL Wealth — Quiz-First Landing Page (Auto-Advance)
+# RIPL Quiz-First — Inbox Lead Capture (FormSubmit)
 
-This version adds automatic quiz progression after an answer is selected. A personalized explanation appears directly under the selected answer, with a gold reading-progress bar lasting approximately 8–11 seconds before the next question. Visitors can pause, resume, go back, or choose Next Question Now. Background tabs pause the timer; reduced-motion settings disable automatic progression.
-
-Quiz controls now use RIPL purple and gold. The temporary green deployment-test color and quiz orange have been removed. The nine questions, results, photography, booking links, and disclosures are preserved.
+This package preserves the quiz-first landing page, purple-and-gold auto-advance quiz, blurred results preview, and personalized full report. It replaces the previous Cloudflare/Resend backend with a static form submission to FormSubmit.
 
 ## Deploy
+1. Unzip the GitHub-ready archive. Copy the **contents** (not the containing folder) into your existing landing-page repository, replacing matching files.
+2. Commit and **Push origin** in GitHub Desktop. Wait for Cloudflare to build.
+3. Complete the nine-question quiz and enter a test email. FormSubmit sends a **one-time activation message to adam@riplwealth.com**. Open that inbox and click the activation link. If needed, check spam.
+4. After activation, submit another test and verify that the lead arrives in Adam's inbox with the results category, all nine answers, and the marketing opt-in status.
+5. Confirm the complete report unlocks, Save as PDF works, the quiz resets on refresh, and the Calendly link opens.
 
-For GitHub: extract the GitHub ZIP and copy its contents into the **root of the existing repository**, replacing files. Commit and **Push origin**. Check Cloudflare for the new deployment.
-
-For Cloudflare direct upload: use the separate Direct-Upload ZIP (compiled static output).
-
-No production deployment has been performed.
+## Important behavior
+- The report unlocks on-page after FormSubmit confirms the submission. The visitor can save as PDF or use the built-in 'Email Myself My Results' mailto action. This version **does not automatically send a personalized email to the visitor**.
+- FormSubmit is a third-party service. Visitors are informed in the report form and privacy page.
+- No Cloudflare email credentials, secrets, Workers Functions, or Resend account are needed.
+- FormSubmit activation and actual delivery **cannot be verified before you activate the recipient inbox**.
+- `_captcha` is disabled for an uninterrupted quiz; a honeypot is included. Monitor spam and consider additional protections if needed.
+- Compliance/privacy review is recommended before paid promotion.

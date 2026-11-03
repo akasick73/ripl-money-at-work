@@ -7,6 +7,8 @@ try{sessionStorage.setItem('ripl_utm',JSON.stringify(attribution))}catch{}
 
 // Only book an introductory conversation; this public page never receives tax returns.
 const BOOKING_URL='https://calendly.com/adam-riplwealth/20-minute-zoom-meeting';
+// Third-party form delivery: no Cloudflare secrets or server-side mail service required.
+const LEAD_FORM_ENDPOINT='https://formsubmit.co/ajax/adam@riplwealth.com';
 
 
 function linkWithUtm(url){const u=new URL(url);for(const [k,v] of Object.entries(attribution))u.searchParams.set(k,v);return u.href}
@@ -33,14 +35,14 @@ window.addEventListener('message',e=>{if(e.origin!=='https://calendly.com'||!e.d
   window.dataLayer?.push({event:'ripl_booking_confirmed'});if(typeof window.gtag==='function')window.gtag('event','generate_lead',{event_category:'calendly',event_label:'confirmed_booking'});
 });
 let step=0;let answers=[];let hasStarted=false;let complete=false;
-const STORE='ripl_financial_freedom_progress_v1';
-try{const saved=JSON.parse(sessionStorage.getItem(STORE)||'null');if(saved&&Array.isArray(saved.answers)){answers=saved.answers.slice(0,questions.length);step=Math.min(Math.max(Number(saved.step)||0,0),questions.length-1);complete=!!saved.complete&&answers.length===questions.length;hasStarted=answers.some(x=>Number.isInteger(x));}}catch{}
-function persist(){try{sessionStorage.setItem(STORE,JSON.stringify({answers,step,complete}))}catch{}}
+// A fresh page load always starts the quiz from Question 1. Clear older builds' saved answers.
+try{sessionStorage.removeItem('ripl_financial_freedom_progress_v1')}catch{}
+function persist(){/* Quiz answers intentionally remain only in memory until page reload. */}
 function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function quizAction(e){e?.preventDefault();document.querySelector('#quiz')?.scrollIntoView({behavior:'smooth',block:'start'});window.dataLayer?.push({event:'ripl_quiz_cta_click',placement:e?.currentTarget?.dataset?.placement||'unknown'});}
 document.querySelectorAll('[data-quiz-link]:not(#adaptive-link)').forEach(el=>el.addEventListener('click',quizAction));
-// A short reading window after each answer, with a visible progress line.
-// Visitors can pause or move on immediately; background tabs do not consume reading time.
+// After each answer, reveal feedback and advance automatically after a short reading window.
+// Background tabs do not consume reading time. No manual navigation is shown.
 const reducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 let advanceTimer=null;
 function stopAutoAdvance(){
@@ -48,8 +50,8 @@ function stopAutoAdvance(){
   advanceTimer=null;
 }
 function feedbackDuration(feedback){
-  // About 8–11 seconds, adjusted to the length of the explanation.
-  return Math.max(8000,Math.min(11000,2800+feedback.trim().split(/\s+/).length*360));
+  // Roughly 5–6 seconds; slightly longer for explanations with more words.
+  return Math.max(4900,Math.min(6100,3000+feedback.trim().split(/\s+/).length*130));
 }
 function render(){
   stopAutoAdvance();
@@ -61,7 +63,7 @@ function render(){
   $('#step-label').textContent=`Question ${step+1} of ${questions.length}`;
   $('#progress-fill').style.width=`${(step+1)/questions.length*100}%`;
   const chosen=answers[step];
-  $('#quiz-content').innerHTML=`<h3 class="question-title" tabindex="-1">${esc(q.title)}</h3><p class="hint">${esc(q.hint)}</p><div class="options">${q.options.map((o,i)=>`<div class="option-with-feedback"><button type="button" data-answer="${i}" class="${chosen===i?'selected':''}" aria-pressed="${chosen===i}">${esc(o)}</button>${chosen===i?`<div class="answer-feedback" role="status"><p class="answer-observation">${esc(q.feedback[i])}</p><div class="feedback-timer"><div class="feedback-timer-track" aria-hidden="true"><span id="feedback-timer-fill"></span></div><div class="feedback-timer-caption"><span id="feedback-timer-label">${reducedMotion?'Select Next Question when ready':'Moving to the next question shortly…'}</span>${!reducedMotion?'<button type="button" id="pause-advance" aria-pressed="false">Pause</button>':''}</div></div></div>`:''}</div>`).join('')}</div><div class="quiz-nav"><button type="button" id="back-step" ${step===0?'disabled':''}>← Back</button><button class="button primary" type="button" id="next-step" ${!Number.isInteger(chosen)?'disabled':''}>${step===questions.length-1?'See My Results →':'Next Question Now →'}</button></div>`;
+  $('#quiz-content').innerHTML=`<h3 class="question-title" tabindex="-1">${esc(q.title)}</h3><p class="hint">${esc(q.hint)}</p><div class="options">${q.options.map((o,i)=>`<div class="option-with-feedback"><button type="button" data-answer="${i}" class="${chosen===i?'selected':''}" aria-pressed="${chosen===i}">${esc(o)}</button>${chosen===i?`<div class="answer-feedback" role="status"><p class="answer-observation">${esc(q.feedback[i])}</p><div class="feedback-timer" aria-label="Automatically moving to the next question"><div class="feedback-timer-track" aria-hidden="true"><span id="feedback-timer-fill"></span></div></div></div>`:''}</div>`).join('')}</div>`;
 }
 function advanceQuiz(){
   stopAutoAdvance();
@@ -77,14 +79,12 @@ function advanceQuiz(){
 }
 function startAutoAdvance(){
   stopAutoAdvance();
-  if(reducedMotion||!Number.isInteger(answers[step]))return;
+  if(!Number.isInteger(answers[step]))return;
   const duration=feedbackDuration(questions[step].feedback[answers[step]]);
   const timer={remaining:duration,startedAt:0,running:false,frame:null,step,answer:answers[step]};
   advanceTimer=timer;
   const fill=$('#feedback-timer-fill');
-  const label=$('#feedback-timer-label');
-  const toggle=$('#pause-advance');
-  if(!fill||!label||!toggle)return;
+  if(!fill)return;
   const paint=()=>{fill.style.width=`${Math.max(0,Math.min(100,100*(1-timer.remaining/duration)))}%`};
   const tick=now=>{
     if(advanceTimer!==timer||!timer.running)return;
@@ -103,31 +103,82 @@ function startAutoAdvance(){
     timer.running=false;
     if(timer.frame)cancelAnimationFrame(timer.frame);
     timer.frame=null;
-    label.textContent='Paused — take your time reading';
-    toggle.textContent='Resume';toggle.setAttribute('aria-pressed','true');
   };
   timer.resume=()=>{
     if(timer.running||advanceTimer!==timer)return;
     timer.running=true;timer.startedAt=performance.now();
-    label.textContent='Moving to the next question shortly…';
-    toggle.textContent='Pause';toggle.setAttribute('aria-pressed','false');
     timer.frame=requestAnimationFrame(tick);
   };
-  toggle.addEventListener('click',()=>timer.running?timer.pause():timer.resume());
   paint();
   if(!document.hidden)timer.resume();
 }
 document.addEventListener('visibilitychange',()=>{
   if(!advanceTimer)return;
   if(document.hidden)advanceTimer.pause();
-  // Do not restart automatically after the visitor returns to the tab.
+  else advanceTimer.resume();
 });
 function resultText(){const m=motivations[answers[0]],items=observations(answers);return `${m.heading}\n\n${m.opening}\n\n${m.bridge}\n\nWHERE I'D START\n\n${items.map((x,i)=>`${i+1}. ${x.title}\n${x.body}`).join('\n\n')}\n\n${m.closing}\n${m.invitation}\n\nTalk with Adam: ${BOOKING_URL}\n\nEducational discussion prompts based on self-reported answers. Not individualized financial, tax, or legal advice. Investing involves risk, including possible loss of principal.`}
-function finish(track=true){stopAutoAdvance();if(answers.length!==questions.length||questions.some((q,i)=>!Number.isInteger(answers[i])||answers[i]<0||answers[i]>=q.options.length))return;complete=true;persist();document.querySelector('#quiz .quiz-shell').hidden=true;const m=motivations[answers[0]],items=observations(answers);$('#quiz-progress').hidden=true;$('#quiz-content').innerHTML='';$('#results').hidden=false;
-$('#results').innerHTML=`<div class="result-print"><p class="eyebrow">YOUR PERSONALIZED RESULTS</p><h2>${esc(m.heading)}</h2><p>${esc(m.opening)}</p><p><strong>${esc(m.bridge)}</strong></p><h3>WHERE I'D START.</h3><p>Based on your answers, here are three questions I’d encourage you to think about.</p><div class="result-cards">${items.map((x,i)=>`<article><span>0${i+1}</span><div><h4>${esc(x.title)}</h4><p>${esc(x.body)}</p></div></article>`).join('')}</div><div class="result-bridge"><h3>YOU DON'T HAVE TO FIGURE ALL OF THIS OUT YOURSELF.</h3><p>You've already proven you know how to build something successful.</p><p>My job isn't to tell you how to run your business or replace the professionals you trust. It's to help you see how the financial pieces fit together, identify decisions worth considering, and help move good ideas toward action.</p><p>You may already have a lot of this figured out. Great. That's exactly the kind of conversation I enjoy.</p><p><strong>The question is whether I can bring something valuable to the table—and whether we'd enjoy working together.</strong></p></div><h3>${esc(m.closing)}</h3><p>${esc(m.invitation)}</p><p class="fine">Educational discussion prompts based on self-reported answers. Not individualized financial, tax, or legal advice. No investment outcome is guaranteed.</p></div><div class="result-actions"><a class="button primary" href="${BOOKING_BASE}" data-book data-book-type="quiz-results">Book a 20-Minute Call With Adam →</a><p class="fine">Free Zoom conversation · No obligation</p><div class="result-save"><button class="button outline" type="button" id="save-results">Save Results as PDF</button><button class="button outline" type="button" id="email-results">Email Myself My Results</button></div><p class="fine">PDF uses your browser’s Print / Save as PDF feature. Email opens your own email app with your results; nothing is sent automatically or stored by RIPL.</p><button class="text-button" type="button" id="restart-quiz">Retake the Quiz</button></div>`;
-$('#results [data-book]')?.addEventListener('click',openBooking);document.querySelector('#save-results')?.addEventListener('click',()=>window.print());document.querySelector('#email-results')?.addEventListener('click',()=>{const body=resultText();const mail=`mailto:?subject=${encodeURIComponent('My Financial Freedom Quiz Results | RIPL Wealth')}&body=${encodeURIComponent(body)}`;if(mail.length>1900){navigator.clipboard?.writeText(body).then(()=>alert('Your results were copied. Paste them into an email to yourself.')).catch(()=>alert('Use Save Results as PDF to keep your results.'));}else location.href=mail;});
-$('#restart-quiz')?.addEventListener('click',()=>{stopAutoAdvance();answers=[];step=0;complete=false;hasStarted=false;persist();render();document.querySelector('#quiz')?.scrollIntoView({behavior:'smooth'});});
-if(track){window.dataLayer?.push({event:'ripl_quiz_complete'});$('#results').scrollIntoView({behavior:'smooth',block:'start'});}updateSticky();}
+function reportHtml(m,items){return `<div class="result-print"><p class="eyebrow">YOUR PERSONALIZED RESULTS</p><h2>${esc(m.heading)}</h2><p>${esc(m.opening)}</p><p><strong>${esc(m.bridge)}</strong></p><h3>WHERE I'D START.</h3><p>Based on your answers, here are three questions I’d encourage you to think about.</p><div class="result-cards">${items.map((x,i)=>`<article><span>0${i+1}</span><div><h4>${esc(x.title)}</h4><p>${esc(x.body)}</p></div></article>`).join('')}</div><div class="result-bridge"><h3>YOU DON'T HAVE TO FIGURE ALL OF THIS OUT YOURSELF.</h3><p>You've already proven you know how to build something successful.</p><p>My job isn't to tell you how to run your business or replace the professionals you trust. It's to help you see how the financial pieces fit together, identify decisions worth considering, and help move good ideas toward action.</p><p>You may already have a lot of this figured out. Great. That's exactly the kind of conversation I enjoy.</p><p><strong>The question is whether I can bring something valuable to the table—and whether we'd enjoy working together.</strong></p></div><h3>${esc(m.closing)}</h3><p>${esc(m.invitation)}</p><p class="fine">Educational discussion prompts based on self-reported answers. Not individualized financial, tax, or legal advice. No investment outcome is guaranteed.</p></div>`;}
+function reportActions(){return `<div class="result-actions"><a class="button primary" href="${BOOKING_BASE}" data-book data-book-type="quiz-results">Book a 20-Minute Call With Adam →</a><p class="fine">Free Zoom conversation · No obligation</p><div class="result-save"><button class="button outline" type="button" id="save-results">Save Results as PDF</button><button class="button outline" type="button" id="email-results">Email Myself My Results</button></div><p class="fine">PDF uses your browser's Print / Save as PDF feature. The email button opens your own email app.</p><button class="text-button" type="button" id="restart-quiz">Retake the Quiz</button></div>`;}
+function bindResultActions(){
+  $('#results [data-book]')?.addEventListener('click',openBooking);
+  $('#save-results')?.addEventListener('click',()=>window.print());
+  $('#email-results')?.addEventListener('click',()=>{const body=resultText();const mail=`mailto:?subject=${encodeURIComponent('My Financial Freedom Quiz Results | RIPL Wealth')}&body=${encodeURIComponent(body)}`;if(mail.length>1900){navigator.clipboard?.writeText(body).then(()=>alert('Your results were copied. Paste them into an email to yourself.')).catch(()=>alert('Use Save Results as PDF to keep your results.'));}else location.href=mail;});
+  $('#restart-quiz')?.addEventListener('click',()=>{stopAutoAdvance();answers=[];step=0;complete=false;hasStarted=false;persist();render();document.querySelector('#quiz')?.scrollIntoView({behavior:'smooth'});});
+}
+function unlockReport(){
+  const m=motivations[answers[0]],items=observations(answers);
+  $('#results').innerHTML=reportHtml(m,items)+reportActions();
+  bindResultActions();updateSticky();
+  window.dataLayer?.push({event:'ripl_report_unlocked'});
+}
+function finish(track=true){
+  stopAutoAdvance();
+  if(answers.length!==questions.length||questions.some((q,i)=>!Number.isInteger(answers[i])||answers[i]<0||answers[i]>=q.options.length))return;
+  complete=true;persist();document.querySelector('#quiz .quiz-shell').hidden=true;
+  const m=motivations[answers[0]],items=observations(answers);
+  $('#quiz-progress').hidden=true;$('#quiz-content').innerHTML='';$('#results').hidden=false;
+  // First insight is genuinely useful. The remaining report is only a visual preview until email submission succeeds.
+  $('#results').innerHTML=`<div class="result-preview"><p class="eyebrow">YOUR PERSONALIZED RESULTS</p><h2>${esc(m.heading)}</h2><p>${esc(m.opening)}</p><p><strong>${esc(m.bridge)}</strong></p><h3>WHERE I'D START.</h3><p>Based on your answers, here is the first of three questions I'd encourage you to explore.</p><div class="result-cards"><article><span>01</span><div><h4>${esc(items[0].title)}</h4><p>${esc(items[0].body)}</p></div></article></div><div class="locked-report" aria-hidden="true"><div class="locked-report-blur"><div class="result-cards">${items.slice(1).map((x,i)=>`<article><span>0${i+2}</span><div><h4>${esc(x.title)}</h4><p>${esc(x.body)}</p></div></article>`).join('')}</div><div class="result-bridge"><h3>YOU DON'T HAVE TO FIGURE ALL OF THIS OUT YOURSELF.</h3><p>Good financial decisions work better when the pieces are connected.</p></div><h3>${esc(m.closing)}</h3></div></div><div class="report-unlock"><span class="report-unlock-icon" aria-hidden="true">✉</span><h3>GET YOUR COMPLETE PERSONALIZED REPORT</h3><p>See your other two discussion priorities, the full explanation, and your next steps. Enter your email to unlock your complete report here immediately. You can save or email it to yourself afterward.</p><form id="report-email-form"><label for="report-email">Email address</label><input id="report-email" name="email" type="email" autocomplete="email" inputmode="email" maxlength="254" placeholder="you@example.com" required/><div class="lead-honeypot" aria-hidden="true"><label for="report-company-site">Website (leave blank)</label><input id="report-company-site" name="website" tabindex="-1" autocomplete="off"/></div><label class="report-consent"><input type="checkbox" name="marketing" value="yes"/><span>I'd also like occasional educational emails from RIPL Wealth. Optional; not required to receive my report.</span></label><p class="fine">Your email and quiz answers will be sent to Adam through FormSubmit, a third-party form service. The full report unlocks on this page; it is not automatically emailed to you. Don't include confidential account or tax information. <a href="/money-at-work-privacy/" target="_blank" rel="noopener">Privacy details</a>.</p><button class="button primary report-submit" type="submit">Unlock My Full Report →</button><p class="report-error" id="report-error" role="alert" hidden></p></form><p class="fine">Prefer to talk? <a href="${BOOKING_BASE}" data-book data-book-type="quiz-preview">Book a free 20-minute call with Adam</a>.</p></div></div>`;
+  $('#results [data-book]')?.addEventListener('click',openBooking);
+  $('#report-email-form')?.addEventListener('submit',async event=>{
+    event.preventDefault();const form=event.currentTarget,button=form.querySelector('button[type="submit"]'),error=$('#report-error');
+    error.hidden=true;button.disabled=true;button.textContent='Unlocking your report…';
+    const email=form.elements.email.value.trim();
+    const marketing=form.elements.marketing.checked;
+    // FormSubmit sends the lead to Adam's inbox after one-time email activation.
+    // The report is generated locally and unlocked only after a successful submission.
+    const payload={
+      _subject:'New RIPL Financial Freedom Quiz Lead',
+      _template:'table',
+      _captcha:'false',
+      _honey:form.elements.website.value,
+      email,
+      'Results category':motivations[answers[0]].heading,
+      'Educational marketing opt-in':marketing?'YES — opted in':'NO — not opted in',
+      'Source page':location.origin+location.pathname,
+      ...Object.fromEntries(questions.map((q,i)=>[`Question ${i+1}: ${q.title}`,q.options[answers[i]]]))
+    };
+    try{
+      const response=await fetch(LEAD_FORM_ENDPOINT,{
+        method:'POST',
+        headers:{'Content-Type':'application/json','Accept':'application/json'},
+        body:JSON.stringify(payload)
+      });
+      let body={};try{body=await response.json()}catch{}
+      if(!response.ok||String(body.success).toLowerCase()!=='true'){
+        throw new Error('We could not submit your request. Please try again.');
+      }
+      unlockReport();
+      const note=document.createElement('p');note.className='report-success';note.setAttribute('role','status');
+      note.textContent='Your full report is unlocked below. Save it as a PDF or use Email Myself My Results to keep a copy.';
+      $('#results').prepend(note);
+      window.dataLayer?.push({event:'ripl_quiz_lead_submitted',marketing_opt_in:marketing});
+    }catch(err){error.textContent=err.message||'Please try again.';error.hidden=false;}
+    finally{if(button.isConnected){button.disabled=false;button.textContent='Unlock My Full Report →';}}
+  });
+  if(track){window.dataLayer?.push({event:'ripl_quiz_complete'});$('#results').scrollIntoView({behavior:'smooth',block:'start'});}updateSticky();
+}
 $('#quiz-content').addEventListener('click',e=>{
   const b=e.target.closest('[data-answer]');
   if(b){
@@ -141,10 +192,8 @@ $('#quiz-content').addEventListener('click',e=>{
     }
     return;
   }
-  if(e.target.closest('#back-step')&&step>0){stopAutoAdvance();step--;persist();render();return;}
-  if(e.target.closest('#next-step')&&Number.isInteger(answers[step])){advanceQuiz();return;}
 });
-window.dataLayer=window.dataLayer||[];window.dataLayer.push({event:'ripl_landing_view',version:'quiz-first-auto-feedback-ripl-2026-11-03',...attribution});
+window.dataLayer=window.dataLayer||[];window.dataLayer.push({event:'ripl_landing_view',version:'quiz-first-inbox-formsubmit-ripl-2026-11-03',...attribution});
 const sticky=document.querySelector('#adaptive-cta'),stickyLink=document.querySelector('#adaptive-link');
 function updateSticky(){const hero=document.querySelector('#hero'),quiz=document.querySelector('#quiz');if(!sticky||!hero||!quiz)return;const heroBottom=hero.getBoundingClientRect().bottom;const qrect=quiz.getBoundingClientRect();const quizVisible=qrect.top<window.innerHeight*.85&&qrect.bottom>100;sticky.hidden=heroBottom>0||quizVisible;if(complete){stickyLink.textContent='Book a 20-Minute Call →';stickyLink.href=BOOKING_BASE;stickyLink.removeAttribute('data-quiz-link');stickyLink.onclick=openBooking;}else{stickyLink.textContent='Take the Free Quiz →';stickyLink.href='#quiz';stickyLink.onclick=quizAction;}}
 window.addEventListener('scroll',updateSticky,{passive:true});window.addEventListener('resize',updateSticky);render();updateSticky();
