@@ -46,8 +46,10 @@ async function submitQuiz(request,env){
       method:'POST',headers:{Authorization:`Bearer ${env.RESEND_API_KEY}`,'Content-Type':'application/json'},
       body:JSON.stringify(message),signal:AbortSignal.timeout(12000)
     });
-    if(!response.ok){console.error('RIPL email provider status',response.status);
-      return json({success:false,error:'Submission temporarily unavailable'},502)}
+    if (!response.ok) {
+  console.error("RIPL email provider status", response.status, (await response.text()).slice(0, 500));
+  return json({ success: false, error: "Submission temporarily unavailable" }, 502);
+}
     const result=await response.json().catch(()=>null);
     if(!result?.id)return json({success:false,error:'Submission could not be confirmed'},502);
     // Provider accepted the email for processing; inbox delivery must be tested separately.
