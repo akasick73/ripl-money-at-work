@@ -32,7 +32,7 @@ modal.addEventListener('click',e=>{if(e.target===modal)closeBooking()});
 document.addEventListener('keydown',e=>{if(!modal.hidden&&e.key==='Escape')closeBooking();if(!modal.hidden&&e.key==='Tab'){const focusables=[closeBtn,$('#calendly-external')];if(e.shiftKey&&document.activeElement===focusables[0]){e.preventDefault();focusables[1].focus()}else if(!e.shiftKey&&document.activeElement===focusables[1]){e.preventDefault();focusables[0].focus()}}});
 // Calendly documents the event_scheduled postMessage event for its embedded widget.
 window.addEventListener('message',e=>{if(e.origin!=='https://calendly.com'||!e.data||e.data.event!=='calendly.event_scheduled')return;
-  window.dataLayer?.push({event:'ripl_booking_confirmed'});window.oaiq?.('measure','appointment_scheduled',{type:'customer_action'});if(typeof window.gtag==='function')window.gtag('event','generate_lead',{event_category:'calendly',event_label:'confirmed_booking'});
+  window.dataLayer?.push({event:'ripl_booking_confirmed'});window.oaiq?.('measure','appointment_scheduled',{type:'customer_action'});if(typeof window.gtag==='function')window.gtag('event','calendly_booking_confirmed',{event_category:'calendly',event_label:'confirmed_booking'});
 });
 let step=0;let answers=[];let hasStarted=false;let complete=false;
 // A fresh page load always starts the quiz from Question 1. Clear older builds' saved answers.
