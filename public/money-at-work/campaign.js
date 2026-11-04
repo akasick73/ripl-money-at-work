@@ -206,7 +206,13 @@ function finish(track=true){
       if(!response.ok || result?.success!==true)throw new Error('lead_submission_unconfirmed');
       // Only count a lead after the email provider accepts the notification.
       window.dataLayer?.push({event:'ripl_quiz_lead_submitted'});
-      window.oaiq?.('measure','lead_created',{type:'customer_action'});
+      
+if (typeof window.gtag === 'function') {
+  window.gtag('event', 'generate_lead', {
+    method: 'quiz_email_submission'
+  });
+}
+window.oaiq?.('measure','lead_created',{type:'customer_action'});
       unlockReport();
       const note=document.createElement('p');
       note.className='report-success';note.setAttribute('role','status');
