@@ -225,6 +225,10 @@ window.oaiq?.('measure','lead_created',{type:'customer_action'});
     }
   });
   if(track){window.dataLayer?.push({event:'ripl_quiz_complete'});window.oaiq?.('measure','custom',{type:'custom'},{custom_event_name:'ripl_quiz_completed'});requestAnimationFrame(()=>$('#results')?.scrollIntoView({behavior:reducedMotion?'instant':'smooth',block:'start'}));}updateSticky();
+
+if (typeof window.gtag === 'function') {
+  window.gtag('event', 'quiz_complete');
+}
 }
 $('#quiz-content').addEventListener('click',e=>{
   const b=e.target.closest('[data-answer]');
