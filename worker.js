@@ -1,7 +1,7 @@
 // RIPL Wealth — same-origin quiz lead submission handler.
 // Requires RESEND_API_KEY and RIPL_EMAIL_FROM configured as Cloudflare secrets/variables.
 // Do not log visitor emails or quiz responses.
-const LEAD_TO='akasick@live.com';
+const LEAD_TO='adam@riplwealth.com';
 const MAX_BYTES=16000;
 const json=(data,status=200,extra={})=>new Response(JSON.stringify(data),{
   status,headers:{'content-type':'application/json; charset=utf-8','cache-control':'no-store',
