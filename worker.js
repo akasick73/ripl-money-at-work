@@ -1,15 +1,13 @@
-// V19: same-origin Cloudflare Worker email submission via Resend.
-// Required bindings: RESEND_API_KEY (Secret), RIPL_EMAIL_FROM (verified sender).
-// Email recipient remains adam@riplwealth.com. No quiz responses are logged or sent to ad analytics.
-const EMAIL_API = 'https://api.resend.com/emails';
-const RECIPIENT = 'adam@riplwealth.com';
+// V18: same-origin quiz lead submission proxy, for Cloudflare Pages advanced mode
+// or Cloudflare Workers static assets. No quiz responses are logged or included in analytics.
+const UPSTREAM = 'https://formsubmit.co/ajax/adam@riplwealth.com';
 const MAX_BYTES = 16000;
 const json = (data, status = 200, extras = {}) => new Response(JSON.stringify(data), {
   status, headers: { 'content-type': 'application/json; charset=utf-8',
     'cache-control': 'no-store', 'x-content-type-options': 'nosniff', ...extras }
 });
 
-async function submitQuiz(request, env) {
+async function submitQuiz(request) {
   if (request.method !== 'POST') return json({success:false, error:'Method not allowed'},405,{Allow:'POST'});
   const origin=request.headers.get('Origin');
   if (origin && origin !== new URL(request.url).origin) return json({success:false,error:'Origin not allowed'},403);
@@ -30,60 +28,32 @@ async function submitQuiz(request, env) {
   if (String(payload._honey||'').trim()) return json({success:false,error:'Submission rejected'},400);
   const keys=Object.keys(payload);
   if (keys.length>20 || keys.filter(k=>k.startsWith('Question ')).length!==9) return json({success:false,error:'Incomplete quiz'},400);
-  // Only explicitly selected quiz fields and opt-in are emailed.
-  const answers=[];
-  for (let index=1; index<=9; index++){
-    const matched=keys.filter(k => k.startsWith(`Question ${index}: `));
-    if (matched.length!==1) return json({success:false,error:'Incomplete quiz'},400);
-    answers.push([matched[0], String(payload[matched[0]]).slice(0,450)]);
-  }
-  if (!env.RESEND_API_KEY || !env.RIPL_EMAIL_FROM) {
-    return json({success:false,error:'Email delivery is not configured. Please contact RIPL Wealth.'},503);
-  }
-  // Never include arbitrary HTML from the visitor. Message is text/plain.
-  const marketing=payload['Educational marketing opt-in']==='YES — opted in' ? 'YES — opted in' : 'NO — not opted in';
-  const lines=[
-    'New RIPL Financial Freedom Quiz Lead',
-    '',
-    `Email: ${email}`,
-    `Results category: ${String(payload['Results category']||'').slice(0,200)}`,
-    `Educational marketing opt-in: ${marketing}`,
-    `Source page: ${new URL(request.url).origin}/`,
-    '',
-    ...answers.flatMap(([question,answer])=>[question,answer,''])
-  ];
-  const apiPayload={
-    from: env.RIPL_EMAIL_FROM,
-    to: [RECIPIENT],
-    reply_to: email,
-    subject: 'New RIPL Financial Freedom Quiz Lead',
-    text: lines.join('\n')
+  // Do not forward arbitrary FormSubmit metadata or a user-provided destination.
+  const safe={
+    _subject:'New RIPL Financial Freedom Quiz Lead', _template:'table', _captcha:'false',
+    email,
+    'Results category':String(payload['Results category']||'').slice(0,200),
+    'Educational marketing opt-in':payload['Educational marketing opt-in']==='YES — opted in'?'YES — opted in':'NO — not opted in',
+    'Source page':new URL(request.url).origin+'/',
   };
+  for(const key of keys) if(/^Question [1-9]: .{1,180}$/.test(key)) safe[key]=String(payload[key]).slice(0,450);
   let response;
   try{
-    response=await fetch(EMAIL_API,{
-      method:'POST',
-      headers:{'Authorization':`Bearer ${env.RESEND_API_KEY}`,'Content-Type':'application/json'},
-      body:JSON.stringify(apiPayload),
-      signal:AbortSignal.timeout(10000)
-    });
-  }catch{
-    return json({success:false,error:'Email submission service unavailable. Please try again.'},502);
-  }
+    response=await fetch(UPSTREAM,{method:'POST',headers:{'content-type':'application/x-www-form-urlencoded;charset=UTF-8','accept':'application/json'},body:new URLSearchParams(safe).toString(),redirect:'manual',signal:AbortSignal.timeout(12000)});
+  }catch{return json({success:false,error:'Submission service unavailable. Please try again.'},502)}
   let result=null;
   try{result=await response.json()}catch{}
-  if (!response.ok || !result?.id){
-    // Do not leak vendor error details, request contents, or credentials into the browser.
-    return json({success:false,error:'Email service could not accept your request. Please try again.'},502);
+  if(!response.ok || String(result?.success).toLowerCase()!=='true') {
+    // Do not claim success for HTML, redirects, activation errors, or ambiguous responses.
+    return json({success:false,error:'We could not confirm delivery. Please try again or contact RIPL Wealth.'},502);
   }
-  // Resend accepted the email for processing; final inbox delivery must be checked separately.
   return json({success:true});
 }
 
 export default {
   async fetch(request,env){
     const path=new URL(request.url).pathname;
-    if (path === '/api/quiz-lead' || path === '/api/quiz-lead/') return submitQuiz(request,env);
+    if (path === '/api/quiz-lead' || path === '/api/quiz-lead/') return submitQuiz(request);
     if(env.ASSETS) return env.ASSETS.fetch(request);
     return new Response('Site asset binding is missing', {status:500});
   }
