@@ -7,8 +7,8 @@ try{sessionStorage.setItem('ripl_utm',JSON.stringify(attribution))}catch{}
 
 // Only book an introductory conversation; this public page never receives tax returns.
 const BOOKING_URL='https://calendly.com/adam-riplwealth/20-minute-zoom-meeting';
-// Third-party form delivery: no Cloudflare secrets or server-side mail service required.
-const LEAD_FORM_ENDPOINT='https://formsubmit.co/ajax/adam@riplwealth.com';
+// First-party Cloudflare endpoint forwards to FormSubmit from the server, avoiding browser CORS.
+const LEAD_FORM_ENDPOINT='/api/quiz-lead';
 
 
 function linkWithUtm(url){const u=new URL(url);for(const [k,v] of Object.entries(attribution))u.searchParams.set(k,v);return u.href}
