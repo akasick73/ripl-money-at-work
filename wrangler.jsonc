@@ -1,7 +1,7 @@
 {
   "name": "ripl-money-at-work",
   "compatibility_date": "2026-11-03",
-  "main": "./public/_worker.js",
+  "main": "./worker.js",
   "assets": {
     "directory": "./dist",
     "binding": "ASSETS",
