@@ -32,7 +32,7 @@ modal.addEventListener('click',e=>{if(e.target===modal)closeBooking()});
 document.addEventListener('keydown',e=>{if(!modal.hidden&&e.key==='Escape')closeBooking();if(!modal.hidden&&e.key==='Tab'){const focusables=[closeBtn,$('#calendly-external')];if(e.shiftKey&&document.activeElement===focusables[0]){e.preventDefault();focusables[1].focus()}else if(!e.shiftKey&&document.activeElement===focusables[1]){e.preventDefault();focusables[0].focus()}}});
 // Calendly documents the event_scheduled postMessage event for its embedded widget.
 window.addEventListener('message',e=>{if(e.origin!=='https://calendly.com'||!e.data||e.data.event!=='calendly.event_scheduled')return;
-  window.dataLayer?.push({event:'ripl_booking_confirmed'});window.oaiq?.('measure','appointment_scheduled',{type:'customer_action'});if(typeof window.gtag==='function')window.gtag('event','generate_lead',{event_category:'calendly',event_label:'confirmed_booking'});
+  window.dataLayer?.push({event:'ripl_booking_confirmed'});window.oaiq?.('measure','appointment_scheduled',{type:'customer_action'});if(typeof window.gtag==='function')window.gtag('event','calendly_booking_confirmed',{event_category:'calendly',event_label:'confirmed_booking'});
 });
 let step=0;let answers=[];let hasStarted=false;let complete=false;
 // A fresh page load always starts the quiz from Question 1. Clear older builds' saved answers.
@@ -206,7 +206,13 @@ function finish(track=true){
       if(!response.ok || result?.success!==true)throw new Error('lead_submission_unconfirmed');
       // Only count a lead after the email provider accepts the notification.
       window.dataLayer?.push({event:'ripl_quiz_lead_submitted'});
-      window.oaiq?.('measure','lead_created',{type:'customer_action'});
+      
+if (typeof window.gtag === 'function') {
+  window.gtag('event', 'generate_lead', {
+    method: 'quiz_email_submission'
+  });
+}
+window.oaiq?.('measure','lead_created',{type:'customer_action'});
       unlockReport();
       const note=document.createElement('p');
       note.className='report-success';note.setAttribute('role','status');
@@ -219,6 +225,10 @@ function finish(track=true){
     }
   });
   if(track){window.dataLayer?.push({event:'ripl_quiz_complete'});window.oaiq?.('measure','custom',{type:'custom'},{custom_event_name:'ripl_quiz_completed'});requestAnimationFrame(()=>$('#results')?.scrollIntoView({behavior:reducedMotion?'instant':'smooth',block:'start'}));}updateSticky();
+
+if (typeof window.gtag === 'function') {
+  window.gtag('event', 'quiz_complete');
+}
 }
 $('#quiz-content').addEventListener('click',e=>{
   const b=e.target.closest('[data-answer]');
