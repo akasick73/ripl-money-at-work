@@ -50,8 +50,8 @@ function stopAutoAdvance(){
   advanceTimer=null;
 }
 function feedbackDuration(feedback){
-  // Roughly 5–6 seconds; slightly longer for explanations with more words.
-  return Math.max(4900,Math.min(6100,3000+feedback.trim().split(/\s+/).length*130));
+  // Adaptive 2.5–4 seconds to read feedback before advancing.
+  return Math.max(2500,Math.min(4000,1700+feedback.trim().split(/\s+/).length*110));
 }
 function render(){
   stopAutoAdvance();
@@ -63,7 +63,7 @@ function render(){
   $('#step-label').textContent=`Question ${step+1} of ${questions.length}`;
   $('#progress-fill').style.width=`${(step+1)/questions.length*100}%`;
   const chosen=answers[step];
-  $('#quiz-content').innerHTML=`<h3 class="question-title" tabindex="-1">${esc(q.title)}</h3><p class="hint">${esc(q.hint)}</p><div class="options">${q.options.map((o,i)=>`<div class="option-with-feedback"><button type="button" data-answer="${i}" class="${chosen===i?'selected':''}" aria-pressed="${chosen===i}">${esc(o)}</button>${chosen===i?`<div class="answer-feedback" role="status"><p class="answer-observation">${esc(q.feedback[i])}</p><div class="feedback-timer" aria-label="Automatically moving to the next question"><div class="feedback-timer-track" aria-hidden="true"><span id="feedback-timer-fill"></span></div></div></div>`:''}</div>`).join('')}</div>`;
+  $('#quiz-content').innerHTML=`<h3 class="question-title" tabindex="-1">${esc(q.title)}</h3><p class="hint">${esc(q.hint)}</p><div class="options">${q.options.map((o,i)=>`<div class="option-with-feedback"><button type="button" data-answer="${i}" class="${chosen===i?'selected':''}" aria-pressed="${chosen===i}">${esc(o)}</button>${chosen===i?`<div class="answer-feedback" role="status"><p class="answer-observation">${esc(q.feedback[i])}</p><div class="feedback-timer" aria-label="Automatically moving to the next question"><div class="feedback-timer-track" aria-hidden="true"><span id="feedback-timer-fill"></span></div></div></div>`:''}</div>`).join('')}</div>${step>0?'<button type="button" class="quiz-back" id="quiz-back">← Back</button>':''}`;
 }
 function advanceQuiz(){
   stopAutoAdvance();
@@ -148,13 +148,13 @@ function reportHtml(m,items){
   return `<div class="result-print polished-report">${reportTop()}${snapshotHtml()}<section class="results-priorities"><div class="results-section-heading"><span class="results-section-eyebrow">WHERE I'D START</span><h3>Three conversations worth having</h3><p>These questions can help organize your next steps.</p></div><div class="priority-list">${items.map(priorityHtml).join('')}</div></section><div class="results-adam-note"><span class="results-section-eyebrow">HOW I HELP</span><h3>Good ideas deserve follow-through.</h3><p>You've already proven you know how to build something successful. My job isn't to tell you how to run your business or replace the professionals you trust. It's to help connect the financial pieces, clarify decisions worth considering, and keep the next steps moving.</p><p><strong>The question is whether I can bring something valuable to the table—and whether we'd enjoy working together.</strong></p></div><div class="results-emotional-close"><h3>${esc(m.closing)}</h3><p>${esc(m.invitation)}</p><p class="fine">Educational discussion prompts based on self-reported answers. Not individualized financial, tax, or legal advice. Investing involves risk, including possible loss of principal. No outcome is guaranteed.</p></div></div>`;
 }
 function previewHtml(m,items){
-  return `<div class="result-preview polished-report">${reportTop()}${snapshotHtml()}<section class="results-priorities"><div class="results-section-heading"><span class="results-section-eyebrow">WHERE I'D START</span><h3>Three conversations worth having</h3><p>Here's your first discussion priority. The remaining two are available in your full report.</p></div><div class="priority-list">${priorityHtml(items[0],0)}</div></section><div class="results-locked-preview" aria-label="Two additional insights available in the full report"><div class="locked-priority"><span class="priority-number">02</span><div class="locked-priority-lines"><span class="skeleton-line medium"></span><span class="skeleton-line long"></span><span class="skeleton-line short"></span></div><span class="locked-padlock" aria-hidden="true">🔒</span></div><div class="locked-priority"><span class="priority-number">03</span><div class="locked-priority-lines"><span class="skeleton-line medium"></span><span class="skeleton-line long"></span><span class="skeleton-line short"></span></div><span class="locked-padlock" aria-hidden="true">🔒</span></div></div><div class="report-unlock"><div class="unlock-head"><span class="unlock-symbol" aria-hidden="true">✉</span><div><span class="results-section-eyebrow">YOUR NEXT STEP</span><h3>Unlock your full report</h3></div></div><p>Get your remaining two discussion priorities, Adam's perspective, and your personalized next steps. Your complete report opens here after you submit your email address and quiz answers through our secure website form.</p><form id="report-email-form"><label for="report-email">Email address</label><input id="report-email" name="email" type="email" autocomplete="email" inputmode="email" maxlength="254" placeholder="you@example.com" required/><div class="lead-honeypot" aria-hidden="true"><label for="report-company-site">Website (leave blank)</label><input id="report-company-site" name="website" tabindex="-1" autocomplete="off"/></div><label class="report-consent"><input type="checkbox" name="marketing" value="yes"/><span>I'd also like occasional educational emails from RIPL Wealth. Optional; not required to unlock my report.</span></label><button class="button primary report-submit" type="submit">Unlock My Complete Report →</button><p class="report-error" id="report-error" role="alert" hidden></p><p class="fine">Your email and quiz answers are securely submitted through our website and processed by a third-party email delivery service for RIPL Wealth. Your report unlocks here; it is not automatically emailed. No sensitive financial information, please. <a href="/money-at-work-privacy/" target="_blank" rel="noopener">Privacy details</a>.</p></form><p class="unlock-secondary">Prefer a conversation? <a href="${BOOKING_BASE}" data-book data-book-type="quiz-preview">Book a free 20-minute call with Adam →</a></p></div></div>`;
+  return `<div class="result-preview polished-report">${reportTop()}${snapshotHtml()}<section class="results-priorities"><div class="results-section-heading"><span class="results-section-eyebrow">WHERE I'D START</span><h3>Three conversations worth having</h3><p>Here's your first discussion priority. The remaining two are available in your full report.</p></div><div class="priority-list">${priorityHtml(items[0],0)}</div></section><div class="results-locked-preview" aria-label="Two additional insights available in the full report"><div class="locked-priority"><span class="priority-number">02</span><div class="locked-priority-lines"><span class="skeleton-line medium"></span><span class="skeleton-line long"></span><span class="skeleton-line short"></span></div><span class="locked-padlock" aria-hidden="true">🔒</span></div><div class="locked-priority"><span class="priority-number">03</span><div class="locked-priority-lines"><span class="skeleton-line medium"></span><span class="skeleton-line long"></span><span class="skeleton-line short"></span></div><span class="locked-padlock" aria-hidden="true">🔒</span></div></div><div class="report-unlock"><div class="unlock-head"><span class="unlock-symbol" aria-hidden="true">✉</span><div><span class="results-section-eyebrow">YOUR NEXT STEP</span><h3>Unlock your full report</h3></div></div><p>Get your remaining two discussion priorities, Adam's perspective, and your personalized next steps. Your complete report opens here after you submit your email address and quiz answers through our secure website form.</p><form id="report-email-form"><label for="report-email">Email address</label><input id="report-email" name="email" type="email" autocomplete="email" inputmode="email" maxlength="254" placeholder="you@example.com" required/><div class="lead-honeypot" aria-hidden="true"><label for="report-company-site">Website (leave blank)</label><input id="report-company-site" name="website" tabindex="-1" autocomplete="off"/></div><label class="report-consent"><input type="checkbox" name="marketing" value="yes"/><span>I'd also like occasional educational emails from RIPL Wealth. Optional; not required to unlock my report.</span></label><button class="button primary report-submit" type="submit">Unlock My Complete Report →</button><p class="report-error" id="report-error" role="alert" hidden></p><p class="fine">Your email and quiz answers are securely submitted through our website and processed by a third-party email delivery service for RIPL Wealth. Your report unlocks here and a quiz summary will be emailed to you. No sensitive financial information, please. <a href="/money-at-work-privacy/" target="_blank" rel="noopener">Privacy details</a>.</p></form><p class="unlock-secondary">Prefer a conversation? <a href="${BOOKING_BASE}" data-book data-book-type="quiz-preview">Book a free 20-minute call with Adam →</a></p></div></div>`;
 }
-function reportActions(){return `<div class="result-actions"><a class="button primary" href="${BOOKING_BASE}" data-book data-book-type="quiz-results">Book a 20-Minute Call With Adam →</a><p class="fine">Free Zoom conversation · No obligation</p><div class="result-save"><button class="button outline" type="button" id="save-results">Save Results as PDF</button><button class="button outline" type="button" id="email-results">Email Myself My Results</button></div><p class="fine">PDF uses your browser's Print / Save as PDF feature. The email button opens your own email app.</p><button class="text-button" type="button" id="restart-quiz">Retake the Quiz</button></div>`;}
+function reportActions(){return `<div class="result-actions"><a class="button primary" href="${BOOKING_BASE}" data-book data-book-type="quiz-results">Book a 20-Minute Call With Adam →</a><p class="fine">A conversation, not a sales pitch.</p><div class="result-save"><button class="button outline" type="button" id="save-results">Save Results as PDF</button><a class="button outline" href="#ask-question">Ask Us a Question</a></div><p class="fine">PDF uses your browser's Print / Save as PDF feature. You can also ask our team a question.</p><button class="text-button" type="button" id="restart-quiz">Retake the Quiz</button></div>`;}
 function bindResultActions(){
   $('#results [data-book]')?.addEventListener('click',openBooking);
   $('#save-results')?.addEventListener('click',()=>window.print());
-  $('#email-results')?.addEventListener('click',()=>{const body=resultText();const mail=`mailto:?subject=${encodeURIComponent('My Financial Freedom Quiz Results | RIPL Wealth')}&body=${encodeURIComponent(body)}`;if(mail.length>1900){navigator.clipboard?.writeText(body).then(()=>alert('Your results were copied. Paste them into an email to yourself.')).catch(()=>alert('Use Save Results as PDF to keep your results.'));}else location.href=mail;});
+  
   $('#restart-quiz')?.addEventListener('click',()=>{stopAutoAdvance();answers=[];step=0;complete=false;hasStarted=false;document.querySelector('#hero')?.classList.remove('quiz-complete');persist();render();document.querySelector('#quiz')?.scrollIntoView({behavior:'smooth'});});
 }
 function unlockReport(){
@@ -216,7 +216,7 @@ window.oaiq?.('measure','lead_created',{type:'customer_action'});
       unlockReport();
       const note=document.createElement('p');
       note.className='report-success';note.setAttribute('role','status');
-      note.textContent='Your full report is unlocked. Your request was submitted to RIPL Wealth.';
+      note.textContent='Your full report is unlocked. A quiz summary has been accepted for email delivery; please check your inbox.';
       $('#results').prepend(note);
     }catch(err){
       error.textContent='We couldn’t confirm your submission. Your quiz results are safe on this page. Please try again, or book a free 20-minute call.';
@@ -231,6 +231,8 @@ if (typeof window.gtag === 'function') {
 }
 }
 $('#quiz-content').addEventListener('click',e=>{
+  if(e.target.closest('#quiz-back')){stopAutoAdvance();step=Math.max(0,step-1);render();return;}
+
   const b=e.target.closest('[data-answer]');
   if(b){
     if(!hasStarted){hasStarted=true;window.dataLayer?.push({event:'ripl_quiz_start'});}
@@ -246,7 +248,7 @@ $('#quiz-content').addEventListener('click',e=>{
 });
 window.dataLayer=window.dataLayer||[];window.dataLayer.push({event:'ripl_landing_view',version:'quiz-first-results-polished-2026-11-03',...attribution});
 const sticky=document.querySelector('#adaptive-cta'),stickyLink=document.querySelector('#adaptive-link');
-function updateSticky(){const hero=document.querySelector('#hero'),quiz=document.querySelector('#quiz');if(!sticky||!hero||!quiz)return;const heroBottom=hero.getBoundingClientRect().bottom;const qrect=quiz.getBoundingClientRect();const quizVisible=qrect.top<window.innerHeight*.85&&qrect.bottom>100;sticky.hidden=heroBottom>0||quizVisible;if(complete){stickyLink.textContent='Book a 20-Minute Call →';stickyLink.href=BOOKING_BASE;stickyLink.removeAttribute('data-quiz-link');stickyLink.onclick=openBooking;}else{stickyLink.textContent='Take the Free Quiz →';stickyLink.href='#quiz';stickyLink.onclick=quizAction;}}
+function updateSticky(){/* No sticky booking bar in V22. */}
 window.addEventListener('scroll',updateSticky,{passive:true});window.addEventListener('resize',updateSticky);render();updateSticky();
 
 
@@ -296,4 +298,21 @@ document.addEventListener('click',event=>{
 
   if(link.matches('[data-tax-email]'))window.dataLayer?.push({event:'ripl_tax_evaluation_interest'});
   if(link.getAttribute('href')==='#quiz')window.dataLayer?.push({event:'ripl_quiz_cta_click'});
+});
+
+
+// Separate, low-friction question form: no marketing enrollment.
+const questionForm=$('#ask-question-form');
+questionForm?.addEventListener('submit',async event=>{
+  event.preventDefault();
+  const form=event.currentTarget, status=$('#ask-question-status'), submit=form.querySelector('[type="submit"]');
+  submit.disabled=true;status.textContent='Sending your question…';
+  try{
+    const response=await fetch('/api/question',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:form.elements.name.value.trim(),email:form.elements.email.value.trim(),question:form.elements.question.value.trim(),website:form.elements.website.value})});
+    const data=await response.json();if(!response.ok||!data.success)throw Error('not_sent');
+    form.reset();status.textContent='Thanks for reaching out. Your question has been received. We will reply by email.';
+    window.dataLayer?.push({event:'ripl_question_sent'});
+    if(typeof window.gtag==='function')window.gtag('event','question_sent');
+  }catch{status.textContent='We could not confirm delivery. Please try again or book a conversation.'}
+  finally{submit.disabled=false}
 });

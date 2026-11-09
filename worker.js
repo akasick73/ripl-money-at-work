@@ -39,28 +39,44 @@ async function submitQuiz(request,env){
   if(!env.RESEND_API_KEY||!env.RIPL_EMAIL_FROM)
     return json({success:false,error:'Submission temporarily unavailable'},503);
   // RIPL_EMAIL_FROM must be a verified sender configured in Resend.
-  const message={from:env.RIPL_EMAIL_FROM,to:[LEAD_TO],reply_to:email,
-    subject:'New RIPL Financial Freedom Quiz Lead',text:lines.join('\n')};
+  const accepted=await sendMail(env,{to:[LEAD_TO],reply_to:email,subject:'New RIPL Financial Freedom Quiz Lead',text:lines.join('\n')});
+  if(!accepted)return json({success:false,error:'Submission temporarily unavailable'},502);
+  const reportLines=['Your Financial Freedom Quiz Results | RIPL Wealth','',`Your result: ${category}`,'',...answerKeys.sort((a,b)=>Number(a.match(/^Question (\d):/)[1])-Number(b.match(/^Question (\d):/)[1])).map(k=>`${safeText(k)}\n${safeText(data[k]||'').slice(0,450)}`),'','Your complete personalized report is available on the page where you finished the quiz. You can also use Save as PDF there.','','Book a free 20-minute introduction: https://calendly.com/adam-riplwealth/20-minute-zoom-meeting','','Investment advisory services are provided through RIPL Wealth, LLC, a registered investment adviser.'];
+  // Transactional report summary is separate from optional marketing consent.
+  const visitorAccepted=await sendMail(env,{to:[email],subject:'Your Financial Freedom Quiz Summary | RIPL Wealth',text:reportLines.join('\n')});
+  if(!visitorAccepted)return json({success:false,error:'We could not confirm the visitor email'},502);
+  return json({success:true});
+}
+
+async function sendMail(env,message){
+  if(!env.RESEND_API_KEY||!env.RIPL_EMAIL_FROM)return false;
   try{
-    const response=await fetch('https://api.resend.com/emails',{
-      method:'POST',headers:{Authorization:`Bearer ${env.RESEND_API_KEY}`,'Content-Type':'application/json'},
-      body:JSON.stringify(message),signal:AbortSignal.timeout(12000)
-    });
-    if (!response.ok) {
-  console.error("RIPL email provider status", response.status, (await response.text()).slice(0, 500));
-  return json({ success: false, error: "Submission temporarily unavailable" }, 502);
+    const response=await fetch('https://api.resend.com/emails',{method:'POST',headers:{Authorization:`Bearer ${env.RESEND_API_KEY}`,'Content-Type':'application/json'},body:JSON.stringify({from:env.RIPL_EMAIL_FROM,...message}),signal:AbortSignal.timeout(12000)});
+    if(!response.ok){console.error('RIPL mail provider HTTP',response.status);return false}
+    const result=await response.json().catch(()=>null);return Boolean(result?.id);
+  }catch{console.error('RIPL mail provider request failed');return false}
 }
-    const result=await response.json().catch(()=>null);
-    if(!result?.id)return json({success:false,error:'Submission could not be confirmed'},502);
-    // Provider accepted the email for processing; inbox delivery must be tested separately.
-    return json({success:true});
-  }catch(err){console.error('RIPL email provider connection failed');
-    return json({success:false,error:'Submission temporarily unavailable'},502)}
+async function questionSubmission(request,env){
+  if(request.method!=='POST')return json({success:false,error:'Method not allowed'},405,{Allow:'POST'});
+  const origin=request.headers.get('Origin');if(origin&&origin!==new URL(request.url).origin)return json({success:false},403);
+  if(!(request.headers.get('content-type')||'').includes('application/json'))return json({success:false},415);
+  const raw=await request.text();if(raw.length>6000)return json({success:false},413);
+  let data;try{data=JSON.parse(raw)}catch{return json({success:false},400)}
+  if(data.website)return json({success:true});
+  const name=safeText(data.name||'').slice(0,120),email=safeText(data.email||'').slice(0,254),question=safeText(data.question||'').slice(0,2000);
+  if(!name||!question||question.length<8||!/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(email))return json({success:false,error:'Please complete all fields'},400);
+  const notified=await sendMail(env,{to:[LEAD_TO],reply_to:email,subject:'RIPL Website Question',text:`New website question\nName: ${name}\nEmail: ${email}\n\n${question}\n\nNo marketing consent was requested.`});
+  if(!notified)return json({success:false,error:'Delivery unavailable'},503);
+  // The acknowledgment is best-effort; the user is never subscribed to marketing.
+  await sendMail(env,{to:[email],subject:'We received your question | RIPL Wealth',text:`Hi ${name},\n\nThanks for contacting RIPL Wealth. We've received your question and will follow up by email.\n\nIf you prefer a conversation, you can book a free 20-minute Zoom introduction here:\nhttps://calendly.com/adam-riplwealth/20-minute-zoom-meeting\n\nPlease do not email account numbers, tax returns, or other sensitive information.\n\nRIPL Wealth, LLC`});
+  return json({success:true});
 }
+
 export default {
   async fetch(request,env){
     const path=new URL(request.url).pathname;
     if(path==='/api/quiz-lead'||path==='/api/quiz-lead/')return submitQuiz(request,env);
+    if(path==='/api/question'||path==='/api/question/')return questionSubmission(request,env);
     if(env.ASSETS)return env.ASSETS.fetch(request);
     return new Response('Site asset binding is missing',{status:500});
   }

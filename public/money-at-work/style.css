@@ -766,3 +766,19 @@ a[data-quiz-link]:not(.quiz-entry-button):not(#adaptive-link){color:var(--purple
   .section-band .adam-quote {font-size: 19px;line-height: 1.55;padding: 9px 0 9px 18px;margin: 22px 0;}
   .section-band .eyebrow {font-size: 11px;margin-bottom: 12px;}
 }
+
+
+/* V22: team trust, simple question path, responsive polish */
+.ripl-team-trust{display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:clamp(24px,5vw,64px)}
+.ripl-team-trust h2,.question-section h2{font-size:clamp(1.7rem,3.5vw,2.8rem)}
+.team-trust-image{display:block;width:100%;height:auto;border-radius:18px;object-fit:cover}
+.team-video{margin-top:18px}.team-video summary{cursor:pointer;color:#493478;font-weight:700;padding:12px 0}
+.team-video .video-thumb{max-width:360px;margin-top:12px}
+.question-section{max-width:900px}.question-section form{margin:22px 0;display:grid;gap:15px}
+.question-form-fields{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.question-section label{display:grid;gap:6px;font-weight:700}
+.question-section input,.question-section textarea{width:100%;border:1px solid #c9c4d4;border-radius:9px;padding:12px;font:inherit;background:white;color:#241b4b}
+.question-section textarea{resize:vertical}.question-section button{justify-self:start}
+.quiz-back{margin-top:16px;border:0;background:transparent;color:#493478;font:inherit;font-weight:700;cursor:pointer;padding:10px}
+.hero-overlay-play,.mobile-cta{display:none!important}
+@media(max-width:740px){.ripl-team-trust,.question-form-fields{grid-template-columns:1fr}.ripl-team-trust{gap:20px}.question-section input,.question-section textarea{font-size:16px}}
