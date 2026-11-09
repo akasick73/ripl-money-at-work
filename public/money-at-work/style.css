@@ -795,3 +795,12 @@ a[data-quiz-link]:not(.quiz-entry-button):not(#adaptive-link){color:var(--purple
 
 /* V24: succinct Market Plus section and chart */
 .market-plus{max-width:1040px;margin-inline:auto}.market-plus h2{font-size:clamp(2.6rem,6vw,5rem);line-height:1.03;margin:.4rem 0}.market-plus h3{font-size:clamp(1.3rem,3vw,2rem);line-height:1.2;margin:1rem 0}.market-plus>p{max-width:790px}.market-chart{margin:1.5rem 0;padding:clamp(1rem,3vw,1.7rem);border:1px solid #dcd6e7;border-radius:18px;background:#fff;box-shadow:0 8px 30px rgba(37,23,69,.06)}.market-chart svg{display:block;width:100%;height:auto;max-height:300px}.market-chart-top{display:flex;flex-wrap:wrap;gap:.5rem 1.5rem;align-items:center;justify-content:space-between;color:#30274e}.market-chart-top span,.market-chart-note,.market-disclosure{font-size:.78rem;line-height:1.55;color:#605c6a}.market-chart-note{margin:.5rem 0 0}.market-disclosure{margin-top:1.25rem;max-width:850px}.report-optional-email{margin:1.8rem 0}.quiz-first-headline{max-width:760px}
+
+/* V24.1: enforce three-line hero headline on all viewports */
+.quiz-first-headline .hero-line{display:block}
+.quiz-first-headline em.hero-line{margin-top:5px}
+
+/* V24.2: keep the introduction video in the video library after removing the team bio section. */
+.intro-video-inline{margin:0 auto 2rem;max-width:620px;text-align:center}
+.intro-video-inline .video-thumb{max-width:420px;margin:1rem auto 0}
+.intro-video-inline .video-play-button{width:100%}
