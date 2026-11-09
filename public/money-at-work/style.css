@@ -139,7 +139,9 @@
 .hero-quiz-note{text-align:center;font-size:12px;margin:0;color:var(--muted)}
 .quiz-shell .options button{color:var(--navy)!important;-webkit-text-fill-color:var(--navy);font-weight:600}
 .quiz-shell .options button.selected,.quiz-shell .options button[aria-pressed="true"]{background:#efebfa;border:2px solid var(--navy);color:var(--navy)!important}
-.quiz-shell .options button:hover{border-color:var(--purple);background:#f8f5fd}
+/* Hover styling only applies to devices with a real hover-capable pointer.
+   Mobile Safari can retain :hover on a button after a tap, even when the next question is rendered. */
+@media (hover:hover) and (pointer:fine){.quiz-shell .options button:hover:not(.selected):not([aria-pressed="true"]){border-color:var(--purple);background:#f8f5fd}}
 .quiz-shell .quiz-nav .button.primary{background:var(--navy);color:white;-webkit-text-fill-color:white}
 @media(max-width:560px){
  .hero-v71 .eyebrow{font-size:clamp(8px,2.15vw,10px);letter-spacing:.025em;white-space:nowrap}
@@ -782,3 +784,14 @@ a[data-quiz-link]:not(.quiz-entry-button):not(#adaptive-link){color:var(--purple
 .quiz-back{margin-top:16px;border:0;background:transparent;color:#493478;font:inherit;font-weight:700;cursor:pointer;padding:10px}
 .hero-overlay-play,.mobile-cta{display:none!important}
 @media(max-width:740px){.ripl-team-trust,.question-form-fields{grid-template-columns:1fr}.ripl-team-trust{gap:20px}.question-section input,.question-section textarea{font-size:16px}}
+
+/* V23: one invitation following all three personalized priorities. */
+.results-priority-cta{margin-top:1.5rem;padding:1.5rem;border:1px solid #ded6ec;border-radius:18px;background:#f7f4fb;text-align:center}
+.results-priority-cta h3{margin:0 0 .7rem;color:#34245b;font-size:clamp(1.15rem,2.5vw,1.5rem)}
+.results-priority-cta p{margin:.55rem auto 1rem;max-width:38rem}
+.results-priority-cta .button{display:inline-flex;justify-content:center;max-width:100%;text-align:center}
+.results-priority-cta .fine{margin:.8rem auto 0;font-size:.84rem}
+@media(max-width:600px){.results-priority-cta{padding:1.2rem .9rem}.results-priority-cta .button{width:100%}}
+
+/* V24: succinct Market Plus section and chart */
+.market-plus{max-width:1040px;margin-inline:auto}.market-plus h2{font-size:clamp(2.6rem,6vw,5rem);line-height:1.03;margin:.4rem 0}.market-plus h3{font-size:clamp(1.3rem,3vw,2rem);line-height:1.2;margin:1rem 0}.market-plus>p{max-width:790px}.market-chart{margin:1.5rem 0;padding:clamp(1rem,3vw,1.7rem);border:1px solid #dcd6e7;border-radius:18px;background:#fff;box-shadow:0 8px 30px rgba(37,23,69,.06)}.market-chart svg{display:block;width:100%;height:auto;max-height:300px}.market-chart-top{display:flex;flex-wrap:wrap;gap:.5rem 1.5rem;align-items:center;justify-content:space-between;color:#30274e}.market-chart-top span,.market-chart-note,.market-disclosure{font-size:.78rem;line-height:1.55;color:#605c6a}.market-chart-note{margin:.5rem 0 0}.market-disclosure{margin-top:1.25rem;max-width:850px}.report-optional-email{margin:1.8rem 0}.quiz-first-headline{max-width:760px}
