@@ -597,7 +597,7 @@ body { background: #07060C; color: var(--silver); }
   <a href="#go-every-dollar">Engine story</a>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"><\/script><script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script><script>
 (() => {
   const cv = document.getElementById('cv'), ctx = cv.getContext('2d');
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -860,7 +860,7 @@ body { background: #07060C; color: var(--silver); }
   requestAnimationFrame(loop);
   window.__summit = { CAMPS, lenis, state: () => ({ cur, t: target() }) };
 })();
-<\/script>
+</script>
 <script>
 /* Site chrome: the bar turns solid once you leave the top, hides on the way down and returns on the way up; images fade in as they load. */
 (() => {
@@ -879,7 +879,7 @@ body { background: #07060C; color: var(--silver); }
     nav.querySelectorAll('.drawer a').forEach(a => a.addEventListener('click', () => setOpen(false)));  }
   document.querySelectorAll('img').forEach(i => { const done = () => i.classList.add('loaded'); i.complete ? done() : i.addEventListener('load', done); });
 })();
-<\/script><script>
+</script><script>
 /* Size RIPL so the four letters run the full width of the screen. */
 (() => {
   const w = document.getElementById('megaWord');
@@ -893,7 +893,7 @@ body { background: #07060C; color: var(--silver); }
   if (document.fonts) { document.fonts.ready.then(fit); document.fonts.load('600 100px Rokkitt').then(fit); }
   let n = 0; const iv = setInterval(() => { fit(); if (++n > 10) clearInterval(iv); }, 500);
 })();
-<\/script><script>
+</script><script>
 /* SAGE content: fade sections in and draw the rhythm diagram as they come into view. */
 (() => {
   const els = document.querySelectorAll('.fp-after [data-reveal], .fp-after .draw, .fp-after .k-step');
@@ -901,7 +901,7 @@ body { background: #07060C; color: var(--silver); }
   const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -12% 0px' });
   els.forEach(el => io.observe(el));
 })();
-<\/script><script>
+</script><script>
 /* The four meetings: the track slides sideways with the scroll; the meeting you're on comes forward with its full paragraph,
    the others step back. The fee card also opens on tap for touch screens. */
 (() => {
@@ -925,7 +925,7 @@ body { background: #07060C; color: var(--silver); }
   const more = document.querySelector('.fp-more'), why = document.getElementById('feeWhy');
   if (more) more.addEventListener('click', () => { const open = more.getAttribute('aria-expanded') !== 'true'; more.setAttribute('aria-expanded', String(open)); why.inert = !open; more.closest('.fp-cost').classList.toggle('open', open); more.firstChild.textContent = open ? 'Hide the details ' : 'See the details '; });
 })();
-<\/script><script>
+</script><script>
 /* From static to clarity: many tangled lines settle onto one straight line as you scroll, then gold draws through it. */
 (() => {
   const box = document.getElementById('staticScroll'), cv = document.getElementById('staticCv'); if (!box || !cv) return;
@@ -962,7 +962,7 @@ body { background: #07060C; color: var(--silver); }
   addEventListener('scroll', () => { if (!q) { q = true; requestAnimationFrame(paint); } }, { passive: true });
   addEventListener('resize', size); size();
 })();
-<\/script><script>
+</script><script>
 /* Pages live in srcdoc frames, where a bare "#" link would load the whole prototype inside itself.
    So: #go- links switch pages, #id links scroll in place, and placeholder links show a quiet note. */
 (() => {
@@ -987,11 +987,11 @@ body { background: #07060C; color: var(--silver); }
     note('This page isnâ€™t in the prototype yet.');
   }, true);
 })();
-<\/script><script>
+</script><script>
 window.addEventListener('message', function(e) {if (!e.data || e.data.type !== 'riplSceneProgress') return;
  const scene=document.getElementById('climb');if(!scene)return;
  const max=Math.max(0,scene.offsetHeight-window.innerHeight);
- window.scrollTo(0,scene.offsetTop+max*Math.max(0,Math.min(1,e.data.progress)));
+ window.scrollTo({top:scene.offsetTop+max*Math.max(0,Math.min(1,Number(e.data.progress)||0)),behavior:"instant"});
 });
 </script></body>
 </html>

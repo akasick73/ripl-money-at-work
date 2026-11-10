@@ -1015,7 +1015,7 @@ html, body { overflow-x: clip; }
   <a href="#go-freedom">Freedom story</a>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"><\/script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
 <script>
 (() => {
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -1383,7 +1383,7 @@ void main() {
   const dt = document.getElementById('draftToggle');
   dt.addEventListener('click', () => { dt.setAttribute('aria-pressed', String(document.body.classList.toggle('show-drafts'))); });
 })();
-<\/script>
+</script>
 <script>
 /* Site chrome: the bar turns solid once you leave the top, hides on the way down and returns on the way up; images fade in as they load. */
 (() => {
@@ -1402,7 +1402,7 @@ void main() {
     nav.querySelectorAll('.drawer a').forEach(a => a.addEventListener('click', () => setOpen(false)));  }
   document.querySelectorAll('img').forEach(i => { const done = () => i.classList.add('loaded'); i.complete ? done() : i.addEventListener('load', done); });
 })();
-<\/script>
+</script>
 <script>
 /* Size RIPL so the four letters run the full width of the screen. */
 (() => {
@@ -1417,7 +1417,7 @@ void main() {
   if (document.fonts) { document.fonts.ready.then(fit); document.fonts.load('600 100px Rokkitt').then(fit); }
   let n = 0; const iv = setInterval(() => { fit(); if (++n > 10) clearInterval(iv); }, 500);
 })();
-<\/script>
+</script>
 <script>
 /* Pages live in srcdoc frames, where a bare "#" link would load the whole prototype inside itself.
    So: #go- links switch pages, #id links scroll in place, and placeholder links show a quiet note. */
@@ -1443,4 +1443,4 @@ void main() {
     note('This page isnâ€™t in the prototype yet.');
   }, true);
 })();
-<\/script></html>
+</script><script>window.addEventListener('message',function(e){if(!e.data||e.data.type!=='riplSceneProgress')return;const scene=document.getElementById('hero');if(!scene)return;const max=Math.max(0,scene.offsetHeight-innerHeight);window.scrollTo({top:scene.offsetTop+max*Math.max(0,Math.min(1,Number(e.data.progress)||0)),behavior:'instant'});});</script></body></html>
