@@ -1,0 +1,997 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Financial Freedom &middot; Financial Planning (SAGE&trade;) &middot; RIPL prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rokkitt:ital,wght@0,300..700;1,300..700&family=Newsreader:ital,opsz,wght@0,6..72,200..700;1,6..72,200..700&family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400&display=swap">
+<style>
+/* RIPL prototype — shared tokens and components.
+   Layout: dark, pinned scroll scenes for the brand moments; a light, airy, card-based body (Origin-style) for everything else. */
+:root {
+  --void: #130F2A;
+  --deep: #2A2250;
+  --dusk: #3D3D58;
+  --indigo: #6355B8;
+  --peri: #B8A8E8;
+  --gold: #C9963A;
+  --gold-soft: #E7C98F;
+  --silver: #F4F3F8;
+  --mist: #DCDCE8;
+  --paper: #FBFAFD;
+  --sky-1: #EEF1F8;
+  --sky-2: #DDE4F2;
+  --ink: #130F2A;
+  --muted: #5B5A72;
+  --display: "Rokkitt", Georgia, "Times New Roman", serif;
+  --serif: "Newsreader", Georgia, "Times New Roman", serif;
+  --body: "DM Sans", "Segoe UI", system-ui, sans-serif;
+  --radius: 28px;
+  --gutter-l: max(20px, env(safe-area-inset-left, 0px));
+  --gutter-r: max(20px, env(safe-area-inset-right, 0px));
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font: 400 17px/1.6 var(--body);
+  -webkit-font-smoothing: antialiased;
+}
+img { max-width: 100%; display: block; }
+a { color: inherit; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; border-radius: 6px; }
+h1, h2, h3 { font-family: var(--serif); font-weight: 300; line-height: 1.04; margin: 0; text-wrap: balance; letter-spacing: -0.022em; }
+h1 em, h2 em, h3 em { font-style: italic; font-weight: 300; }
+p { margin: 0; }
+
+.wrap { max-width: 1240px; margin: 0 auto; padding-left: var(--gutter-l); padding-right: var(--gutter-r); }
+.eyebrow { font: 600 0.72rem/1.4 var(--body); letter-spacing: 0.16em; text-transform: uppercase; color: var(--indigo); }
+
+/* Nav — floating pill, flips between dark and light surfaces */
+.nav {
+  position: fixed; z-index: 50; left: 0; right: 0; top: env(safe-area-inset-top, 0px);
+  padding: 16px var(--gutter-r) 0 var(--gutter-l);
+  display: flex; justify-content: center; pointer-events: none;
+}
+.nav-inner {
+  pointer-events: auto; width: min(1240px, 100%);
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding: 10px 10px 10px 22px; border-radius: 999px;
+  background: rgba(19, 15, 42, 0.35); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(244, 243, 248, 0.12); color: var(--silver);
+  transition: background .4s, color .4s, border-color .4s;
+}
+.nav.on-light .nav-inner { background: rgba(251, 250, 253, 0.78); color: var(--ink); border-color: rgba(19, 15, 42, 0.08); }
+.logo { font: 600 1.6rem/1 var(--display); letter-spacing: 0.04em; color: var(--gold); text-decoration: none; }
+.nav-links { display: flex; gap: 26px; font-size: 0.9rem; }
+.nav-links a { text-decoration: none; opacity: 0.85; }
+.nav-links a:hover { opacity: 1; }
+.btn {
+  display: inline-flex; align-items: center; gap: 10px; border: 0; cursor: pointer;
+  font: 600 0.95rem/1 var(--body); text-decoration: none; padding: 14px 22px; border-radius: 999px;
+  background: var(--gold); color: var(--void); transition: transform .2s, background .2s;
+}
+.btn:hover { transform: translateY(-1px); background: var(--gold-soft); }
+.btn.ghost { background: transparent; color: inherit; box-shadow: inset 0 0 0 1px currentColor; }
+.btn.small { padding: 11px 18px; font-size: 0.88rem; }
+@media (max-width: 860px) { .nav-links { display: none; } }
+
+/* Draft-copy markers (toggle in the prototype bar) */
+.show-drafts .draft { text-decoration: underline dotted var(--gold); text-decoration-thickness: 2px; text-underline-offset: 6px; }
+.show-drafts .ph { background: rgba(201, 150, 58, 0.18); border-radius: 4px; padding: 0 4px; }
+
+/* Prototype bar */
+.proto-bar {
+  position: fixed; z-index: 60; left: var(--gutter-l); bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px; max-width: calc(100% - 40px);
+  padding: 8px 10px; border-radius: 16px; font-size: 0.78rem;
+  background: rgba(19, 15, 42, 0.86); color: var(--silver); backdrop-filter: blur(10px);
+  box-shadow: 0 10px 30px rgba(19, 15, 42, 0.25);
+}
+.proto-bar b { color: var(--gold); font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; font-size: 0.68rem; }
+.proto-bar button, .proto-bar a {
+  font: 500 0.78rem var(--body); color: var(--silver); background: rgba(244, 243, 248, 0.1);
+  border: 0; border-radius: 999px; padding: 6px 11px; cursor: pointer; text-decoration: none;
+}
+.proto-bar button[aria-pressed="true"] { background: var(--gold); color: var(--void); }
+
+/* Footer */
+.footer { background: var(--void); color: var(--mist); padding-block: 72px 120px; font-size: 0.85rem; }
+.footer .wrap { display: grid; gap: 32px; }
+.footer-top { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 24px; align-items: end; }
+.footer .tag { font: 500 2rem/1 var(--display); color: var(--silver); }
+.footer .tag em { color: var(--gold); }
+.footer small { display: block; max-width: 80ch; color: #9b98b5; line-height: 1.6; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+
+/* ---------- Site chrome v16: top bar with three sections, signature footer, one detail system ---------- */
+:root { --r: 16px; --night: #07060C; --ease: cubic-bezier(.16, 1, .3, 1); --serif: "Newsreader", Georgia, "Times New Roman", serif; }
+.nav, .proto-bar { display: none !important; }
+.topbar { position: fixed; z-index: 50; top: 0; left: 0; right: 0; padding-top: env(safe-area-inset-top, 0px); transition: transform .6s var(--ease), background .4s, border-color .4s; border-bottom: 1px solid transparent; }
+.topbar.solid { background: rgba(7, 6, 12, .8); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom-color: rgba(244, 243, 248, .06); }
+.topbar.hide { transform: translateY(-100%); }
+.topbar-inner { max-width: 1240px; margin: 0 auto; padding: 16px var(--gutter-r) 16px var(--gutter-l); display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+.topbar .logo { font: 600 1.5rem/1 var(--display); letter-spacing: .06em; color: var(--gold); text-decoration: none; }
+.menu { list-style: none; margin: 0; padding: 0; display: flex; gap: clamp(22px, 3vw, 44px); }
+.menu > li { position: relative; }
+.menu-top { background: none; border: 0; color: var(--silver); font: 400 .9rem var(--body); padding: 8px 0; cursor: pointer; opacity: .82; transition: opacity .3s; }
+.menu > li:hover .menu-top, .menu > li:focus-within .menu-top { opacity: 1; }
+.drop { position: absolute; top: 100%; left: -18px; min-width: 260px; padding: 10px 0; display: grid; background: #0E0C16; border: 1px solid rgba(244, 243, 248, .08); border-radius: var(--r); opacity: 0; visibility: hidden; transform: translateY(6px); transition: opacity .3s var(--ease), transform .4s var(--ease), visibility .3s; }
+.menu > li:hover .drop, .menu > li:focus-within .drop { opacity: 1; visibility: visible; transform: none; }
+.drop a { padding: 9px 18px; color: var(--silver); text-decoration: none; font-size: .9rem; opacity: .78; transition: opacity .2s, color .2s; }
+.drop a:hover { opacity: 1; color: var(--gold); }
+.topbar-end { display: flex; align-items: center; gap: 10px; }
+.menu-toggle { display: none; background: none; border: 1px solid rgba(244, 243, 248, .2); color: var(--silver); border-radius: 999px; padding: 9px 16px; font: 500 .85rem var(--body); cursor: pointer; }
+@media (max-width: 860px) {
+  .menu { display: none; position: fixed; left: 0; right: 0; top: calc(66px + env(safe-area-inset-top, 0px)); flex-direction: column; gap: 0; background: var(--night); padding: 8px var(--gutter-r) 28px var(--gutter-l); border-bottom: 1px solid rgba(244, 243, 248, .08); max-height: calc(100vh - 66px); overflow: auto; }
+  .topbar.open { background: var(--night); }
+  .topbar.open .menu { display: flex; }
+  .menu-top { font: 300 1.6rem var(--serif); padding: 16px 0 6px; opacity: 1; text-align: left; }
+  .drop { position: static; opacity: 1; visibility: visible; transform: none; border: 0; background: none; padding: 0 0 8px; min-width: 0; }
+  .drop a { padding: 7px 0; }
+  .menu-toggle { display: inline-flex; }
+  .topbar-end .btn.small { padding: 9px 14px; }
+}
+
+.footer { background: var(--night) !important; color: var(--mist); padding-block: clamp(72px, 9vw, 120px) 0; font-size: .86rem; border-top: 1px solid rgba(244, 243, 248, .07); overflow: hidden; }
+.footer .wrap { display: grid; gap: 28px; }
+.footer-cols { display: grid; grid-template-columns: 1.4fr repeat(3, 1fr); gap: 32px; padding-bottom: 28px; border-bottom: 1px solid rgba(244, 243, 248, .07); }
+@media (max-width: 900px) { .footer-cols { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 520px) { .footer-cols { grid-template-columns: 1fr; } }
+.footer-cols > div { display: grid; gap: 8px; align-content: start; }
+.footer .tag { font: 300 1.9rem/1.1 var(--serif); color: var(--silver); margin: 0; }
+.footer .tag em { color: var(--gold); font-style: italic; }
+.footer .addr { color: #9C99B3; line-height: 1.7; margin: 6px 0 0; }
+.footer h4 { margin: 0 0 6px; font: 500 .72rem/1 var(--body); letter-spacing: .2em; text-transform: uppercase; color: #9C99B3; }
+.footer-cols a { color: var(--silver); text-decoration: none; opacity: .8; }
+.footer-cols a:hover { opacity: 1; color: var(--gold); }
+.footer small { color: #7d7a94; max-width: 90ch; }
+.footer-mega { font: 600 clamp(6rem, 25vw, 22rem)/.74 var(--display); color: var(--gold); letter-spacing: .02em; margin: 24px 0 -1.2vw; user-select: none; }
+
+img { opacity: 0; transition: opacity .9s var(--ease); }
+img.loaded { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { img { opacity: 1; } }
+/* ---------- v18: full-width wordmark after the closing call to action, then a slow looping tagline ---------- */
+.footer { padding-top: 0; }
+.footer .footer-mega { margin: 0; padding-top: clamp(40px, 6vw, 80px); text-align: center; overflow: hidden; line-height: .78; font: 600 30vw/.78 var(--display); color: var(--gold); letter-spacing: .01em; white-space: nowrap; user-select: none; }
+.footer .footer-mega span { display: inline-block; }
+.marquee { overflow: hidden; border-top: 1px solid rgba(244, 243, 248, .07); border-bottom: 1px solid rgba(244, 243, 248, .07); margin: clamp(28px, 4vw, 48px) 0 clamp(56px, 7vw, 96px); padding-block: clamp(18px, 2.4vw, 30px); }
+.marquee-track { display: flex; width: max-content; animation: marquee 48s linear infinite; }
+.marquee-run { display: flex; align-items: center; flex: none; }
+.marquee span { font: 300 clamp(2rem, 5vw, 4.4rem)/1 var(--serif); color: var(--silver); white-space: nowrap; letter-spacing: -.015em; }
+.marquee span em { color: var(--gold); font-style: italic; }
+.marquee i { width: clamp(10px, 1.2vw, 16px); height: clamp(10px, 1.2vw, 16px); margin: 0 clamp(28px, 4vw, 64px); border: 1px solid var(--gold); border-radius: 50%; flex: none; }
+.marquee:hover .marquee-track { animation-play-state: paused; }
+@keyframes marquee { to { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce) { .marquee-track { animation: none; } }
+/* ---------- v19: two story links up front, everything else behind the menu ---------- */
+.topbar-end { gap: 8px; }
+.pill { display: inline-flex; align-items: center; padding: 9px 16px; border-radius: 999px; border: 1px solid rgba(244, 243, 248, .18); color: var(--silver); text-decoration: none; font: 500 .86rem/1 var(--body); white-space: nowrap; transition: border-color .3s, color .3s; }
+.pill:hover { border-color: var(--gold); color: var(--gold); }
+.burger { position: relative; width: 42px; height: 42px; margin-left: 4px; border-radius: 50%; border: 1px solid rgba(244, 243, 248, .18); background: none; cursor: pointer; transition: border-color .3s; }
+.burger:hover { border-color: var(--gold); }
+.burger span { position: absolute; left: 12px; right: 12px; height: 1.5px; background: var(--silver); border-radius: 2px; transition: transform .45s var(--ease), top .45s var(--ease); }
+.burger span:first-child { top: 16px; } .burger span:last-child { top: 24px; }
+.topbar.open .burger span:first-child { top: 20px; transform: rotate(45deg); }
+.topbar.open .burger span:last-child { top: 20px; transform: rotate(-45deg); }
+.topbar.open { background: var(--night); border-bottom-color: rgba(244, 243, 248, .06); }
+.drawer { position: absolute; top: 100%; left: 0; right: 0; background: var(--night); border-bottom: 1px solid rgba(244, 243, 248, .08);
+  opacity: 0; visibility: hidden; transform: translateY(-8px); transition: opacity .35s var(--ease), transform .5s var(--ease), visibility .35s;
+  max-height: calc(100vh - 70px); max-height: calc(100svh - 70px); overflow: auto; }
+.topbar.open .drawer { opacity: 1; visibility: visible; transform: none; }
+.drawer-inner { max-width: 1240px; margin: 0 auto; padding: 28px var(--gutter-r) 48px var(--gutter-l); display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(24px, 4vw, 64px); }
+.drawer-head { display: inline-flex; gap: 10px; align-items: baseline; font: 300 clamp(1.6rem, 2.4vw, 2.1rem)/1.1 var(--serif); color: var(--silver); text-decoration: none; transition: color .3s; }
+.drawer-head span { font-size: .7em; color: var(--gold); transition: transform .3s var(--ease); }
+.drawer-head:hover { color: var(--gold); } .drawer-head:hover span { transform: translateX(4px); }
+.drawer-sub { display: grid; gap: 2px; margin-top: 16px; padding-top: 14px; border-top: 1px solid rgba(244, 243, 248, .08); }
+.drawer-sub a { padding: 6px 0; color: var(--silver); opacity: .7; text-decoration: none; font-size: .92rem; transition: opacity .2s, color .2s; }
+.drawer-sub a:hover { opacity: 1; color: var(--gold); }
+.drawer-quick { display: none; }
+@media (max-width: 960px) {
+  .pill { display: none; }
+  .drawer-inner { grid-template-columns: 1fr; gap: 30px; padding-top: 20px; }
+  .drawer-quick { display: grid; gap: 10px; }
+  .drawer-quick a { padding: 14px 18px; border-radius: 999px; border: 1px solid rgba(244, 243, 248, .18); color: var(--silver); text-decoration: none; font: 500 .95rem var(--body); text-align: center; }
+}
+/* ---------- v20: page kit for the inner pages. Dark, quiet, one idea per screen; gold only where the eye should land ---------- */
+body.kit { background: var(--night); color: var(--silver); --mist2: #A9A6C4; }
+.kit em { color: var(--gold); font-style: italic; }
+.kit .eyebrow { color: var(--gold); letter-spacing: .2em; font-size: .68rem; }
+.k-hero { position: relative; min-height: 100vh; min-height: 100svh; display: grid; align-items: center; overflow: hidden; padding-top: 90px; }
+.k-hero .wrap { position: relative; z-index: 2; width: 100%; }
+.k-hero h1 { font-size: clamp(2.6rem, 6.2vw, 5.6rem); line-height: 1.02; max-width: 16ch; margin-top: 18px; }
+.k-hero .sub { margin-top: 24px; max-width: 46ch; color: var(--mist2); font-size: clamp(1rem, 1.3vw, 1.15rem); line-height: 1.65; }
+.k-hero .art { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+.k-hero .art svg, .k-hero .art canvas { position: absolute; right: 0; top: 0; width: 100%; height: 100%; }
+.k-cue { position: absolute; left: 50%; bottom: calc(26px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); z-index: 2; font: 600 .62rem/1 var(--body); letter-spacing: .22em; text-transform: uppercase; color: var(--mist2); }
+.k-cue::after { content: ""; display: block; width: 1px; height: 34px; margin: 12px auto 0; background: linear-gradient(var(--gold), transparent); animation: kcue 2.4s var(--ease) infinite; transform-origin: top; }
+@keyframes kcue { 0% { transform: scaleY(0); } 50% { transform: scaleY(1); } 100% { transform: scaleY(1); opacity: 0; } }
+
+.k-sec { padding-block: clamp(96px, 14vw, 180px); position: relative; }
+.k-sec + .k-sec { border-top: 1px solid rgba(244, 243, 248, .06); }
+.k-head { max-width: 760px; }
+.k-head h2 { font-size: clamp(2rem, 4.2vw, 3.6rem); line-height: 1.06; margin-top: 16px; }
+.k-head p { margin-top: 20px; color: var(--mist2); font-size: 1.05rem; line-height: 1.7; max-width: 58ch; }
+.k-head.center { margin: 0 auto; text-align: center; } .k-head.center p { margin-left: auto; margin-right: auto; }
+.k-big { font: 300 clamp(1.9rem, 4vw, 3.4rem)/1.18 var(--serif); letter-spacing: -.018em; max-width: 24ch; }
+.k-body { color: var(--mist2); line-height: 1.75; max-width: 62ch; }
+.k-body p + p { margin-top: 1em; }
+
+/* Cards: hairline panels that warm to gold on hover */
+.k-cards { display: grid; gap: 18px; margin-top: clamp(40px, 6vw, 72px); grid-template-columns: repeat(var(--cols, 3), 1fr); }
+@media (max-width: 900px) { .k-cards { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 600px) { .k-cards { grid-template-columns: 1fr; } }
+.k-card { position: relative; padding: clamp(26px, 3vw, 36px); border: 1px solid rgba(244, 243, 248, .1); border-radius: var(--r); background: rgba(244, 243, 248, .015);
+  display: grid; gap: 14px; align-content: start; text-decoration: none; color: inherit; transition: border-color .5s var(--ease), background .5s var(--ease), transform .6s var(--ease); }
+a.k-card:hover, .k-card.hover:hover { border-color: rgba(201, 150, 58, .55); background: rgba(201, 150, 58, .04); transform: translateY(-3px); }
+.k-card .num { font: 600 .66rem/1 var(--body); letter-spacing: .2em; color: var(--gold); }
+.k-card h3 { font-size: clamp(1.4rem, 2vw, 1.8rem); line-height: 1.15; }
+.k-card p { color: var(--mist2); line-height: 1.65; font-size: .97rem; }
+.k-card .q { font: italic 300 1.15rem/1.45 var(--serif); color: var(--silver); }
+.k-card .go { margin-top: 6px; font: 600 .72rem/1 var(--body); letter-spacing: .14em; text-transform: uppercase; color: var(--gold); }
+
+/* Steps: a gold line draws through the numbers as they come into view */
+.k-steps { position: relative; display: grid; gap: clamp(36px, 5vw, 60px); margin-top: clamp(48px, 6vw, 80px); padding-left: 64px; }
+.k-steps::before { content: ""; position: absolute; left: 19px; top: 8px; bottom: 8px; width: 1px; background: rgba(244, 243, 248, .1); }
+.k-steps .line { position: absolute; left: 19px; top: 8px; width: 1px; height: calc(var(--p, 0) * (100% - 16px)); background: var(--gold); }
+.k-step { position: relative; max-width: 620px; }
+.k-step .dot { position: absolute; left: -64px; top: 0; width: 39px; height: 39px; border-radius: 50%; border: 1px solid rgba(244, 243, 248, .2); background: var(--night);
+  display: grid; place-items: center; font: 600 .7rem/1 var(--body); letter-spacing: .08em; color: var(--mist2); transition: border-color .6s, color .6s; }
+.k-step.in .dot { border-color: var(--gold); color: var(--gold); }
+.k-step h3 { font-size: clamp(1.4rem, 2.2vw, 2rem); line-height: 1.15; }
+.k-step p { margin-top: 10px; color: var(--mist2); line-height: 1.7; }
+
+.k-quote { text-align: center; }
+.k-quote blockquote { margin: 0 auto; max-width: 22ch; font: italic 300 clamp(2rem, 4.6vw, 3.8rem)/1.14 var(--serif); letter-spacing: -.015em; }
+.k-quote cite { display: block; margin-top: 24px; font: 600 .66rem/1.4 var(--body); font-style: normal; letter-spacing: .2em; text-transform: uppercase; color: var(--mist2); }
+
+.k-split { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(36px, 6vw, 96px); align-items: center; }
+.k-split.flip > :first-child { order: 2; }
+@media (max-width: 860px) { .k-split { grid-template-columns: 1fr; } .k-split.flip > :first-child { order: 0; } }
+.k-figure { position: relative; aspect-ratio: 4 / 5; border-radius: var(--r); overflow: hidden; background: #0E0C16; }
+.k-figure img { width: 100%; height: 100%; object-fit: cover; filter: saturate(.6) contrast(1.05) brightness(.85) sepia(.08); }
+.k-figure svg { width: 100%; height: 100%; }
+
+.k-list { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 36px; }
+.k-list a, .k-list span { padding: 11px 18px; border: 1px solid rgba(244, 243, 248, .12); border-radius: 999px; color: var(--silver); text-decoration: none; font-size: .92rem; transition: border-color .3s, color .3s; }
+.k-list a:hover { border-color: var(--gold); color: var(--gold); }
+
+.k-links { display: flex; flex-wrap: wrap; gap: 14px 28px; margin-top: 32px; }
+.k-link { color: var(--silver); text-decoration: none; border-bottom: 1px solid rgba(201, 150, 58, .5); padding-bottom: 3px; transition: color .3s, border-color .3s; }
+.k-link:hover { color: var(--gold); border-color: var(--gold); }
+.k-link::after { content: " \2192"; color: var(--gold); }
+
+.k-faq { margin-top: 40px; border-top: 1px solid rgba(244, 243, 248, .08); }
+.k-faq details { border-bottom: 1px solid rgba(244, 243, 248, .08); }
+.k-faq summary { list-style: none; cursor: pointer; padding: 22px 40px 22px 0; position: relative; font: 300 clamp(1.15rem, 1.6vw, 1.4rem)/1.35 var(--serif); }
+.k-faq summary::-webkit-details-marker { display: none; }
+.k-faq summary::after { content: "+"; position: absolute; right: 4px; top: 18px; font: 300 1.6rem/1 var(--body); color: var(--gold); transition: transform .4s var(--ease); }
+.k-faq details[open] summary::after { transform: rotate(45deg); }
+.k-faq details > div { padding: 0 0 24px; color: var(--mist2); line-height: 1.75; max-width: 70ch; }
+
+.k-table { width: 100%; border-collapse: collapse; margin-top: 32px; font-size: .95rem; }
+.k-table th, .k-table td { text-align: left; padding: 14px 12px; border-bottom: 1px solid rgba(244, 243, 248, .08); }
+.k-table th { font: 600 .66rem/1 var(--body); letter-spacing: .18em; text-transform: uppercase; color: var(--mist2); }
+.k-table td:last-child { color: var(--gold); }
+
+.k-person { display: grid; gap: 14px; }
+.k-person .k-figure { aspect-ratio: 4 / 5; }
+.k-person h3 { font-size: 1.6rem; }
+.k-person .role { font: 600 .66rem/1 var(--body); letter-spacing: .2em; text-transform: uppercase; color: var(--gold); }
+.k-person p { color: var(--mist2); line-height: 1.7; font-size: .95rem; }
+
+/* Signature moment: a pinned stage whose drawing follows the scroll (JS sets --p from 0 to 1) */
+.k-moment { position: relative; height: var(--len, 320vh); }
+.k-moment .k-stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; display: grid; align-items: center; }
+.k-moment canvas, .k-moment .k-stage > svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.k-moment .k-cap { position: relative; z-index: 2; }
+.k-beat { position: absolute; left: var(--gutter-l); right: var(--gutter-r); bottom: calc(9vh + env(safe-area-inset-bottom, 0px)); max-width: 1240px; margin: 0 auto; opacity: 0; transform: translateY(14px); transition: opacity .7s var(--ease), transform .9s var(--ease); pointer-events: none; }
+.k-beat.on { opacity: 1; transform: none; }
+.k-beat h2 { font-size: clamp(1.8rem, 3.4vw, 3rem); line-height: 1.1; max-width: 22ch; }
+.k-beat p { margin-top: 14px; color: var(--mist2); max-width: 52ch; line-height: 1.7; }
+
+.k-cta { text-align: center; padding-block: clamp(110px, 16vw, 200px); }
+.k-cta h2 { font-size: clamp(2.4rem, 5.4vw, 4.6rem); line-height: 1.04; max-width: 16ch; margin: 0 auto; }
+.k-cta p { margin: 22px auto 0; color: var(--mist2); max-width: 44ch; }
+.k-cta .actions { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 34px; }
+.kit .btn.ghost { color: var(--silver); }
+
+.k-short { padding-block: 40px 56px; border-top: 1px solid rgba(244, 243, 248, .06); }
+.k-short p { max-width: 90ch; color: #7d7a94; font-size: .82rem; line-height: 1.7; }
+.k-short .crumbs { margin-bottom: 12px; font-size: .78rem; color: #7d7a94; }
+.k-short .crumbs a { color: #9C99B3; text-decoration: none; }
+.k-short .crumbs a:hover { color: var(--gold); }
+.draft-note { display: inline-block; margin-top: 10px; font: 600 .6rem/1 var(--body); letter-spacing: .16em; text-transform: uppercase; color: #8f84e0; }
+
+/* Scroll reveals */
+[data-reveal] { opacity: 0; transform: translateY(22px); transition: opacity 1s var(--ease), transform 1.2s var(--ease); }
+[data-reveal].in { opacity: 1; transform: none; }
+[data-reveal="2"] { transition-delay: .12s; } [data-reveal="3"] { transition-delay: .24s; } [data-reveal="4"] { transition-delay: .36s; }
+.draw path, .draw circle, .draw line, .draw polyline, .draw rect, .draw ellipse { stroke-dasharray: var(--len, 1200); stroke-dashoffset: var(--len, 1200); transition: stroke-dashoffset 2.4s var(--ease); }
+.draw.in path, .draw.in circle, .draw.in line, .draw.in polyline, .draw.in rect, .draw.in ellipse { stroke-dashoffset: 0; }
+@media (prefers-reduced-motion: reduce) { [data-reveal] { opacity: 1; transform: none; } .draw path, .draw circle, .draw line, .draw polyline, .draw rect, .draw ellipse { stroke-dashoffset: 0; } .k-beat { opacity: 1; position: relative; } }
+@media (max-width: 900px) { .k-hero .art { opacity: .45; } }
+
+/* ---------- v21: RIPL cut in half, the band runs through the cut ---------- */
+.footer-split { --fs: 30vw; --cut: .437; --base: .82; --gap: clamp(6px, .9vw, 14px); position: relative; padding-top: clamp(40px, 6vw, 80px); margin-bottom: clamp(48px, 6vw, 88px); }
+.footer .footer-split .footer-mega { padding-top: 0; margin: 0; overflow: hidden; line-height: .78; }
+.footer-split .fm-top { height: calc(var(--fs) * .78 * var(--cut)); }
+.footer-split .fm-bot { height: calc(var(--fs) * .78 * (var(--base) - var(--cut))); }
+.footer-split .fm-bot span { display: inline-block; margin-top: calc(var(--fs) * -.78 * var(--cut)); }
+.footer-split .marquee { margin: var(--gap) 0; border: 0; padding-block: clamp(8px, 1.1vw, 16px); }
+.footer-split .marquee span { font-size: clamp(1.05rem, 1.9vw, 1.7rem); color: var(--silver); }
+.footer-split .marquee span em { color: var(--silver); }
+.footer-split .marquee i { width: 7px; height: 7px; border-color: rgba(244, 243, 248, .7); margin: 0 clamp(22px, 3vw, 44px); }
+
+/* ---------- v22: RIPL whole; the band runs just above it in bold white ---------- */
+.footer-split { display: flex; flex-direction: column; }
+.footer-split .marquee { order: 0; margin: 0 0 clamp(10px, 1.6vw, 22px); }
+.footer-split .fm-top { order: 1; height: auto; }
+.footer-split .fm-bot { display: none; }
+.footer-split .marquee span { font-weight: 600; letter-spacing: -.005em; }
+.footer-split .marquee span em { font-weight: 500; }
+
+/* ---------- v23: footer is just RIPL; In short reads as a quiet full-width note ---------- */
+.footer-split { margin-bottom: clamp(40px, 5vw, 72px); }
+.k-short { padding-block: 22px 26px; border-top: 1px solid rgba(244, 243, 248, .05); }
+.k-short .wrap { max-width: none; }
+.k-short p { max-width: none; margin: 0; font-size: .72rem; line-height: 1.65; color: #6b6884; }
+.k-short p b { font-weight: 500; color: #8a87a3; }
+</style>
+<style>
+/* The road to financial freedom as one climb: a line-drawn mountain range, a camp for each stage,
+   a false summit at Freedom, then the real one at Impact. */
+body { background: #07060C; color: var(--silver); }
+.climb { --mist: #A9A6C4; background: #07060C; }
+.climb em { color: var(--gold); font-style: italic; }
+/* SAGE below the climb. Left-aligned like the homepage, one type scale, even rhythm between sections. */
+.fp-after { --g: clamp(44px, 4.6vw, 72px); --pin: max(72px, calc(50vh - 250px)); --mist2: #A9A6C4; position: relative; background: #07060C; color: var(--silver); }
+.fp-lead { font: 300 clamp(2rem, 4.2vw, 3.8rem)/1.12 var(--serif); letter-spacing: -.02em; max-width: 24ch; margin: 0; }
+.fp-lead + .fp-lead { margin-top: var(--g); }
+.fp-intro { padding: clamp(96px, 14vh, 160px) 0 0; }
+/* the meetings: the title continues the lead, the track slides beneath it */
+.fp-meet { position: relative; height: 420vh; margin-top: calc(var(--g) - var(--pin)); }
+.fp-meet-stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-start; padding-top: var(--pin); gap: clamp(32px, 6vh, 60px); }
+.fp-meet-stage > .wrap { width: 100%; align-self: stretch; text-align: left; }
+.fp-meet-title { margin: 0; text-align: left; }
+.fp-meet-rail { position: relative; margin: 0 var(--gutter-r) 0 var(--gutter-l); max-width: 1200px; height: 1px; background: rgba(244,243,248,.12); }
+@media (min-width: 1240px) { .fp-meet-rail { margin-left: calc((100vw - 1240px) / 2 + var(--gutter-l)); margin-right: calc((100vw - 1240px) / 2 + var(--gutter-r)); } }
+.fp-meet-rail i { position: absolute; left: 0; top: 0; height: 1px; width: 0; background: var(--gold); }
+.fp-meet-track { display: flex; gap: clamp(32px, 5vw, 80px); width: max-content; align-self: flex-start; will-change: transform; }
+.fp-m { flex: none; width: min(520px, 78vw); transform-origin: 0 50%; will-change: transform, opacity; }
+.fp-m .n { display: block; font: 300 clamp(3rem, 6vw, 5.2rem)/1 var(--serif); color: var(--gold); letter-spacing: -.03em; }
+.fp-m h3 { font-size: clamp(1.5rem, 2.3vw, 2.1rem); line-height: 1.15; margin-top: 14px; }
+.fp-m p { margin-top: 14px; color: #A9A6C4; line-height: 1.7; max-width: 46ch; transition: opacity .4s; }
+/* fees: a quiet two-column card */
+#fees { padding-block: clamp(72px, 10vw, 128px); }
+.fp-fee-title { font-size: clamp(2rem, 4.2vw, 3.8rem); line-height: 1.08; max-width: 20ch; }
+.fp-fee { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(32px, 6vw, 96px); margin-top: clamp(36px, 5vw, 60px); padding-top: clamp(28px, 4vw, 44px); border-top: 1px solid rgba(244, 243, 248, .1); }
+@media (max-width: 860px) { .fp-fee { grid-template-columns: 1fr; } }
+.fp-label { display: block; font: 600 .66rem/1 var(--body); letter-spacing: .2em; text-transform: uppercase; color: var(--mist2); }
+.fp-price { margin: 16px 0 0; white-space: nowrap; transition: font-size .6s var(--ease); font: 300 clamp(2.4rem, 4.6vw, 4.6rem)/1.05 var(--serif); letter-spacing: -.02em; color: var(--gold); }
+.fp-more { margin-top: 20px; padding: 0; background: none; border: 0; cursor: pointer; color: var(--silver); font: 500 .92rem/1 var(--body);
+  display: inline-flex; align-items: center; gap: 8px; border-bottom: 1px solid rgba(201,150,58,.5); padding-bottom: 4px; }
+.fp-more span { color: var(--gold); display: inline-block; transition: transform .4s var(--ease); transform: translateY(-3px); }
+.fp-more[aria-expanded="true"] span { transform: rotate(180deg) translateY(-1px); }
+.fp-cost.open .fp-price { font-size: clamp(1.8rem, 2.8vw, 2.6rem); }
+.fp-why { display: grid; grid-template-rows: 0fr; opacity: 0; margin-top: 0; transition: grid-template-rows .6s var(--ease), opacity .5s var(--ease), margin-top .6s var(--ease); }
+.fp-why > div { overflow: hidden; display: grid; gap: 12px; color: #A9A6C4; line-height: 1.7; max-width: 46ch; }
+.fp-why a { color: var(--silver); text-decoration: underline; text-decoration-color: rgba(201,150,58,.6); text-underline-offset: 3px; }
+.fp-why a:hover { color: var(--gold); }
+.fp-cost.open .fp-why { grid-template-rows: 1fr; opacity: 1; margin-top: 22px; }
+.fp-inc { list-style: none; margin: 16px 0 0; padding: 0; }
+.fp-inc li { position: relative; padding: 13px 0 13px 26px; border-bottom: 1px solid rgba(244, 243, 248, .08); color: var(--silver); line-height: 1.5; }
+.fp-inc li::before { content: ""; position: absolute; left: 2px; top: 23px; width: 12px; height: 1px; background: var(--gold); }
+.fp-fine { margin-top: clamp(36px, 5vw, 56px); max-width: 92ch; color: #7d7a94; font-size: .8rem; line-height: 1.7; }
+.fp-fine a { color: #9C99B3; }
+@media (max-width: 760px) { .fp-m { width: 84vw; } .fp-lead { font-size: 1.85rem; } }
+/* end SAGE block */
+.climb { position: relative; height: 1150vh; }
+.stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; }
+.climb canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+
+/* Altitude rail: each camp sits at its real height */
+.rail { position: absolute; left: clamp(22px, 3vw, 44px); top: 20vh; height: 60vh; width: 1px; }
+.rail-line { position: absolute; inset: 0; background: rgba(244, 243, 248, .14); }
+.rail-fill { position: absolute; left: 0; right: 0; bottom: 0; height: 0; background: var(--gold); }
+.tick { position: absolute; left: -3px; width: 7px; height: 7px; border-radius: 50%; background: var(--night);
+  border: 1px solid rgba(244, 243, 248, .35); transform: translateY(50%); transition: background .5s, border-color .5s, opacity .9s; }
+.tick.on { background: var(--gold); border-color: var(--gold); }
+.tick span { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); font: 600 .56rem/1 var(--body); letter-spacing: .18em;
+  text-transform: uppercase; color: rgba(244, 243, 248, .3); white-space: nowrap; transition: color .5s; }
+.tick.on span { color: rgba(244, 243, 248, .8); }
+.tick.hidden { opacity: 0; }
+
+/* Words float over a quiet part of the scene, one idea at a time */
+.panel { position: absolute; left: clamp(150px, 12vw, 210px); top: 50%; --dy: 0px; transform: translateY(calc(-50% + var(--dy)));
+  width: min(420px, calc(100% - 190px)); opacity: 0; pointer-events: none; will-change: opacity, transform; }
+.panel .k { font: 600 .64rem/1 var(--body); letter-spacing: .2em; text-transform: uppercase; color: var(--gold); }
+.panel h2 { font: 300 clamp(2rem, 3.6vw, 3.1rem)/1.06 var(--serif); margin: 16px 0 0; letter-spacing: -.012em; }
+.panel p { margin: 16px 0 0; color: var(--mist); font-size: 1rem; line-height: 1.6; max-width: 34ch; }
+
+.center { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; padding: 0 24px; opacity: 0; pointer-events: none; --dy: 0px; }
+.center > div { transform: translateY(var(--dy)); }
+.center h1, .center h2 { font: 300 clamp(2.6rem, 6vw, 5.2rem)/1.02 var(--serif); margin: 0 auto; letter-spacing: -.02em; max-width: 13ch; }
+.center p { margin: 20px auto 0; max-width: 40ch; color: var(--mist); font-size: 1.05rem; line-height: 1.6; }
+.center .actions { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 30px; }
+.btn { display: inline-block; padding: 14px 22px; border-radius: 999px; background: var(--gold); color: var(--night); font-weight: 600; text-decoration: none; }
+.btn.ghost { background: none; color: var(--silver); border: 1px solid rgba(244, 243, 248, .25); }
+.hint { position: absolute; left: 50%; bottom: calc(28px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%);
+  font-size: .64rem; letter-spacing: .22em; text-transform: uppercase; color: var(--mist); }
+@media (max-width: 760px) {
+  .rail { left: 12px; top: 18vh; height: 36vh; }
+  .tick span { display: none; }
+  .panel { left: 24px; right: 24px; width: auto; top: auto; bottom: calc(40px + env(safe-area-inset-bottom, 0px)); transform: translateY(var(--dy)); }
+  .panel h2 { font-size: 1.9rem; }
+  .panel p { font-size: .96rem; }
+}
+/* ---- refinement: one text color in the climb, gold kept for the path, numbers and price ---- */
+.panel .k { color: rgba(244, 243, 248, .82); }
+.panel h2 em, #opening h1 em, #closing h2 em, .fp-fee-title em { color: inherit; font-style: normal; }/* ---- from static to clarity ---- */
+.fp-static-scroll { position: relative; height: 320vh; }
+.fp-static-stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; }
+.fp-static-stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.fp-static-head { position: absolute; left: 0; right: 0; top: calc(15vh + env(safe-area-inset-top, 0px)); }
+.fp-static-head h2 { font: 300 clamp(2rem, 4.2vw, 3.8rem)/1.1 var(--serif); letter-spacing: -.02em; max-width: 18ch; margin: 0; }/* tighter rhythm around the static moment */
+.fp-static { margin-top: -190px; }
+#fees { position: relative; z-index: 1; margin-top: -330px; }</style>
+<style>.topbar,.footer,.proto-bar{display:none!important}body{overscroll-behavior:none}html{scrollbar-width:none}::-webkit-scrollbar{display:none}</style></head>
+<body>
+<header class="topbar" id="nav">
+  <div class="topbar-inner">
+    <a class="logo" href="#go-home" aria-label="RIPL home">RIPL</a>
+    <div class="topbar-end">
+      <a class="pill" href="#go-freedom">Financial Freedom</a>
+      <a class="pill" href="#go-every-dollar">Investment Engine</a>
+      <a class="pill" href="#go-giving-multiplier">Giving Multiplier</a>
+      <a class="btn small" href="#go-contact">Let&rsquo;s talk</a>
+      <button type="button" class="burger" aria-expanded="false" aria-controls="menu" aria-label="Open menu"><span></span><span></span></button>
+    </div>
+  </div>
+  <nav class="drawer" id="menu" aria-label="Site">
+    <div class="drawer-inner">
+      <div class="drawer-quick"><a href="#go-freedom">Financial Freedom</a><a href="#go-every-dollar">Investment Engine</a><a href="#go-giving-multiplier">Giving Multiplier</a></div>
+      <div class="drawer-col">
+        <a class="drawer-head" href="#go-who-we-work-with">Who we work with <span aria-hidden="true">&rarr;</span></a>
+        <div class="drawer-sub"><a href="#go-business-owners">Business Owners</a><a href="#go-athletes">Athletes</a><a href="#go-executives">Executives &amp; High Earners</a></div>
+      </div>
+      <div class="drawer-col">
+        <a class="drawer-head" href="#go-what-we-do">What we do <span aria-hidden="true">&rarr;</span></a>
+        <div class="drawer-sub"><a href="#go-freedom">Financial Planning (SAGE&trade;)</a><a href="#go-every-dollar">Investment Management</a><a href="#go-giving-multiplier">Charitable Giving</a><a href="#go-team">Our Team</a></div>
+      </div>
+      <div class="drawer-col">
+        <a class="drawer-head" href="#go-how-we-think">How we think <span aria-hidden="true">&rarr;</span></a>
+        <div class="drawer-sub"><a href="#">Money Mindset Quiz</a><a href="#">The RIPL Effect Podcast</a><a href="#">Blog</a><a href="#">Money Questions</a><a href="#go-faq">FAQ</a></div>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<section class="climb" id="climb" aria-label="The road to financial freedom, told as a climb">
+  <div class="stage">
+    <canvas id="cv" aria-hidden="true"></canvas>
+    <div class="rail" id="rail" aria-hidden="true"><div class="rail-line"></div><div class="rail-fill" id="railFill"></div></div>
+
+    <div class="center" id="opening">
+      <div>
+        <h1>The road to <em>financial freedom.</em></h1>      </div>
+    </div>
+
+    <div class="panel" data-camp="0" data-label="Base camp &middot; Talent"><h2>It starts with what you&rsquo;re great at.</h2><p>A gift, a drive, a craft. Something worth building a life around.</p></div>
+    <div class="panel" data-camp="1" data-label="Camp 1 &middot; Skills"><h2>Long days, hard lessons.</h2><p>You sharpen that talent into skills the world will pay for.</p></div>
+    <div class="panel" data-camp="2" data-label="Camp 2 &middot; Margin"><h2>Room to breathe, for the first time.</h2><p>Money above what you need to live on. Earn more, spend less, ideally both.</p></div>
+    <div class="panel" data-camp="3" data-label="Camp 3 &middot; Strategy"><h2>A clear target, and <em>a map.</em></h2><p>Every dollar gets a job, and every job points the same direction.</p></div>
+    <div class="panel" data-camp="4" data-label="Camp 4 &middot; Growth"><h2>One step at a time.</h2><p>Steady growth that carries you closer to your target, season after season.</p></div>
+    <div class="panel" data-camp="5" data-label="Freedom"><h2>Work becomes <em>a choice.</em></h2><p>Financial freedom is in reach. You could stop here.</p></div>
+    <div class="panel" data-camp="reveal"><h2>Freedom isn&rsquo;t <em>the summit.</em></h2><p>It&rsquo;s where most people stop. Just above the clouds is the climb that matters most.</p></div>
+    <div class="panel" data-camp="6" data-label="The summit &middot; Impact"><h2>The ripple reaches <em>everyone around you.</em></h2><p>Freedom opens new doors: to make an impact through your work, your family and your community.</p></div>
+
+    <div class="center" id="closing">
+      <div>
+        <h2>Wherever you are, there is <em>a next level waiting.</em></h2>
+      </div>
+    </div>
+    <div class="hint" id="hint">Scroll to begin the climb</div>
+  </div>
+</section>
+
+<div class="kit fp-after">
+  <section class="fp-intro">
+    <div class="wrap">
+      <p class="fp-lead">We help you spend your next dollar, invest your next hour, and get to your next stage with confidence.</p>
+      <p class="fp-lead">We call it SAGE&trade; planning.</p>
+    </div>
+  </section>
+  <!-- THE FOUR MEETINGS: a sideways scroll; the meeting you're on comes forward with its full paragraph -->
+  <section class="fp-meet" id="meet" aria-label="What we work through, together">
+    <div class="fp-meet-stage">
+      <div class="wrap"><h2 class="fp-lead fp-meet-title">We work through it <em>together.</em></h2></div>
+      <div class="fp-meet-rail" aria-hidden="true"><i id="meetFill"></i></div>
+      <div class="fp-meet-track" id="meetTrack">
+        <article class="fp-m"><span class="n">01</span><h3>Vision, goals and team</h3><p>We connect your goals with the life you actually want: the work you want to keep doing, the time you want back, and the people you want to help. We identify the professionals who need to be involved and the decisions that cannot wait.</p></article>
+        <article class="fp-m"><span class="n">02</span><h3>Financial flow and foundational security</h3><p>We organize income, spending, debt and reserves so you can see what is genuinely available. We review insurance and other financial risks, then coordinate questions with the appropriate professionals.</p></article>
+        <article class="fp-m"><span class="n">03</span><h3>Asset alignment</h3><p>Business interests, cash, investments, retirement accounts and property belong in the same conversation. We map their purpose, timing, access and concentration, then connect your investment structure with the rest of your life.</p></article>
+        <article class="fp-m"><span class="n">04</span><h3>Value maximization</h3><p>We weigh the opportunities, costs and tradeoffs together. Your written priorities explain what to address first, why it matters and who needs to be involved. Tax and legal decisions are coordinated with your tax strategist and attorney.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <!-- FROM STATIC TO CLARITY: tangled lines settle into one, then it draws through in gold -->
+  <section class="fp-static" id="static" aria-label="From mental static to tactical clarity">
+    <div class="fp-static-scroll" id="staticScroll"><div class="fp-static-stage">
+      <canvas id="staticCv" aria-hidden="true"></canvas>
+      <div class="wrap fp-static-head"><h2>We take you from mental static to tactical clarity.</h2></div>
+    </div></div>
+  </section>
+  <section class="k-sec" id="fees">
+    <div class="wrap">
+      <h2 class="fp-fee-title" data-reveal>One relationship to help you <em>manage all of it.</em></h2>
+      <div class="fp-fee" data-reveal="2">
+        <div class="fp-cost">
+          <span class="fp-label">Planning fee</span>
+          <p class="fp-price">$10,000 to $50,000</p>
+          <button type="button" class="fp-more" aria-expanded="false" aria-controls="feeWhy">See the details <span aria-hidden="true">&#8964;</span></button>
+          <div class="fp-why" id="feeWhy" inert><div>
+            <p>The cost of a plan depends on complexity, time, and the structure of what you&rsquo;re asking us to do.</p>
+            <p>Every plan is quoted individually at the Proposal Meeting, matched to your specific situation and what can be added to the table.</p>
+            <p>The annual management fee is the same as <a href="#go-every-dollar">RIPL Portfolios</a>.</p>
+          </div>
+          </div>
+        </div>
+        <div>
+          <span class="fp-label">Includes</span>
+          <ul class="fp-inc">
+            <li>4+ planning conversations.</li>
+            <li>A connected view of your financial life and advisory team.</li>
+            <li>Clarity and guidance on next, actionable steps.</li>
+            <li>An investment structure connected to your goals.</li>
+            <li>Quarterly check-ins (SAGE&trade; planning), an annual review and a contact calendar.</li>
+          </ul>
+        </div>
+      </div>
+      <p class="fp-fine" data-reveal>SAGE&trade; is offered with RIPL Portfolios, rather than as a standalone plan. The agreed scope depends on your situation and is described in your proposal and advisory agreement. RIPL coordinates with tax and legal professionals; it does not replace their services. The planning fee is separate from the annual investment management fee. Your proposal and agreement explain how fees apply to your accounts, billing and the agreed scope. Investment product expenses and other applicable costs may also apply. Full fee information is described in our Form ADV Part 2A. <a href="#">Read our disclosures.</a></p>
+    </div>
+  </section>
+  <section class="k-cta">
+    <div class="wrap" data-reveal>
+      <h2>Ready to find out what is possible when you look at your money <em>differently?</em></h2>
+      <div class="actions"><a class="btn" href="#go-contact">Let&rsquo;s talk</a></div>
+    </div>
+  </section>
+
+  <section class="k-short">
+    <div class="wrap">
+      <p><b>In short:</b> SAGE&trade; is our financial planning: four conversations where we work through the decisions competing for your attention, connect the people advising you, and give you a clear order for what happens next, then quarterly check-ins and an annual review.</p>
+    </div>
+  </section>
+</div>
+
+<footer class="footer">
+  <div class="footer-split" id="footSplit">
+  <div class="footer-mega fm-top" aria-hidden="true"><span id="megaWord">RIPL</span></div>
+  </div>
+  <div class="wrap">
+    <div class="footer-cols">
+      <div><p class="addr">3711 John F Kennedy Parkway, Suite 225<br>Fort Collins, CO 80525<br>(970) 419-9306 &middot; hello@riplwealth.com</p></div>
+      <div><h4>Who we work with</h4><a href="#go-business-owners">Business Owners</a><a href="#go-athletes">Athletes</a><a href="#go-executives">Executives &amp; High Earners</a></div>
+      <div><h4>What we do</h4><a href="#go-freedom">Financial Planning (SAGE&trade;)</a><a href="#go-every-dollar">Investment Management</a><a href="#go-giving-multiplier">Charitable Giving</a><a href="#go-team">Our Team</a></div>
+      <div><h4>How we think</h4><a href="#">Money Mindset Quiz</a><a href="#">The RIPL Effect Podcast</a><a href="#">Blog</a><a href="#">Money Questions</a><a href="#go-faq">FAQ</a></div>
+    </div>
+    <small>Investment advisory services are provided through RIPL Wealth LLC, a registered investment adviser. Registration does not imply a certain level of skill or training. Information is educational and is not individualized investment, tax, or legal advice. All investing involves risk, including possible loss of principal. Past performance does not guarantee future results.</small>
+    <small>Prototype for internal review. Photos from Unsplash. Not a live page.</small>
+  </div>
+</footer>
+
+<div class="proto-bar" role="region" aria-label="Prototype controls">
+  <b>Prototype</b>
+  <a href="#go-home">Home</a>
+  <a href="#go-every-dollar">Engine story</a>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"><\/script><script>
+(() => {
+  const cv = document.getElementById('cv'), ctx = cv.getContext('2d');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const NIGHT = '#07060C', GOLD = '#C9963A';
+  const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+  const ss = (a, b, v) => { const t = clamp((v - a) / (b - a)); return t * t * (3 - 2 * t); };
+  const lerp = (a, b, t) => a + (b - a) * t;
+
+  /* ---------- Terrain: a real range. A massif with ridges and gullies, a false summit on its front shoulder,
+     the true summit behind it, a distant range on the horizon and foothills underfoot. ---------- */
+  const hash = (i, j) => { let n = (Math.imul(i, 374761393) + Math.imul(j, 668265263)) | 0; n = Math.imul(n ^ (n >>> 13), 1274126177); n ^= n >>> 16; return (n >>> 0) / 4294967295; };
+  const vn = (x, y) => { const xi = Math.floor(x), yi = Math.floor(y), xf = x - xi, yf = y - yi, u = xf * xf * (3 - 2 * xf), v = yf * yf * (3 - 2 * yf);
+    return lerp(lerp(hash(xi, yi), hash(xi + 1, yi), u), lerp(hash(xi, yi + 1), hash(xi + 1, yi + 1), u), v); };
+  const fbm = (x, y, o = 4) => { let s = 0, a = .5, f = 1; for (let i = 0; i < o; i++) { s += a * vn(x * f + 17, y * f + 3); a *= .5; f *= 2.03; } return s; };
+  // Ridged multifractal: sharp crests, soft valleys, detail that gathers on the ridges like real erosion
+  const rmf = (x, y) => { let s = 0, a = .55, f = 1, w = 1;
+    for (let i = 0; i < 5; i++) { let n = 1 - Math.abs(vn(x * f, y * f) * 2 - 1); n *= n * w; w = clamp(n * 1.8); s += n * a; a *= .5; f *= 2.05; }
+    return s; };
+  const cone = (x, z, px, pz, rx, rz) => Math.exp(-1.6 * Math.pow(Math.hypot((x - px) / rx, (z - pz) / rz), 1.15));
+  const smax = (a, b, k) => .5 * (a + b + Math.sqrt((a - b) * (a - b) + k * k));
+  const T = { x: -.22, z: .2 }, F = { x: .2, z: .5 };
+  const height = (x, z) => {
+    const wx = x + .3 * (fbm(x * 1.2, z * 1.2, 3) - .5), wz = z + .22 * (fbm(x * 1.2 + 40, z * 1.2, 3) - .5);
+    const r = rmf(wx * 1.7 + 3.1, wz * 1.7 + 1.3);
+    const env = Math.exp(-(((x - .02) / 1.2) ** 2) - (((z - .42) / .5) ** 2));
+    const massif = env * (.12 + .5 * r);
+    const t = cone(x, z, T.x, T.z, .46, .28) * (.42 + .2 * r);
+    const f = cone(x, z, F.x, F.z, .34, .2) * (.48 + .16 * r);
+    const range = (1 - ss(.02, .4, z)) * (.18 + .55 * rmf(wx * 1.3 + 9.7, wz * 2.2));
+    const foothills = ss(.75, 1.4, z) * .11 * fbm(x * 2.2, z * 2.6) + .03 * rmf(wx * 3, wz * 3);
+    let h = smax(massif + t + f, range, .08) + foothills;
+    return Math.max(0, h);
+  };
+  const DEPTH = .55;
+  const proj = (x, z) => [x, z * DEPTH - height(x, z)];
+
+  // Ridge lines drawn back to front; each is filled down to its own baseline so nearer ridges hide farther ones.
+  // Each ridge is cut into short pieces so a frame only draws the pieces on screen (keeps scrolling smooth).
+  const NZ = 170, ZMAX = 1.5, NX = 640, X0 = -2.1, X1 = 2.1, CH = 32, slices = [];
+  for (let i = 0; i <= NZ; i++) {
+    const z = i / NZ * ZMAX, base = z * DEPTH + .02, xs = [], ys = [];
+    for (let j = 0; j <= NX; j++) { const x = X0 + (X1 - X0) * j / NX; xs.push(x); ys.push(z * DEPTH - height(x, z)); }
+    const parts = [];
+    for (let c = 0; c < NX; c += CH) {
+      const j0 = c, j1 = Math.min(NX, c + CH), f0 = Math.max(0, j0 - 1), f1 = Math.min(NX, j1 + 1);
+      const stroke = new Path2D(), fill = new Path2D(); let minY = Infinity;
+      for (let j = j0; j <= j1; j++) { j === j0 ? stroke.moveTo(xs[j], ys[j]) : stroke.lineTo(xs[j], ys[j]); }
+      for (let j = f0; j <= f1; j++) { j === f0 ? fill.moveTo(xs[j], ys[j]) : fill.lineTo(xs[j], ys[j]); minY = Math.min(minY, ys[j]); }
+      fill.lineTo(xs[f1], base); fill.lineTo(xs[f0], base); fill.closePath();
+      parts.push({ stroke, fill, x0: xs[f0], x1: xs[f1], minY });
+    }
+    const a = .07 + .42 * Math.pow(Math.min(z, 1), 1.1) - .16 * ss(1, 1.5, z) + (i % 10 === 0 ? .08 : 0);
+    slices.push({ parts, base, a, back: 1 - ss(.3, .45, z) }); // ridges behind the false summit stay in haze until the reveal
+  }
+
+  /* ---------- Camps and the trail ---------- */
+  const RAIL = ['Talent', 'Skills', 'Margin', 'Strategy', 'Growth', 'Freedom', 'Impact'];
+  const CAMPS = [[.78, 1.02], [.5, .9], [.64, .77], [.34, .68], [.42, .58], [F.x, F.z], [T.x, T.z]]
+    .map(([x, z]) => { const p = proj(x, z); return { x, z, h: height(x, z), px: p[0], py: p[1] }; });
+  const route = [];
+  for (let i = 0; i < 6; i++) {
+    const a = CAMPS[i], b = CAMPS[i + 1], dx = b.x - a.x, dz = b.z - a.z, L = Math.hypot(dx, dz), nx = -dz / L, nz = dx / L;
+    const pts = [], acc = [0], n = 90, wig = i === 5 ? .025 : .035;
+    for (let k = 0; k <= n; k++) {
+      const t = k / n, w = Math.sin(t * Math.PI * 3) * Math.sin(t * Math.PI) * wig;
+      const p = k === 0 ? [a.px, a.py] : k === n ? [b.px, b.py] : proj(a.x + dx * t + nx * w, a.z + dz * t + nz * w);
+      pts.push(p); if (k) acc.push(acc[k - 1] + Math.hypot(p[0] - pts[k - 1][0], p[1] - pts[k - 1][1]));
+    }
+    route.push({ pts, acc, total: acc[n] });
+  }
+  const pointAt = r => {
+    const i = Math.min(5, Math.floor(r)), f = r - i, s = route[i], d = f * s.total;
+    let k = 1; while (k < s.acc.length - 1 && s.acc[k] < d) k++;
+    const t = clamp((d - s.acc[k - 1]) / ((s.acc[k] - s.acc[k - 1]) || 1));
+    return [lerp(s.pts[k - 1][0], s.pts[k][0], t), lerp(s.pts[k - 1][1], s.pts[k][1], t)];
+  };
+
+  /* ---------- Soft shapes: the cloud over the real summit, and a quiet patch behind the words ---------- */
+  const soft = (w, h, blobs, blur) => {
+    const c = document.createElement('canvas'); c.width = w; c.height = h; const g = c.getContext('2d');
+    g.filter = `blur(${blur}px)`;
+    blobs.forEach(([x, y, rx, ry, a]) => { g.fillStyle = `rgba(7,6,12,${a})`; g.beginPath(); g.ellipse(x, y, rx, ry, 0, 0, Math.PI * 2); g.fill(); });
+    return c;
+  };
+  const fogCv = soft(1024, 512, [[512, 200, 330, 130, .98], [370, 190, 230, 95, .95], [660, 210, 250, 100, .95], [290, 290, 210, 70, .85], [720, 290, 220, 72, .85], [520, 110, 300, 90, .98], [512, 320, 260, 60, .7]], 26);
+  (() => { const g = fogCv.getContext('2d'); g.strokeStyle = 'rgba(244,243,248,.07)'; g.lineWidth = 1.4; g.lineCap = 'round';
+    [[200, 300, 460], [380, 262, 420], [260, 228, 330], [560, 330, 300], [470, 190, 360]].forEach(([x, y, w]) => {
+      g.beginPath(); g.moveTo(x, y); g.bezierCurveTo(x + w * .3, y - 7, x + w * .7, y - 7, x + w, y); g.stroke(); }); })();
+  const hushCv = soft(512, 512, [[256, 256, 190, 190, .9]], 46);
+  const FOG = { x: T.x - .75, y: CAMPS[6].py - .3, w: 1.5, h: .75 };
+
+  /* ---------- Timeline (scroll units) ---------- */
+  const A = [1.0, 3.0, 5.0, 7.0, 9.0, 11.0], U = 20;
+  const routeAt = u => {
+    if (u < A[0]) return 0;
+    for (let i = 0; i < 5; i++) { const dep = A[i] + 1.2; if (u < dep) return i; if (u < A[i + 1]) return i + ss(dep, A[i + 1], u); }
+    if (u < 15.0) return 5; if (u < 16.6) return 5 + ss(15.0, 16.6, u); return 6;
+  };
+
+  let W = 0, H = 0, dpr = 1, B = 1, phone = false;
+  const REVEAL = { x: (CAMPS[5].px + CAMPS[6].px) / 2, y: (CAMPS[5].py + CAMPS[6].py) / 2 + .04 };
+  const FULL = { x: (CAMPS[0].px + CAMPS[6].px) / 2 + .05, y: (CAMPS[0].py + CAMPS[6].py) / 2 + .04 };
+  const frame = (pt, s, placed) => {
+    const fx = placed ? (phone ? .48 : .72) : .5, fy = placed ? (phone ? .34 : .55) : .5;
+    return { cx: pt.x - (fx - .5) * W / (B * s), cy: pt.y - (fy - .5) * H / (B * s), s };
+  };
+  const mixCam = (a, b, t) => ({ cx: lerp(a.cx, b.cx, t), cy: lerp(a.cy, b.cy, t), s: Math.exp(lerp(Math.log(a.s), Math.log(b.s), t)) });
+  const CLOSE = () => phone ? 2.7 : 2.5;
+  const camAt = (u, r) => {
+    const full = frame(FULL, phone ? .95 : .92, false);
+    if (reduce) return full;
+    const c = pointAt(r), climber = { x: c[0], y: c[1] };
+    let cam = frame(climber, CLOSE(), true);
+    if (u > 12.4) { // first step back: the false summit, and the real one above it
+      const rv = frame(REVEAL, phone ? 1.5 : 1.45, true);
+      cam = mixCam(cam, rv, ss(12.4, 14.2, u));
+      if (u > 14.9) cam = mixCam(rv, frame(climber, phone ? 2.2 : 2.0, true), ss(14.9, 16.8, u));
+    }
+    if (u > 17.8) cam = mixCam(cam, full, ss(17.8, 19.4, u)); // second step back: the whole climb
+    return cam;
+  };
+
+  /* ---------- Words and rail ---------- */
+  const panels = [...document.querySelectorAll('.panel')].map(el => {
+    const c = el.dataset.camp;
+    const w = c === 'reveal' ? [13.5, 15.1] : c === '6' ? [16.5, 17.9] : c === '5' ? [A[5] - .1, 12.7] : [A[+c] - .1, A[+c] + 1.35];
+    return { el, a: w[0], b: w[1], camp: c, label: (el.dataset.label || '').replace(/\u00b7/g, '\u00b7').toUpperCase() };
+  });
+  const opening = document.getElementById('opening'), closing = document.getElementById('closing'), hint = document.getElementById('hint');
+  const show = (el, o, dir) => { el.style.opacity = o.toFixed(3); el.style.setProperty('--dy', reduce ? '0px' : `${((1 - o) * 12 * dir).toFixed(1)}px`); };
+  const windowed = (u, a, b) => ss(a, a + .4, u) * (1 - ss(b - .4, b, u));
+
+  const rail = document.getElementById('rail'), railFill = document.getElementById('railFill');
+  const h0 = CAMPS[0].py, hT = CAMPS[6].py;
+  const railPos = CAMPS.map((c, i) => .4 * (i / 6) + .6 * ((c.py - h0) / (hT - h0)));
+  const ticks = railPos.map((p, i) => { const t = document.createElement('div'); t.className = 'tick'; t.style.bottom = `${(p * 100).toFixed(2)}%`;
+    t.innerHTML = `<span>${RAIL[i]}</span>`; rail.appendChild(t); return t; });
+
+  /* ---------- Drawing ---------- */
+  let dirty = true;
+  const resize = () => {
+    W = innerWidth; H = innerHeight; phone = W < 760; dpr = Math.min(devicePixelRatio || 1, 1.5);
+    B = phone ? Math.min(W / 2.3, H / 2.2) : Math.min(W / 2.9, H / 1.9);
+    cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); dirty = true;
+  };
+  const strokeRoute = (S, pts, upto) => {
+    ctx.beginPath();
+    for (let k = 0; k < pts.length; k++) { if (upto && k > upto.k) break; const p = S(pts[k]); k ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1]); }
+    if (upto) { const p = S(upto.end); ctx.lineTo(p[0], p[1]); }
+    ctx.stroke();
+  };
+
+  const draw = u => {
+    const r = routeAt(u), cam = camAt(u, r), k = B * cam.s;
+    const reveal = ss(12.7, 13.9, u), tA = lerp(.3, 1, ss(.1, .9, u)) * lerp(1, .5, ss(18.6, 19.4, u));
+    ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.fillStyle = NIGHT; ctx.fillRect(0, 0, cv.width, cv.height);
+
+    // Mountain
+    ctx.setTransform(dpr * k, 0, 0, dpr * k, dpr * (W / 2 - cam.cx * k), dpr * (H / 2 - cam.cy * k));
+    ctx.lineWidth = 1 / k; ctx.lineJoin = 'round'; ctx.globalAlpha = tA; ctx.fillStyle = NIGHT;
+    const haze = lerp(.2, 1, reveal), top = cam.cy - H / 2 / k - .05, bottom = cam.cy + H / 2 / k + .05;
+    const left = cam.cx - W / 2 / k - .02, right = cam.cx + W / 2 / k + .02;
+    for (let i = 0; i < slices.length; i++) {
+      const s = slices[i];
+      if (s.base - 1.2 > bottom) break;               // everything nearer is below the screen
+      if (s.base < top) continue;                     // this ridge sits entirely above the screen
+      ctx.strokeStyle = `rgba(244,243,248,${(s.a * lerp(1, haze, s.back)).toFixed(3)})`;
+      for (const p of s.parts) {
+        if (p.x1 < left || p.x0 > right || p.minY > bottom) continue;
+        ctx.fill(p.fill); ctx.stroke(p.stroke);
+      }
+    }
+    const fogA = 1 - reveal;
+    if (fogA > .005) { ctx.globalAlpha = tA * fogA; ctx.drawImage(fogCv, FOG.x + (reduce ? 0 : reveal * .5), FOG.y - reveal * .15, FOG.w, FOG.h); }
+
+    // A quiet patch of night behind whatever words are showing (under the trail, over the ridges)
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const oOpen = 1 - ss(.3, .8, u), oClose = ss(18.8, 19.4, u);
+    let oPanel = 0;
+    panels.forEach(p => { const o = windowed(u, p.a, p.b); oPanel = Math.max(oPanel, o); show(p.el, o, u < (p.a + p.b) / 2 ? 1 : -1); });
+    const hush = (x, y, w, h, a) => { if (a > .01) { ctx.globalAlpha = a; ctx.drawImage(hushCv, x - w / 2, y - h / 2, w, h); } };
+    if (phone) hush(W / 2, H - 150, W * 1.9, 560, oPanel * .95);
+    else hush(Math.min(W * .12, 210) + 190, H / 2, 900, 720, oPanel * .9);
+    hush(W / 2, H / 2, Math.min(W * 1.3, 1300), 760, Math.max(oOpen, oClose) * .9);
+
+    // Trail and camps, in screen space so line weights stay crisp
+    const S = p => [(p[0] - cam.cx) * k + W / 2, (p[1] - cam.cy) * k + H / 2];
+    ctx.lineCap = 'round';
+    const ri = Math.min(5, Math.floor(r)), rf = r - ri, end = ss(17.8, 19.0, u);
+    // Only the next stretch of trail is visible ahead of you; the rest stays unknown until you step back
+    ctx.setLineDash([2, 6]); ctx.lineWidth = 1.1; ctx.strokeStyle = 'rgba(244,243,248,.5)';
+    for (let i = ri; i < 6; i++) {
+      const a = i === ri ? 1 : end; const gate = i === 5 ? reveal : 1;
+      if (a * gate < .01) continue; ctx.globalAlpha = tA * a * gate; strokeRoute(S, route[i].pts);
+    }
+    ctx.setLineDash([]); ctx.lineWidth = 2; ctx.strokeStyle = GOLD; ctx.globalAlpha = tA;
+    for (let i = 0; i < ri; i++) strokeRoute(S, route[i].pts);
+    if (rf > 0) { const s = route[ri], d = rf * s.total; let kk = 0; while (kk < s.acc.length - 1 && s.acc[kk + 1] < d) kk++; strokeRoute(S, s.pts, { k: kk, end: pointAt(r) }); }
+
+    CAMPS.forEach((c, i) => {
+      const vis = i === 6 ? reveal : (i <= ri + 1 || end > 0) ? 1 : 0; if (vis < .01) return;
+      const p = S([c.px, c.py]), reached = r >= i - .02;
+      ctx.globalAlpha = tA * vis;
+      if (i === 6) {
+        ctx.strokeStyle = reached ? GOLD : 'rgba(244,243,248,.55)'; ctx.lineWidth = 1.2;
+        ctx.beginPath(); ctx.moveTo(p[0], p[1] - 3); ctx.lineTo(p[0], p[1] - 22); ctx.stroke();
+        ctx.fillStyle = ctx.strokeStyle; ctx.beginPath(); ctx.moveTo(p[0], p[1] - 22); ctx.lineTo(p[0] + 11, p[1] - 18.5); ctx.lineTo(p[0], p[1] - 15); ctx.fill();
+      }
+      ctx.beginPath(); ctx.arc(p[0], p[1], 3.5, 0, Math.PI * 2);
+      ctx.fillStyle = reached ? GOLD : NIGHT; ctx.fill(); ctx.lineWidth = 1.2; ctx.strokeStyle = reached ? GOLD : 'rgba(244,243,248,.6)'; ctx.stroke();
+    });
+    // Camp names beside their dots: on while that camp is being told, and all together on the step back
+    ctx.font = `600 11px ${getComputedStyle(document.body).fontFamily}`; ctx.textBaseline = 'alphabetic';
+    if ('letterSpacing' in ctx) ctx.letterSpacing = '2.2px';
+    panels.forEach(pn => {
+      if (!pn.label) return;
+      const i = +pn.camp, c = CAMPS[i]; if (!c) return;
+      const o = Math.max(windowed(u, pn.a, pn.b), end * .75) * (i === 6 ? reveal : 1);
+      if (o < .01) return;
+      const p = S([c.px, c.py]), x = p[0] + (i === 6 ? 16 : 10), y = p[1] - (i === 6 ? 26 : 12);
+      const tw = ctx.measureText(pn.label).width, px = 9, ph = 24;
+      ctx.globalAlpha = tA * o * .92; ctx.fillStyle = NIGHT; ctx.beginPath();
+      if (ctx.roundRect) ctx.roundRect(x - px, y - 16, tw + px * 2, ph, 4); else ctx.rect(x - px, y - 16, tw + px * 2, ph); ctx.fill();
+      ctx.globalAlpha = tA * o; ctx.fillStyle = 'rgba(244,243,248,.95)'; ctx.fillText(pn.label, x, y);
+    });
+    if ('letterSpacing' in ctx) ctx.letterSpacing = '0px';    const cp = S(pointAt(r));
+    ctx.globalAlpha = tA * .4; ctx.strokeStyle = GOLD; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(cp[0], cp[1], 10, 0, Math.PI * 2); ctx.stroke();
+    ctx.globalAlpha = tA; ctx.fillStyle = GOLD; ctx.beginPath(); ctx.arc(cp[0], cp[1], 3, 0, Math.PI * 2); ctx.fill();
+
+    // Words
+    show(opening, oOpen, -1); hint.style.opacity = (1 - ss(.05, .35, u)).toFixed(3);
+    show(closing, oClose, 1); closing.style.pointerEvents = oClose > .5 ? 'auto' : 'none';
+    // The mountain softens and dims behind the closing words so they stand clear
+    const bl = ss(18.2, 19.4, u);
+    cv.style.filter = bl > .01 ? `blur(${(bl * 7).toFixed(2)}px) brightness(${(1 - bl * .35).toFixed(3)})` : 'none';
+
+    // Rail
+    const fi = Math.min(5, Math.floor(r)), ff = r - fi;
+    railFill.style.height = `${(lerp(railPos[fi], railPos[Math.min(6, fi + 1)], ff) * 100).toFixed(2)}%`;
+    ticks.forEach((t, i) => { t.classList.toggle('on', r >= i - .02); if (i === 6) t.classList.toggle('hidden', reveal < .5); });
+  };
+
+  // Words sit above the canvas, so the quiet patches are drawn last on the canvas and the text stays crisp on top.
+  const climb = document.getElementById('climb');
+  const target = () => clamp(-climb.getBoundingClientRect().top / Math.max(1, climb.offsetHeight - innerHeight)) * U;
+  // Smooth scrolling turns wheel notches into one glide; a light ease on top keeps the camera from twitching.
+  const lenis = (!reduce && window.Lenis) ? new window.Lenis({ duration: 1.2, easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)), smoothWheel: true, autoRaf: false }) : null;
+  let cur = target(), last = 0, drawnAt = -1;
+  const loop = time => {
+    if (lenis) lenis.raf(time);
+    const dt = Math.min(64, time - (last || time)); last = time;
+    const t = target();
+    cur = reduce ? t : cur + (t - cur) * (1 - Math.exp(-dt / 90));
+    if (Math.abs(t - cur) < .0004) cur = t;
+    if (dirty || cur !== drawnAt) { draw(cur); drawnAt = cur; dirty = false; }
+    requestAnimationFrame(loop);
+  };
+  addEventListener('resize', resize); resize();
+  if (document.fonts) document.fonts.ready.then(() => { dirty = true; });
+  requestAnimationFrame(loop);
+  window.__summit = { CAMPS, lenis, state: () => ({ cur, t: target() }) };
+})();
+<\/script>
+<script>
+/* Site chrome: the bar turns solid once you leave the top, hides on the way down and returns on the way up; images fade in as they load. */
+(() => {
+  const nav = document.getElementById('nav');
+  if (nav) {
+    let last = scrollY;
+    addEventListener('scroll', () => {
+      const y = scrollY;
+      nav.classList.toggle('solid', y > 40);
+      if (Math.abs(y - last) > 6) { nav.classList.toggle('hide', y > last && y > 160 && !nav.classList.contains('open')); last = y; }
+    }, { passive: true });
+    const t = nav.querySelector('.burger');
+    const setOpen = o => { nav.classList.toggle('open', o); t.setAttribute('aria-expanded', String(o)); t.setAttribute('aria-label', o ? 'Close menu' : 'Open menu'); };
+    t.addEventListener('click', () => setOpen(!nav.classList.contains('open')));
+    addEventListener('keydown', e => { if (e.key === 'Escape') setOpen(false); });
+    nav.querySelectorAll('.drawer a').forEach(a => a.addEventListener('click', () => setOpen(false)));  }
+  document.querySelectorAll('img').forEach(i => { const done = () => i.classList.add('loaded'); i.complete ? done() : i.addEventListener('load', done); });
+})();
+<\/script><script>
+/* Size RIPL so the four letters run the full width of the screen. */
+(() => {
+  const w = document.getElementById('megaWord');
+  if (!w) return;
+  const fit = () => {
+    const target = document.documentElement.clientWidth * .99;
+    let size = 100; w.style.fontSize = size + 'px';
+    for (let k = 0; k < 3; k++) { const got = w.getBoundingClientRect().width; if (!got) return; size *= target / got; w.style.fontSize = size + 'px'; }
+  };
+  fit(); addEventListener('resize', fit); addEventListener('load', fit); setTimeout(fit, 600); setTimeout(fit, 1600);
+  if (document.fonts) { document.fonts.ready.then(fit); document.fonts.load('600 100px Rokkitt').then(fit); }
+  let n = 0; const iv = setInterval(() => { fit(); if (++n > 10) clearInterval(iv); }, 500);
+})();
+<\/script><script>
+/* SAGE content: fade sections in and draw the rhythm diagram as they come into view. */
+(() => {
+  const els = document.querySelectorAll('.fp-after [data-reveal], .fp-after .draw, .fp-after .k-step');
+  if (!('IntersectionObserver' in window)) { els.forEach(el => el.classList.add('in')); return; }
+  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -12% 0px' });
+  els.forEach(el => io.observe(el));
+})();
+<\/script><script>
+/* The four meetings: the track slides sideways with the scroll; the meeting you're on comes forward with its full paragraph,
+   the others step back. The fee card also opens on tap for touch screens. */
+(() => {
+  const m = document.getElementById('meet'); if (!m) return;
+  const track = document.getElementById('meetTrack'), fill = document.getElementById('meetFill'), cards = [...track.children];
+  const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v)), ease = x => x * x * (3 - 2 * x);
+  const paint = () => {
+    const r = m.getBoundingClientRect(); if (r.bottom < 0 || r.top > innerHeight) return;
+    const p = clamp(-r.top / Math.max(1, r.height - innerHeight));
+    // hold on each meeting, then glide to the next
+    const raw = clamp((p - .04) / .9) * (cards.length - 1), i = Math.floor(raw), k = raw - i, f = Math.min(cards.length - 1, i + ease(clamp((k - .35) / .65)));
+    const ttl = m.querySelector('.fp-meet-title'), pad = ttl ? ttl.getBoundingClientRect().left : 20;
+    const left = a => a.offsetLeft, cw = cards[0].offsetWidth;
+    const target = left(cards[0]) + (left(cards[cards.length - 1]) - left(cards[0])) * (f / (cards.length - 1));
+    track.style.transform = `translateX(${(pad - target).toFixed(1)}px)`;
+    fill.style.width = `${(p * 100).toFixed(2)}%`;
+    cards.forEach((c, j) => { const w = clamp(1 - Math.abs(f - j)); c.style.opacity = (.22 + .78 * w).toFixed(3);
+      c.style.transform = `scale(${(.86 + .14 * w).toFixed(4)})`; c.querySelector('p').style.opacity = clamp((w - .45) / .45).toFixed(3); });
+  };
+  const loop = () => { paint(); requestAnimationFrame(loop); }; requestAnimationFrame(loop);
+  const more = document.querySelector('.fp-more'), why = document.getElementById('feeWhy');
+  if (more) more.addEventListener('click', () => { const open = more.getAttribute('aria-expanded') !== 'true'; more.setAttribute('aria-expanded', String(open)); why.inert = !open; more.closest('.fp-cost').classList.toggle('open', open); more.firstChild.textContent = open ? 'Hide the details ' : 'See the details '; });
+})();
+<\/script><script>
+/* From static to clarity: many tangled lines settle onto one straight line as you scroll, then gold draws through it. */
+(() => {
+  const box = document.getElementById('staticScroll'), cv = document.getElementById('staticCv'); if (!box || !cv) return;
+  const ctx = cv.getContext('2d'), N = 18, M = 160;
+  const cl = v => Math.min(1, Math.max(0, v)), ease = x => 1 - Math.pow(1 - x, 3);
+  let seed = 11; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  const threads = [...Array(N)].map(() => ({ ph: [rnd() * 6.28, rnd() * 6.28, rnd() * 6.28, rnd() * 6.28],
+    f: [.8 + rnd() * 2.2, 2 + rnd() * 4, .8 + rnd() * 2.4, 2.5 + rnd() * 3.5], amp: .45 + rnd() * .7, sh: (rnd() - .5) * 2, sx: rnd() - .5, lag: rnd() * .12 }));
+  let W = 0, H = 0, dpr = 1, mob = false, q = false;
+  const size = () => { dpr = Math.min(2, devicePixelRatio || 1); W = cv.clientWidth; H = cv.clientHeight; mob = W < 700;
+    cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); paint(); };
+  const paint = () => {
+    q = false; if (!W) return;
+    const r = box.getBoundingClientRect(); if (r.bottom < 0 || r.top > innerHeight) return;
+    const p = cl(-r.top / Math.max(1, r.height - innerHeight));
+    const x0 = W * .08, x1 = W * .92, y0 = H * (mob ? .54 : .52);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H); ctx.lineWidth = 1;
+    const settle = cl(p / .62);
+    threads.forEach(L => {
+      const s = ease(cl((settle - L.lag) / (1 - L.lag))), A = 1 - s, amp = A * L.amp * H * (mob ? .12 : .17);
+      ctx.beginPath();
+      for (let j = 0; j < M; j++) {
+        const t = j / (M - 1);
+        const n1 = Math.sin(t * L.f[0] * 6.283 + L.ph[0]) + .5 * Math.sin(t * L.f[1] * 6.283 + L.ph[1]);
+        const n2 = Math.sin(t * L.f[2] * 6.283 + L.ph[2]) + .4 * Math.sin(t * L.f[3] * 6.283 + L.ph[3]);
+        const x = x0 + (x1 - x0) * t + n2 * amp * .7 + L.sx * A * W * .06, y = y0 + n1 * amp + L.sh * A * H * (mob ? .07 : .1);
+        j ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+      }
+      ctx.strokeStyle = `rgba(244,243,248,${(.14 + .4 * A).toFixed(3)})`; ctx.stroke();
+    });
+    const g = cl((p - .66) / .26);
+    if (g > 0) { ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x0 + (x1 - x0) * ease(g), y0); ctx.strokeStyle = '#C9963A'; ctx.lineWidth = 1.6; ctx.stroke(); }
+  };
+  addEventListener('scroll', () => { if (!q) { q = true; requestAnimationFrame(paint); } }, { passive: true });
+  addEventListener('resize', size); size();
+})();
+<\/script><script>
+/* Pages live in srcdoc frames, where a bare "#" link would load the whole prototype inside itself.
+   So: #go- links switch pages, #id links scroll in place, and placeholder links show a quiet note. */
+(() => {
+  let toast, tm;
+  const note = msg => {
+    if (!toast) {
+      toast = document.createElement('div');
+      toast.style.cssText = 'position:fixed;left:50%;bottom:28px;transform:translateX(-50%);z-index:9999;padding:12px 18px;border-radius:999px;background:#15122A;color:#F4F3F8;border:1px solid rgba(201,150,58,.5);font:500 .86rem "DM Sans",system-ui,sans-serif;box-shadow:0 12px 32px rgba(0,0,0,.5);transition:opacity .3s;pointer-events:none;';
+      document.body.appendChild(toast);
+    }
+    toast.textContent = msg; toast.style.opacity = 1;
+    clearTimeout(tm); tm = setTimeout(() => { toast.style.opacity = 0; }, 2200);
+  };
+  document.addEventListener('click', e => {
+    const a = e.target.closest('a[href^="#"]');
+    if (!a) return;
+    e.preventDefault();
+    const href = a.getAttribute('href');
+    if (href.startsWith('#go-')) { parent.postMessage({ riplView: href.slice(4) }, '*'); return; }
+    const t = href.length > 1 && document.getElementById(href.slice(1));
+    if (t) { t.scrollIntoView({ behavior: 'smooth' }); return; }
+    note('This page isnâ€™t in the prototype yet.');
+  }, true);
+})();
+<\/script><script>
+window.addEventListener('message', function(e) {if (!e.data || e.data.type !== 'riplSceneProgress') return;
+ const scene=document.getElementById('climb');if(!scene)return;
+ const max=Math.max(0,scene.offsetHeight-window.innerHeight);
+ window.scrollTo(0,scene.offsetTop+max*Math.max(0,Math.min(1,e.data.progress)));
+});
+</script></body>
+</html>
