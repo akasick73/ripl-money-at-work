@@ -1,0 +1,206 @@
+:root{--v27-night:#090909;--v27-gold:#C9963A;--v27-silver:#F6F6F5;--v27-muted:#B6B5B4;--v27-body:'DM Sans',sans-serif;--v27-serif:'Newsreader',Georgia,serif}
+html{scroll-behavior:smooth}body{background:var(--v27-night)!important;color:var(--v27-silver)!important;font-family:var(--v27-body)!important}
+.v27-nav{position:fixed;z-index:110;top:0;left:0;right:0;padding:19px max(24px,calc((100vw - 1240px)/2));display:flex;align-items:center;justify-content:space-between;gap:20px;background:linear-gradient(180deg,rgba(9,9,9,.95),rgba(9,9,9,.5));backdrop-filter:blur(8px)}
+.v27-wordmark{font:600 27px/1 'Rokkitt',Georgia,serif;letter-spacing:.08em;color:var(--v27-gold)!important;text-decoration:none!important}.v27-nav nav{display:flex;gap:12px;align-items:center}.v27-nav nav a{color:var(--v27-silver);font-size:13px;text-decoration:none;padding:10px 15px;border:1px solid rgba(246,246,245,.2);border-radius:40px}.v27-nav nav .v27-talk{background:var(--v27-gold);border-color:var(--v27-gold);color:var(--v27-night);font-weight:700}
+.v27-scene{position:relative;background:#090909}.v27-home-scene{height:240vh}.v27-freedom-scene{height:720vh}.v27-scene-pin{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}.v27-scene iframe{width:100%;height:100%;border:0;display:block;background:#090909;pointer-events:none}
+.quiz-first-hero{padding:clamp(100px,10vw,150px) 24px!important;display:block!important;max-width:960px!important;min-height:auto!important;background:transparent!important}.quiz-first-main{width:100%!important;max-width:none!important}.v27-quiz-intro{text-align:center;max-width:780px;margin:0 auto 42px}.v27-quiz-intro h2{font:300 clamp(42px,6vw,82px)/1.04 var(--v27-serif);letter-spacing:-.025em;color:var(--v27-silver);margin:16px auto 20px}.v27-quiz-intro h2 em{color:var(--v27-gold);font-weight:300}.v27-quiz-intro p{color:var(--v27-muted)}.v27-quiz-intro .eyebrow{color:var(--v27-gold);letter-spacing:.2em;font-size:11px}
+.quiz-first-card,.quiz-shell{background:#1F1E1D!important;border-color:rgba(246,246,245,.12)!important;color:var(--v27-silver)!important;border-radius:18px!important;box-shadow:none!important}.quiz-first-card *{font-family:var(--v27-body)}.quiz-first-card h2,.quiz-first-card h3,.quiz-first-card .question-title{color:var(--v27-silver)!important}.quiz-first-card p,.quiz-first-card label,.quiz-first-card span{color:inherit}.quiz-first-card button,.quiz-first-card .button{border-radius:999px}.quiz-first-booking{color:var(--v27-muted)}
+.v27-adam{display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:clamp(28px,6vw,100px);padding:clamp(70px,10vw,150px) 24px!important}.v27-adam img{width:100%;border-radius:18px;filter:saturate(.7) brightness(.8)}.v27-adam h2{font:300 clamp(38px,5vw,70px)/1.05 var(--v27-serif);color:var(--v27-silver)}.v27-adam h2 em{color:var(--v27-gold)}.v27-adam p{color:var(--v27-muted);margin:22px 0}.v27-adam .eyebrow{color:var(--v27-gold);font-size:11px;letter-spacing:.18em}.v27-adam a{color:var(--v27-gold)}
+.section-band,.section-band--white,.section-band--warm{background:#090909!important;color:var(--v27-silver)!important;border-top:1px solid rgba(246,246,245,.07)}.section-band .section{padding-top:clamp(80px,10vw,140px);padding-bottom:clamp(80px,10vw,140px)}.section-band h2,.section-band h3,.section-band blockquote{font-family:var(--v27-serif)!important;font-weight:300!important;letter-spacing:-.025em;color:var(--v27-silver)!important;text-transform:none!important}.section-band h2{font-size:clamp(40px,5vw,70px)!important;line-height:1.07!important}.section-band h2 em,.section-band h3 em{color:var(--v27-gold)!important}.section-band p,.section-band li{color:var(--v27-muted)}.section-band .eyebrow{color:var(--v27-gold)!important;font-family:var(--v27-body);letter-spacing:.18em}.section-band .story-copy{max-width:720px}.section-band .story-copy p{font-size:17px;line-height:1.75}.section-band .button,.quiz-first-booking .button{background:var(--v27-gold)!important;color:#090909!important;border:1px solid var(--v27-gold)!important;border-radius:999px!important}.video-card,.question-section form,.market-chart{background:#1F1E1D!important;border:1px solid rgba(246,246,245,.1)!important;border-radius:18px!important}.video-card h3{color:var(--v27-silver)!important}.question-section input,.question-section textarea{background:#292827!important;color:var(--v27-silver)!important;border-color:rgba(246,246,245,.2)!important}footer{background:#090909!important;color:var(--v27-muted)!important;border-top:1px solid rgba(246,246,245,.08)}footer a{color:var(--v27-gold)}
+@media(max-width:760px){.v27-nav{padding:14px 18px}.v27-nav nav a:not(.v27-talk){display:none}.v27-home-scene{height:200vh}.v27-freedom-scene{height:580vh}.v27-adam{grid-template-columns:1fr}.quiz-first-hero{padding:80px 16px!important}.v27-quiz-intro h2{font-size:clamp(40px,11vw,60px)}}
+@media(prefers-reduced-motion:reduce){.v27-home-scene{height:100vh}.v27-freedom-scene{height:100vh}}
+
+/* V28: override legacy quiz-first light palette with the original RIPL site design tokens. */
+:root{--quiz-accent:#C9963A;--navy:#1D1D1C;--purple:#C9963A;--gold:#C9963A;--cream:#090909;--white:#1F1E1D;--ink:#F6F6F5;--muted:#B6B5B4;--line:rgba(246,246,245,.14);--sans:'DM Sans',sans-serif;--serif:'Newsreader',Georgia,serif}
+#hero .quiz-first-card,#hero .quiz-first-card .quiz-shell{background:#1F1E1D!important;color:#F6F6F5!important;border:1px solid rgba(246,246,245,.14)!important;box-shadow:none!important}
+#hero .quiz-first-card .quiz-header .eyebrow,#hero .quiz-first-card #step-label,#hero .quiz-first-card .quiz-top-count{color:#C9963A!important}
+#hero .quiz-first-card .quiz-progress .track{background:#373736!important}
+#hero .quiz-first-card .quiz-progress .track i{background:#C9963A!important}
+#hero .quiz-first-card .question-title{font-family:'Newsreader',Georgia,serif!important;font-size:clamp(25px,3.2vw,39px)!important;font-weight:350!important;color:#F6F6F5!important}
+#hero .quiz-first-card .hint,#hero .quiz-first-card .quiz-first-footnote{color:#B6B5B4!important}
+#hero .quiz-first-card .options button{background:#2A2928!important;color:#F6F6F5!important;-webkit-text-fill-color:#F6F6F5!important;border:1px solid #515150!important;border-radius:12px!important;min-height:58px!important;white-space:normal!important;overflow-wrap:anywhere!important}
+#hero .quiz-first-card .options button:hover,#hero .quiz-first-card .options button:focus-visible{background:#353534!important;border-color:#C9963A!important}
+#hero .quiz-first-card .options button.selected{background:#403324!important;border:2px solid #C9963A!important;box-shadow:inset 3px 0 #C9963A!important}
+#hero .quiz-first-card .answer-observation{background:#2B2A29!important;border-left:3px solid #C9963A!important;color:#E3E2E1!important}
+#hero .quiz-first-card .quiz-nav #next-step{background:#C9963A!important;border-color:#C9963A!important;color:#090909!important;-webkit-text-fill-color:#090909!important;border-radius:999px!important}
+#hero .quiz-first-card .quiz-nav #next-step:hover:not(:disabled){background:#E7C98F!important}
+#hero .quiz-first-card .quiz-nav #BCBBBAk-step{color:#E7C98F!important}
+#hero .quiz-first-booking .button{background:transparent!important;color:#E7C98F!important;border:1px solid #C9963A!important}
+#hero #results{background:#1F1E1D!important;color:#F6F6F5!important;border:1px solid rgba(246,246,245,.14)!important}
+#hero #results :is(h2,h3,h4,strong){color:#F6F6F5!important}
+#hero #results :is(p,li,small){color:#CFCFCE!important}
+#hero #results :is(.snapshot-tile,.priority-card,.locked-priority,.report-unlock,.results-priority-cta,.result-preview,.result-cards article,.results-adam-note){background:#2A2928!important;border-color:#515150!important;color:#F6F6F5!important}
+#hero #results :is(input,textarea){background:#2A2928!important;color:#F6F6F5!important;border-color:#6F6F6E!important}
+#hero #results :is(.button.primary,button[type=submit]){background:#C9963A!important;color:#090909!important;border-color:#C9963A!important}
+#hero #results a:not(.button){color:#E7C98F!important}
+#hero #results .results-priority-cta{background:#2A2928!important}
+.v27-scene iframe{touch-action:pan-y}
+@media(max-width:760px){html,body{max-width:100%;overflow-x:clip}.v27-nav{min-height:64px}.v27-nav nav{min-width:0}.v27-nav nav .v27-talk{padding:9px 14px;font-size:12px}.v27-home-scene{height:170svh}.v27-freedom-scene{height:400svh}.v27-scene-pin{height:100svh}.quiz-first-hero{width:100%;max-width:100%;padding:64px 14px!important}.quiz-first-main,.quiz-section,.quiz-shell,#quiz-content{width:100%;min-width:0;max-width:100%}#hero .quiz-first-card .quiz-shell{padding:22px 14px!important}#hero .quiz-first-card .options button{font-size:15px!important;padding:14px 13px!important}#hero .quiz-first-card .quiz-nav{flex-wrap:wrap}#hero .quiz-first-card .quiz-nav #next-step{max-width:none;min-width:0}#hero #results{padding:16px 12px!important;max-width:100%;overflow-wrap:anywhere}.v27-adam{padding:65px 20px!important}.v27-adam img{max-height:420px;object-fit:cover}.section-band .section{padding:70px 20px}.section-band h2{font-size:clamp(34px,9vw,54px)!important}.section-band .story-copy p{font-size:16px}}
+@media(max-width:390px){.v27-wordmark{font-size:23px}.v27-nav{padding-inline:12px}.v27-quiz-intro h2{font-size:38px!important}#hero .quiz-first-card .quiz-header{flex-wrap:wrap}}
+
+/* V29 — unified neutral surfaces, gold action, remove legacy violet highlights. */
+:root{--v27-night:#080809;--v27-silver:#F4F3F2;--v27-muted:#A7A7A8;--navy:#111113;--cream:#080809;--white:#19191B;--ink:#F4F3F2;--muted:#A7A7A8;--line:rgba(244,243,242,.14)}
+body,.v27-scene,.section-band,.section-band--white,.section-band--warm,footer{background:#080809!important}
+.quiz-first-card,#hero .quiz-first-card,#hero .quiz-first-card .quiz-shell,#hero #results,.video-card,.question-section form{background:#19191B!important;border-color:rgba(244,243,242,.15)!important}
+#hero .quiz-first-card .options button,#hero #results :is(.snapshot-tile,.priority-card,.locked-priority,.report-unlock,.results-priority-cta,.result-preview,.result-cards article,.results-adam-note){background:#242426!important;border-color:#4A4A4D!important}
+#hero .quiz-first-card .options button:hover,#hero .quiz-first-card .options button:focus-visible{background:#303033!important;border-color:#C9963A!important}
+#hero .quiz-first-card .options button.selected{background:#403324!important;border-color:#C9963A!important}
+#hero .quiz-first-card .answer-observation{background:#292929!important;color:#E4E3E0!important}
+#hero .quiz-first-card .quiz-progress .track{background:#323234!important}
+#hero #results :is(p,li,small){color:#CACACA!important}
+.question-section input,.question-section textarea,#hero #results :is(input,textarea){background:#242426!important;color:#F4F3F2!important;border-color:#5D5D60!important}
+.section-band .story-copy p,.section-band p,.section-band li{color:#B7B7B8!important}
+.team-video summary,.quiz-back{color:#C9963A!important}
+
+/* V3 mobile quiz access: the long scroll-driven opening previously hid
+   the existing Quiz navigation link on narrow screens. Keep the original
+   animation and all desktop styles unchanged; expose the jump link. */
+@media (max-width: 760px) {
+  .v27-nav nav { gap: 7px; }
+  .v27-nav nav a[href="#quiz"] {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    padding: 9px 11px;
+    font-size: 12px;
+    font-weight: 700;
+    min-height: 38px;
+    color: var(--v27-silver) !important;
+    border: 1px solid rgba(246,246,245,.45);
+    background: rgba(31,30,29,.85);
+  }
+}
+@media (max-width: 370px) {
+  .v27-nav nav a[href="#quiz"] { padding: 8px 9px; font-size: 11px; }
+  .v27-nav nav .v27-talk { padding: 9px 11px; }
+}
+
+/* RIPL V3 regression fix — mobile touch scrolling across the embedded hero.
+   The opening is an iframe containing a complete homepage. On iOS, a swipe over
+   that frame can scroll the embedded document instead of the landing page,
+   bypassing the adjacent quiz. This transparent touch layer sends the gesture
+   to the parent page without touching the iframe's programmatic animation. */
+@media (max-width: 760px) {
+  .v27-home-scene .v27-scene-pin { isolation: isolate; }
+  .v27-home-scene .v27-scene-pin::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background: transparent;
+    pointer-events: auto;
+    touch-action: pan-y;
+  }
+}
+
+
+/* Guided Climb v1: calm, RIPL-branded controls; no pinned scrolling or scroll hijack. */
+.v27-freedom-scene.v27-guided-climb{height:100svh!important;min-height:610px;position:relative;background:#090909!important}
+.v27-guided-climb .v27-scene-pin{position:relative;top:auto;height:100svh;min-height:610px;overflow:hidden}
+.v27-guided-climb .v27-scene-pin iframe{pointer-events:none;touch-action:pan-y}
+.v27-climb-guide{position:absolute;left:max(30px,calc((100vw - 1200px)/2));right:max(30px,calc((100vw - 1200px)/2));bottom:clamp(22px,4svh,40px);z-index:5;max-width:1200px;color:#F4F3F2;font-family:'DM Sans',sans-serif;pointer-events:auto}
+.v27-climb-guide::before{content:"";position:absolute;z-index:-1;pointer-events:none;left:-50px;right:-50px;bottom:-55px;height:230px;background:linear-gradient(0deg,rgba(9,9,9,.99) 0%,rgba(9,9,9,.85) 35%,transparent 100%)}
+.v27-climb-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:13px;color:#D0CFCB}
+.v27-climb-head-title,.v27-climb-head-count{font-size:10px;letter-spacing:.16em;font-weight:600}
+.v27-climb-head-count{color:#C9963A;white-space:nowrap;font-variant-numeric:tabular-nums}
+.v27-climb-progress{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:9px;margin-bottom:18px}
+.v27-climb-stage{font:500 10px/1.2 'DM Sans',sans-serif;text-transform:uppercase;letter-spacing:.08em;text-align:left;padding:0;min-height:29px;color:#8D8D8E;background:none;border:0;cursor:pointer;display:flex;flex-direction:column;gap:10px;min-width:0}
+.v27-climb-segment{height:3px;width:100%;background:rgba(246,246,245,.22);border-radius:100px;transition:background .35s}
+.v27-climb-stage.is-active .v27-climb-segment,.v27-climb-stage.is-complete .v27-climb-segment{background:#C9963A}
+.v27-climb-stage.is-active{color:#F4F3F2}
+.v27-climb-stage.is-complete{color:#C3B19A}
+.v27-climb-stage:hover .v27-climb-segment,.v27-climb-stage:focus-visible .v27-climb-segment{background:#E3B969}
+.v27-climb-actions{display:grid;grid-template-columns:minmax(125px,1fr) 1fr minmax(165px,1fr);align-items:center;gap:16px}
+.v27-climb-back,.v27-climb-next{font:600 13px/1 'DM Sans',sans-serif;letter-spacing:.01em;border-radius:100px;min-height:48px;padding:13px 23px;cursor:pointer;transition:background .2s,border-color .2s,transform .2s}
+.v27-climb-back{justify-self:start;color:#F4F3F2;background:rgba(29,29,31,.8);border:1px solid rgba(246,246,245,.31)}
+.v27-climb-back:disabled{opacity:.4;cursor:default}
+.v27-climb-next{justify-self:end;color:#090909;background:#C9963A;border:1px solid #C9963A;min-width:175px}
+.v27-climb-next:hover{background:#E5BA6E;border-color:#E5BA6E}
+.v27-climb-back:hover:not(:disabled){background:#29292B;border-color:#E5BA6E}
+.v27-climb-current{text-align:center;font:500 11px/1 'DM Sans',sans-serif;letter-spacing:.24em;color:#E2E0DC}
+.v27-climb-hint{margin:10px 0 0;text-align:center;font:500 10px/1.35 'DM Sans',sans-serif;letter-spacing:.06em;color:#A19F9C}
+.v27-guided-climb button:focus-visible{outline:2px solid #E5BA6E;outline-offset:4px}
+@media(max-width:760px){
+  .v27-freedom-scene.v27-guided-climb{height:100svh!important;min-height:600px}
+  .v27-guided-climb .v27-scene-pin{height:100svh;min-height:600px}
+  .v27-climb-guide{left:20px;right:20px;bottom:max(16px,env(safe-area-inset-bottom,0px))}
+  .v27-climb-guide::before{left:-22px;right:-22px;bottom:-35px;height:185px}
+  .v27-climb-progress{gap:7px;margin-bottom:16px}
+  .v27-climb-stage{min-height:14px;gap:0}
+  .v27-climb-stage-name{display:none}
+  .v27-climb-actions{grid-template-columns:1fr 1fr;gap:12px}
+  .v27-climb-current{display:none}
+  .v27-climb-back,.v27-climb-next{justify-self:stretch;min-width:0;width:100%;padding:12px 12px;min-height:48px;font-size:13px}
+  .v27-climb-head-title{font-size:10px;letter-spacing:.12em}
+  .v27-climb-hint{font-size:10px}
+}
+@media(max-width:380px){.v27-climb-guide{left:14px;right:14px}.v27-climb-head-title{font-size:9px}.v27-climb-progress{gap:5px}}
+@media(prefers-reduced-motion:reduce){.v27-climb-segment,.v27-climb-back,.v27-climb-next{transition:none}}
+
+/* The original climb's editorial typography, rendered on the parent so it's readable
+   even while the mountain canvas initializes in the background. */
+.v27-climb-story{position:absolute;left:max(155px,calc((100vw - 1110px)/2));top:45%;transform:translateY(-50%);z-index:3;max-width:410px;width:calc(100% - 310px);pointer-events:none;text-shadow:0 1px 15px rgba(9,9,9,.4)}
+.v27-climb-story::before{content:"";position:absolute;z-index:-1;inset:-65px -80px;background:radial-gradient(ellipse,rgba(9,9,9,.83) 0%,rgba(9,9,9,.38) 54%,transparent 76%);pointer-events:none}
+.v27-climb-story-kicker{margin:0 0 17px;color:#D9D7D2;font:600 10px/1.4 'DM Sans',sans-serif;letter-spacing:.19em;text-transform:uppercase}
+.v27-climb-story h2{margin:0;color:#F4F3F2;font:300 clamp(33px,3.6vw,51px)/1.09 'Newsreader',Georgia,serif;letter-spacing:-.02em}
+.v27-climb-story-copy{margin:18px 0 0;color:#B6B5B4;font:400 15px/1.65 'DM Sans',sans-serif;max-width:36ch}
+@media(max-width:760px){
+ .v27-climb-story{left:26px;right:26px;top:auto;bottom:clamp(185px,29svh,250px);transform:none;width:auto;max-width:440px}
+ .v27-climb-story::before{inset:-25px -24px;background:linear-gradient(90deg,rgba(9,9,9,.9),rgba(9,9,9,.15))}
+ .v27-climb-story-kicker{font-size:10px;margin-bottom:11px}
+ .v27-climb-story h2{font-size:clamp(29px,8vw,38px)}
+ .v27-climb-story-copy{font-size:14px;line-height:1.55;margin-top:13px;max-width:36ch}
+}
+@media(max-width:390px){.v27-climb-story{left:22px;right:20px;bottom:clamp(178px,29svh,233px)}.v27-climb-story h2{font-size:28px}.v27-climb-story-copy{font-size:13px}}
+
+
+/* Guided Climb v2 — mobile usability. Controls are visible on entry, and an
+   inert touch surface shields the embedded artwork so gestures scroll the
+   parent document on iOS instead of the iframe. The seven-stage artwork and
+   quiz remain unchanged. */
+.v27-climb-exit-row{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:10px}
+.v27-climb-exit-row .v27-climb-hint{margin:0;text-align:left}
+.v27-climb-skip{color:#E9BF77;text-decoration:none;font:600 11px/1.4 'DM Sans',sans-serif;letter-spacing:.015em;white-space:nowrap;padding:7px 0 7px 12px;min-height:34px;display:inline-flex;align-items:center;gap:7px}
+.v27-climb-skip:hover,.v27-climb-skip:focus-visible{color:#E9BF77;text-decoration:underline;text-underline-offset:4px}
+#meet-adam{scroll-margin-top:64px}
+.v27-guided-climb .v27-scene-pin{isolation:isolate}
+.v27-guided-climb .v27-scene-pin::after{content:"";position:absolute;inset:0;z-index:2;pointer-events:auto;touch-action:pan-y;background:transparent}
+.v27-guided-climb .v27-climb-guide{z-index:5}
+.v27-guided-climb .v27-climb-story{z-index:3}
+.v27-guided-climb,.v27-guided-climb .v27-scene-pin{overscroll-behavior-y:auto;touch-action:pan-y}
+.v27-guided-climb .v27-climb-guide,.v27-guided-climb .v27-climb-actions,.v27-guided-climb .v27-climb-exit-row{touch-action:pan-y}
+.v27-guided-climb button,.v27-guided-climb a{touch-action:pan-y}
+.v27-guided-climb .v27-climb-skip:focus-visible{outline:2px solid #E5BA6E;outline-offset:4px}
+@media(max-width:760px){
+  /* No artificial minimum height: on compact iPhones it used to push the
+     absolute controls below the visible screen. */
+  .v27-freedom-scene.v27-guided-climb{height:100svh!important;min-height:0!important}
+  .v27-guided-climb .v27-scene-pin{height:100svh!important;min-height:0!important}
+  /* Place controls at the BEGINNING of the mountain instead of the bottom;
+     top clearance accounts for RIPL's fixed mobile navigation header. */
+  .v27-guided-climb .v27-climb-guide{top:clamp(76px,12svh,106px);bottom:auto;left:20px;right:20px}
+  .v27-guided-climb .v27-climb-guide::before{top:-36px;bottom:auto;left:-20px;right:-20px;height:225px;background:linear-gradient(180deg,rgba(9,9,9,.92),rgba(9,9,9,.65) 48%,transparent 100%)}
+  .v27-guided-climb .v27-climb-head{margin-bottom:10px}
+  .v27-guided-climb .v27-climb-progress{margin-bottom:11px}
+  .v27-guided-climb .v27-climb-back,.v27-guided-climb .v27-climb-next{min-height:44px}
+  .v27-guided-climb .v27-climb-exit-row{margin-top:7px}
+  /* Narrative sits well BELOW the controls, leaving the drawn summit visible. */
+  .v27-guided-climb .v27-climb-story{top:auto;bottom:clamp(48px,12svh,120px);left:24px;right:24px}
+  .v27-guided-climb .v27-climb-story h2{font-size:clamp(27px,7.7vw,36px)}
+  .v27-guided-climb .v27-climb-story-copy{font-size:13px;line-height:1.5;margin-top:10px}
+  .v27-guided-climb .v27-climb-story-kicker{margin-bottom:9px}
+}
+@media(max-width:390px){
+  .v27-guided-climb .v27-climb-guide{left:15px;right:15px;top:clamp(73px,12svh,99px)}
+  .v27-guided-climb .v27-climb-story{left:19px;right:19px;bottom:clamp(38px,10svh,82px)}
+  .v27-guided-climb .v27-climb-head-title{letter-spacing:.06em}
+  .v27-guided-climb .v27-climb-exit-row .v27-climb-hint{font-size:9px}
+  .v27-guided-climb .v27-climb-skip{font-size:10px}
+}
+@media(max-width:760px) and (max-height:620px){
+  .v27-guided-climb .v27-climb-guide{top:70px}
+  .v27-guided-climb .v27-climb-story{bottom:25px}
+  .v27-guided-climb .v27-climb-story h2{font-size:26px}
+  .v27-guided-climb .v27-climb-story-copy{font-size:12px;line-height:1.4}
+}
