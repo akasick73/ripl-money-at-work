@@ -1,6 +1,5 @@
-import { rmSync, writeFileSync, mkdirSync } from 'node:fs';
-import { join } from 'node:path';
-const dist = join(process.cwd(), 'dist');
-rmSync(join(dist, '_worker.js'), { force: true, recursive: true });
-// Never expose Pages server bundles as Worker static assets.
-writeFileSync(join(dist, '.assetsignore'), '_worker.js\n');
+import { existsSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
+// Workers static assets must never publish a Pages _worker.js file.
+mkdirSync('dist', { recursive: true });
+if (existsSync('dist/_worker.js')) rmSync('dist/_worker.js');
+writeFileSync('dist/.assetsignore', '_worker.js\n');

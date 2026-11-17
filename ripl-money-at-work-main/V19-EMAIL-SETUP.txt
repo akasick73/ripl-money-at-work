@@ -1,0 +1,17 @@
+RIPL V19 — transactional email setup (required before live use)
+
+1. Create/access RIPL's Resend account: https://resend.com/. Confirm use of this provider is approved under RIPL policies.
+2. Verify a sender domain you control in Resend (for example a RIPL-controlled subdomain). Resend will supply DNS records; add these in your domain DNS management and wait for verification. Do not guess DNS records.
+3. In Resend create a sending-only API key. Never paste the key into GitHub, a chat, or wrangler.jsonc.
+4. Cloudflare Dashboard > Workers & Pages > ripl-money-at-work > Settings > Variables and Secrets: add
+   RESEND_API_KEY  [Secret] = API key issued by Resend
+   RIPL_EMAIL_FROM [Text]   = a VERIFIED sender address such as RIPL Quiz <quiz@your-verified-domain.example>
+   The example above is NOT a real address. Use the actual verified sender shown in Resend.
+5. Deploy the bindings. The Worker remains deployed at workers.dev; the email FROM domain is a separate verified sender.
+6. Commit and push the V19 patch in GitHub Desktop and confirm the Cloudflare deployment is Ready.
+7. GET https://ripl-money-at-work.akasick.workers.dev/api/quiz-lead should return 405 Method not allowed.
+8. Complete the quiz with a test email, check full report unlock; check actual email in adam@riplwealth.com; then check OpenAI Ads Manager's lead_created event. Resend API success indicates acceptance for processing, not guaranteed inbox delivery.
+9. Do not activate paid ads until that full test passes.
+
+The patch modifies worker.js, public/money-at-work/campaign.js, and src/pages/money-at-work-privacy.astro. No visual design, quiz questions, quiz logic or OpenAI Pixel events changed.
+IMPORTANT: This requires service account configuration; the ZIP alone cannot send email.

@@ -1,0 +1,6 @@
+# Preview: allow user-requested Claude reviews while other crawlers stay blocked.
+User-agent: Claude-User
+Allow: /
+
+User-agent: *
+Disallow: /

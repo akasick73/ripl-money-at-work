@@ -1,3 +1,11 @@
+RIPL Wealth V24 — source package
+
+This release includes the approved nine-question Lazy Money Quiz order, immediate three-part educational results, optional email copy, refreshed landing-page messaging, and the Market Plus historical index chart.
+
+Deploy using the existing Cloudflare/GitHub process. Verify Resend secrets and test email delivery, Calendly booking, privacy notices, GA4/ads events, and mobile layout before production. Historical index figures are 2011–2025 full calendar-year S&P 500 total returns, based on the cited source; obtain firm compliance approval of the chart and all marketing copy before publishing.
+
+The source was syntax-checked and quiz results were tested programmatically; a full Astro build could not be completed in this environment because the required npm dependencies were unavailable. Run npm ci and npm run build in your deployment environment.
+
 # RIPL Wealth — Quiz-First Landing Page
 
 This is the source for the existing RIPL business-owner landing page. The approved page design, nine-question quiz, personalized results, video assets, OpenAI Ads measurement calls, and disclosures are retained. The email submission is handled by a same-origin Cloudflare Worker and Resend, replacing the failing browser redirect to FormSubmit.
