@@ -444,7 +444,14 @@ body { background: #090909; color: var(--silver); }
 .fp-static-head h2 { font: 300 clamp(2rem, 4.2vw, 3.8rem)/1.1 var(--serif); letter-spacing: -.02em; max-width: 18ch; margin: 0; }/* tighter rhythm around the static moment */
 .fp-static { margin-top: -190px; }
 #fees { position: relative; z-index: 1; margin-top: -330px; }</style>
-<style>.topbar,.footer,.proto-bar{display:none!important}body{overscroll-behavior:none}html{scrollbar-width:none}::-webkit-scrollbar{display:none}</style></head>
+<style>.topbar,.footer,.proto-bar{display:none!important}body{overscroll-behavior:none}html{scrollbar-width:none}::-webkit-scrollbar{display:none}</style><style>
+/* Guided mode inherits the existing mountain art, but leaves space for the parent page's native controls. */
+html.guided-climb #opening,html.guided-climb #closing,html.guided-climb #hint,html.guided-climb .panel{display:none!important}
+@media(max-width:760px){html.guided-climb .panel{bottom:clamp(170px,27svh,234px);right:22px;left:28px;width:auto}
+html.guided-climb .panel h2{font-size:clamp(1.65rem,7.2vw,2.15rem)}
+html.guided-climb .panel p{font-size:.88rem;line-height:1.55;margin-top:10px}}
+@media(max-width:390px){html.guided-climb .panel{bottom:clamp(166px,28svh,225px)}}
+</style></head>
 <body>
 <header class="topbar" id="nav">
   <div class="topbar-inner">
@@ -601,6 +608,8 @@ body { background: #090909; color: var(--silver); }
 (() => {
   const cv = document.getElementById('cv'), ctx = cv.getContext('2d');
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const guided = new URLSearchParams(location.search).get('guided') === '1';
+  if (guided) document.documentElement.classList.add('guided-climb');
   const NIGHT = '#090909', GOLD = '#C9963A';
   const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
   const ss = (a, b, v) => { const t = clamp((v - a) / (b - a)); return t * t * (3 - 2 * t); };
@@ -842,15 +851,24 @@ body { background: #090909; color: var(--silver); }
 
   // Words sit above the canvas, so the quiet patches are drawn last on the canvas and the text stays crisp on top.
   const climb = document.getElementById('climb');
-  const target = () => clamp(-climb.getBoundingClientRect().top / Math.max(1, climb.offsetHeight - innerHeight)) * U;
+  // These points correspond to the original animation's seven narrative camps.
+  // The canvas, mountain geometry, artwork, camera movements and copy remain unchanged.
+  const guidedCamps = [1.55, 3.55, 5.55, 7.55, 9.55, 11.55, 17.1];
+  let guidedTarget = guidedCamps[0];
+  if (guided) addEventListener('message', e => {
+    if (e.source !== parent || e.origin !== location.origin || !e.data || e.data.type !== 'riplGuidedClimb') return;
+    const n = Number(e.data.step);
+    if (Number.isInteger(n) && n >= 0 && n < guidedCamps.length) guidedTarget = guidedCamps[n];
+  });
+  const target = () => guided ? guidedTarget : clamp(-climb.getBoundingClientRect().top / Math.max(1, climb.offsetHeight - innerHeight)) * U;
   // Smooth scrolling turns wheel notches into one glide; a light ease on top keeps the camera from twitching.
-  const lenis = (!reduce && window.Lenis) ? new window.Lenis({ duration: 1.2, easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)), smoothWheel: true, autoRaf: false }) : null;
+  const lenis = (!guided && !reduce && window.Lenis) ? new window.Lenis({ duration: 1.2, easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)), smoothWheel: true, autoRaf: false }) : null;
   let cur = target(), last = 0, drawnAt = -1;
   const loop = time => {
     if (lenis) lenis.raf(time);
     const dt = Math.min(64, time - (last || time)); last = time;
     const t = target();
-    cur = reduce ? t : cur + (t - cur) * (1 - Math.exp(-dt / 90));
+    cur = reduce ? t : cur + (t - cur) * (1 - Math.exp(-dt / (guided ? 240 : 90)));
     if (Math.abs(t - cur) < .0004) cur = t;
     if (dirty || cur !== drawnAt) { draw(cur); drawnAt = cur; dirty = false; }
     requestAnimationFrame(loop);
@@ -988,7 +1006,7 @@ body { background: #090909; color: var(--silver); }
   }, true);
 })();
 </script><script>
-window.addEventListener('message', function(e) {if (!e.data || e.data.type !== 'riplSceneProgress') return;
+window.addEventListener('message', function(e) {if (new URLSearchParams(location.search).get('guided') === '1' || !e.data || e.data.type !== 'riplSceneProgress') return;
  const scene=document.getElementById('climb');if(!scene)return;
  const max=Math.max(0,scene.offsetHeight-window.innerHeight);
  window.scrollTo({top:scene.offsetTop+max*Math.max(0,Math.min(1,Number(e.data.progress)||0)),behavior:"instant"});
