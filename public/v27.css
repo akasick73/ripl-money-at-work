@@ -51,3 +51,27 @@ body,.v27-scene,.section-band,.section-band--white,.section-band--warm,footer{ba
 .question-section input,.question-section textarea,#hero #results :is(input,textarea){background:#242426!important;color:#F4F3F2!important;border-color:#5D5D60!important}
 .section-band .story-copy p,.section-band p,.section-band li{color:#B7B7B8!important}
 .team-video summary,.quiz-back{color:#C9963A!important}
+
+/* V3 mobile quiz access: the long scroll-driven opening previously hid
+   the existing Quiz navigation link on narrow screens. Keep the original
+   animation and all desktop styles unchanged; expose the jump link. */
+@media (max-width: 760px) {
+  .v27-nav nav { gap: 7px; }
+  .v27-nav nav a[href="#quiz"] {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    padding: 9px 11px;
+    font-size: 12px;
+    font-weight: 700;
+    min-height: 38px;
+    color: var(--v27-silver) !important;
+    border: 1px solid rgba(246,246,245,.45);
+    background: rgba(31,30,29,.85);
+  }
+}
+@media (max-width: 370px) {
+  .v27-nav nav a[href="#quiz"] { padding: 8px 9px; font-size: 11px; }
+  .v27-nav nav .v27-talk { padding: 9px 11px; }
+}
