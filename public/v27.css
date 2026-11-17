@@ -75,3 +75,21 @@ body,.v27-scene,.section-band,.section-band--white,.section-band--warm,footer{ba
   .v27-nav nav a[href="#quiz"] { padding: 8px 9px; font-size: 11px; }
   .v27-nav nav .v27-talk { padding: 9px 11px; }
 }
+
+/* RIPL V3 regression fix — mobile touch scrolling across the embedded hero.
+   The opening is an iframe containing a complete homepage. On iOS, a swipe over
+   that frame can scroll the embedded document instead of the landing page,
+   bypassing the adjacent quiz. This transparent touch layer sends the gesture
+   to the parent page without touching the iframe's programmatic animation. */
+@media (max-width: 760px) {
+  .v27-home-scene .v27-scene-pin { isolation: isolate; }
+  .v27-home-scene .v27-scene-pin::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background: transparent;
+    pointer-events: auto;
+    touch-action: pan-y;
+  }
+}
