@@ -72,9 +72,36 @@ async function questionSubmission(request,env){
   return json({success:true});
 }
 
+
+// Transactional quiz summary delivery. Sends a visitor copy and an archived RIPL copy.
+async function emailQuizResults(request,env){
+  if(request.method!=='POST')return json({success:false},405,{Allow:'POST'});
+  const origin=request.headers.get('Origin');
+  if(origin&&origin!==new URL(request.url).origin)return json({success:false},403);
+  if(!(request.headers.get('content-type')||'').includes('application/json'))return json({success:false},415);
+  const raw=await request.text();if(raw.length>16000)return json({success:false},413);
+  let data;try{data=JSON.parse(raw)}catch{return json({success:false},400)}
+  const email=typeof data.email==='string'?data.email.trim():'';
+  if(email.length>254||!/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(email))return json({success:false},400);
+  if(typeof data.report!=='string'||data.report.length<100||data.report.length>11000)return json({success:false},400);
+  const report=data.report.replace(/[\u0000-\u001f]/g,c=>c==='\n'?'\n':' ').slice(0,11000);
+  const category=safeText(data.category||'').slice(0,200);
+  const textBody=['Your Lazy Money Quiz Results | RIPL Wealth','','Your educational summary:',report,'',
+    'This is an educational discussion starter, not individualized financial, tax, or legal advice.',
+    'Have a question? Reply to this message or book a free introduction:',
+    'https://calendly.com/adam-riplwealth/20-minute-zoom-meeting',
+    '','Investment advisory services are provided through RIPL Wealth, LLC, a registered investment adviser.'].join('\n');
+  // An archived RIPL copy is required for each outbound message.
+  const delivered=await sendMail(env,{to:[email],bcc:[LEAD_TO],reply_to:LEAD_TO,
+    subject:'Your Personalized Lazy Money Quiz Results | RIPL Wealth',text:textBody});
+  if(!delivered)return json({success:false,error:'Email service unavailable'},503);
+  return json({success:true});
+}
+
 export default {
   async fetch(request,env){
     const path=new URL(request.url).pathname;
+    if(path==='/api/email-quiz-results'||path==='/api/email-quiz-results/')return emailQuizResults(request,env);
     if(path==='/api/quiz-lead'||path==='/api/quiz-lead/')return submitQuiz(request,env);
     if(path==='/api/question'||path==='/api/question/')return questionSubmission(request,env);
     if(env.ASSETS)return env.ASSETS.fetch(request);

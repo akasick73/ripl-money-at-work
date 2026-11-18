@@ -5,9 +5,9 @@ export const motivations=[{"heading": "MORE TIME FOR WHAT MATTERS", "opening": "
 const areas=[
  {title:'REVIEW PROACTIVE TAX PLANNING.',body:'You may want to explore whether tax planning is coordinated throughout the year. RIPL’s Tax Evaluation can help frame questions for discussion with your tax professional.',service:'Tax Evaluation',score:a=>[0,2,3,3][a[2]]},
  {title:'GIVE YOUR MONEY A CLEARER PURPOSE.',body:'It may help to review cash reserves, liquidity and investments in the context of your goals. RIPL’s SAGE process can help organize that conversation.',service:'SAGE / cash allocation',score:a=>[0,1,3,2][a[3]]},
- {title:'CONNECT BUSINESS SUCCESS TO YOUR FREEDOM.',body:'A roadmap connecting business value, assets, income needs and lifestyle goals may help clarify your options. RIPL’s SAGE process provides a planning framework.',service:'SAGE roadmap',score:a=>[0,1,2,3][a[5]]},
+ {title:'CONNECT BUSINESS SUCCESS TO YOUR FREEDOM.',body:'A roadmap connecting business value, assets, income needs and lifestyle goals may help clarify your options. RIPL’s SAGE process provides a planning framework.',service:'Financial planning (SAGE™)',score:a=>[0,1,2,3][a[5]]},
  {title:'REVIEW HOW YOUR FAMILY IS PROTECTED.',body:'Insurance, estate documents, liquidity and business continuity may deserve a coordinated review. RIPL’s Lockbox discussion can help organize next steps with appropriate professionals.',service:'Lockbox / protection planning',score:a=>[0,1,2,3][a[6]]},
- {title:'CONNECT YOUR FINANCIAL PROFESSIONALS.',body:'It may be useful to clarify who connects tax, investment, legal and business decisions. RIPL’s SAGE process focuses on coordinating the bigger picture.',service:'SAGE coordination',score:a=>[0,2,3,2][a[7]]},
+ {title:'CONNECT YOUR FINANCIAL PROFESSIONALS.',body:'It may be useful to clarify who connects tax, investment, legal and business decisions. RIPL’s SAGE process focuses on coordinating the bigger picture.',service:'Financial planning (SAGE™)',score:a=>[0,2,3,2][a[7]]},
  {title:'CLARIFY YOUR FINANCIAL ROADMAP.',body:'You may benefit from revisiting how your financial decisions connect to the life you want. SAGE can help structure that discussion.',service:'SAGE planning',score:a=>[0,1,2,3][a[1]]}
 ];
 const priorities=[0,1,3,4,2,5];

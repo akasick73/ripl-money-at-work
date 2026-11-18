@@ -609,7 +609,12 @@ html.guided-climb .panel p{font-size:.88rem;line-height:1.55;margin-top:10px}}
   const cv = document.getElementById('cv'), ctx = cv.getContext('2d');
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const guided = new URLSearchParams(location.search).get('guided') === '1';
-  if (guided) document.documentElement.classList.add('guided-climb');
+  if (guided) {
+    document.documentElement.classList.add('guided-climb');
+    // The guided iframe is artwork only: remove prototype navigation from keyboard and click access.
+    document.querySelectorAll('a[href]').forEach(a=>{a.removeAttribute('href');a.setAttribute('tabindex','-1');a.setAttribute('aria-hidden','true');});
+    document.querySelectorAll('button').forEach(b=>{b.disabled=true;b.setAttribute('tabindex','-1');});
+  }
   const NIGHT = '#090909', GOLD = '#C9963A';
   const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
   const ss = (a, b, v) => { const t = clamp((v - a) / (b - a)); return t * t * (3 - 2 * t); };
