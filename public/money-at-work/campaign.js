@@ -7,8 +7,17 @@ try{sessionStorage.setItem('ripl_utm',JSON.stringify(attribution))}catch{}
 
 // Only book an introductory conversation; this public page never receives tax returns.
 const BOOKING_URL='https://calendly.com/adam-riplwealth/20-minute-zoom-meeting';
-// Submit through the same-origin Cloudflare Worker. Never navigate visitors away from RIPL.
-const LEAD_API_ENDPOINT='/api/quiz-lead';
+// FormSubmit AJAX: use the previously activated RIPL destination.
+const FORM_ENDPOINT='https://formsubmit.co/ajax/adam@riplwealth.com';
+async function sendFormSubmit(payload){
+  const response=await fetch(FORM_ENDPOINT,{
+    method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},
+    body:JSON.stringify(payload),signal:AbortSignal.timeout(15000)
+  });
+  const result=await response.json().catch(()=>null);
+  if(!response.ok||result?.success!== 'true' && result?.success!==true)throw new Error('not_confirmed');
+  return result;
+}
 
 
 function linkWithUtm(url){const u=new URL(url);for(const [k,v] of Object.entries(attribution))u.searchParams.set(k,v);return u.href}
@@ -143,7 +152,7 @@ function priorityHtml(item,i){return `<article class="priority-card"><span class
 function reportHtml(m,items){
   return `<div class="result-print polished-report">${reportTop()}${snapshotHtml()}<section class="results-priorities"><div class="results-section-heading"><span class="results-section-eyebrow">WHERE I'D START</span><h3>Three areas worth a conversation</h3><p>These are educational starting points based on your answers—not a diagnosis or a financial score.</p></div><div class="priority-list">${items.map(priorityHtml).join('')}</div><div class="results-priority-cta"><h3>WHAT IF 20 MINUTES HELPED CLARIFY YOUR NEXT STEP?</h3><p>You said you would most like to explore <strong>${esc(conversationTopics[answers[8]].toLowerCase())}</strong>. We can start there, discuss what you already have in place, and see whether another perspective would be useful. No need to change advisors, move accounts, or make a financial decision.</p><a class="button primary" href="${BOOKING_BASE}" data-book data-book-type="quiz-priorities">Let’s Talk About Your Options →</a><p class="fine">A conversation, not a sales pitch. No obligation to work together.</p></div></section><div class="results-adam-note"><span class="results-section-eyebrow">HOW I HELP</span><h3>Good ideas deserve follow-through.</h3><p>You've already proven you know how to build something successful. My job isn't to tell you how to run your business or replace the professionals you trust. It's to help connect the financial pieces, clarify decisions worth considering, and keep the next steps moving.</p><p><strong>The question is whether I can bring something valuable to the table—and whether we'd enjoy working together.</strong></p></div><div class="results-emotional-close"><h3>${esc(m.closing)}</h3><p>${esc(m.invitation)}</p><p class="fine">Educational discussion prompts based on self-reported answers. Not individualized financial, tax, or legal advice. Investing involves risk, including possible loss of principal. No outcome is guaranteed.</p></div></div>`;
 }
-function optionalEmailHtml(){return `<section class="report-unlock report-optional-email"><div class="unlock-head"><span class="unlock-symbol" aria-hidden="true">✉</span><div><span class="results-section-eyebrow">OPTIONAL FOLLOW-UP</span><h3>Send me a copy</h3></div></div><p>Your complete educational summary is already available above. If you'd like RIPL to email you a copy, enter your address below.</p><form id="report-email-form"><label for="report-email">Email address</label><input id="report-email" name="email" type="email" autocomplete="email" maxlength="254" placeholder="you@example.com" required/><div class="lead-honeypot" aria-hidden="true"><label for="report-company-site">Website (leave blank)</label><input id="report-company-site" name="website" tabindex="-1" autocomplete="off"/></div><label class="report-consent"><input type="checkbox" name="marketing" value="yes"/><span>I'd also like occasional educational emails from RIPL Wealth. Optional; not required to receive my results.</span></label><button class="button primary report-submit" type="submit">Email My Results →</button><p class="report-error" id="report-error" role="status" hidden></p><p class="fine">If submitted, your email address and quiz answers are sent to RIPL through our website's email service. Marketing opt-in is separate. Do not enter sensitive financial information. <a href="/money-at-work-privacy/">Privacy details</a>.</p></form></section>`;}
+function optionalEmailHtml(){return `<section class="report-unlock report-optional-email"><div class="unlock-head"><span class="unlock-symbol" aria-hidden="true">✉</span><div><span class="results-section-eyebrow">OPTIONAL FOLLOW-UP</span><h3>Send me a copy</h3></div></div><p>Your complete educational summary is already available above. If you'd like RIPL to email you a copy, enter your address below.</p><form id="report-email-form"><label for="report-email">Email address</label><input id="report-email" name="email" type="email" autocomplete="email" maxlength="254" placeholder="you@example.com" required/><div class="lead-honeypot" aria-hidden="true"><label for="report-company-site">Website (leave blank)</label><input id="report-company-site" name="website" tabindex="-1" autocomplete="off"/></div><label class="report-consent"><input type="checkbox" name="marketing" value="yes"/><span>I'd also like occasional educational emails from RIPL Wealth. Optional; not required to receive my results.</span></label><button class="button primary report-submit" type="submit">Send My Results to RIPL →</button><p class="report-error" id="report-error" role="status" hidden></p><p class="fine">If submitted, your email address and quiz answers are sent to RIPL through FormSubmit. Save as PDF to keep your results. Marketing opt-in is separate. Do not enter sensitive financial information. <a href="/money-at-work-privacy/">Privacy details</a>.</p></form></section>`;}
 function reportActions(){return `<div class="result-actions"><div class="result-save"><button class="button outline" type="button" id="save-results">Save Results as PDF</button><a class="button outline" href="#ask-question">Ask Us a Question</a></div><p class="fine">PDF uses your browser's Print / Save as PDF feature. You can also ask our team a question.</p><button class="text-button" type="button" id="restart-quiz">Retake the Quiz</button></div>`;}
 function bindResultActions(){
   document.querySelectorAll('#results [data-book]').forEach(el=>el.addEventListener('click',openBooking));
@@ -170,15 +179,13 @@ function finish(track=true){
       'Source page':location.origin+location.pathname,
       ...Object.fromEntries(questions.map((q,i)=>[`Question ${i+1}: ${q.title}`,q.options[answers[i]]]))};
     try{
-      const response=await fetch(LEAD_API_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},credentials:'same-origin',cache:'no-store',body:JSON.stringify(payload),signal:AbortSignal.timeout(15000)});
-      let result=null;try{result=await response.json()}catch{}
-      if(!response.ok||result?.success!==true)throw new Error('lead_submission_unconfirmed');
+      await sendFormSubmit(payload);
       window.dataLayer?.push({event:'ripl_quiz_lead_submitted'});
       if(typeof window.gtag==='function')window.gtag('event','generate_lead',{method:'quiz_optional_email'});
       window.oaiq?.('measure','lead_created',{type:'customer_action'});
-      error.textContent='Your request was received. Please check your inbox for your summary.';error.hidden=false;
-      button.textContent='Request received';
-    }catch(err){error.textContent='We could not confirm delivery. Your results remain available above; please try again or save them as a PDF.';error.hidden=false;button.disabled=false;button.textContent='Email My Results →';}
+      error.textContent='Your request was sent to RIPL. To keep your results, use Save Results as PDF above.';error.hidden=false;
+      button.textContent='Request sent';
+    }catch(err){error.textContent='We could not confirm delivery. Your results remain available above; please try again or save them as a PDF.';error.hidden=false;button.disabled=false;button.textContent='Send My Results to RIPL →';}
   });
   if(track){window.dataLayer?.push({event:'ripl_quiz_complete'});window.oaiq?.('measure','custom',{type:'custom'},{custom_event_name:'ripl_quiz_completed'});requestAnimationFrame(()=>$('#results')?.scrollIntoView({behavior:reducedMotion?'instant':'smooth',block:'start'}));}updateSticky();
 
@@ -264,8 +271,16 @@ questionForm?.addEventListener('submit',async event=>{
   const form=event.currentTarget, status=$('#ask-question-status'), submit=form.querySelector('[type="submit"]');
   submit.disabled=true;status.textContent='Sending your question…';
   try{
-    const response=await fetch('/api/question',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:form.elements.name.value.trim(),email:form.elements.email.value.trim(),question:form.elements.question.value.trim(),website:form.elements.website.value})});
-    const data=await response.json();if(!response.ok||!data.success)throw Error('not_sent');
+    if(form.elements.website.value.trim())return;
+    await sendFormSubmit({
+      _subject:'RIPL Website Question',
+      _template:'table',_captcha:'false',
+      _honey:form.elements.website.value,
+      name:form.elements.name.value.trim(),
+      email:form.elements.email.value.trim(),
+      message:form.elements.question.value.trim(),
+      'Source page':location.origin+location.pathname
+    });
     form.reset();status.textContent='Thanks for reaching out. Your question has been received. We will reply by email.';
     window.dataLayer?.push({event:'ripl_question_sent'});
     if(typeof window.gtag==='function')window.gtag('event','question_sent');
