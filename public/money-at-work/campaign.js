@@ -135,7 +135,7 @@ const resultProfiles=[
  {title:'The Freedom to Choose Your Next Chapter',focus:'Stepping away on your terms',summary:'You want the flexibility to decide what comes after the business.'},
  {title:'Building Something That Lasts',focus:'A meaningful lasting impact',summary:'You want what you have built to support the people and priorities that matter.'}
 ];
-const conversationTopics=['Proactive tax planning','Making money work more intentionally','Protecting family and future','Connecting money to the life you want'];
+const conversationTopics=['Proactive tax planning','Making money work more intentionally','Protecting family and future','Connecting money to the life you want','All three areas: taxes, money and life goals'];
 function snapshotItems(){return [
  {label:'WHAT MATTERS MOST',value:resultProfiles[answers[0]].focus,icon:'✦'},
  {label:'YOUR CONFIDENCE TODAY',value:questions[1].options[answers[1]],icon:'◷'},
@@ -143,7 +143,7 @@ function snapshotItems(){return [
 ]}
 function reportTop(){
   const p=resultProfiles[answers[0]];
-  return `<div class="results-intro"><div class="results-intro-kicker"><span>YOUR PERSONALIZED EDUCATIONAL SUMMARY</span><span class="results-complete-mark" aria-label="Quiz complete">✓ Quiz complete</span></div><h2>${esc(p.title)}</h2><p>${esc(p.summary)}</p><div class="results-focus"><span class="results-focus-dot" aria-hidden="true"></span><span>Your focus: <strong>${esc(p.focus)}</strong></span></div></div>`;
+  return `<div class="results-intro"><div class="results-intro-kicker"><span>YOUR PERSONALIZED EDUCATIONAL SUMMARY</span><span class="results-complete-mark" aria-label="Quiz complete">✓ Quiz complete</span></div><h2>${esc(p.title)}</h2><p>${esc(p.summary)}</p></div>`;
 }
 function snapshotHtml(){
   return `<section class="results-snapshot" aria-label="What your answers suggest"><div class="results-section-heading"><span class="results-section-eyebrow">YOUR SNAPSHOT</span><h3>What your answers suggest</h3><p>Three educational starting points based on your answers—not a financial assessment.</p></div><div class="snapshot-grid">${snapshotItems().map(x=>`<article class="snapshot-tile"><span class="snapshot-icon" aria-hidden="true">${x.icon}</span><div><span class="snapshot-label">${esc(x.label)}</span><p>${esc(x.value)}</p></div></article>`).join('')}</div></section>`;
