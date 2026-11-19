@@ -73,6 +73,16 @@ async function questionSubmission(request,env){
 }
 
 
+// HTML email: table-based layout, inline styles, and text fallback for Outlook/Gmail/mobile.
+const emailEscape=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const emailCell=(value,max=1200)=>emailEscape(String(value??'').slice(0,max));
+function renderQuizEmail(data){
+  const r=data.structured;
+  const heading=emailCell(r.heading,180),opening=emailCell(r.opening),bridge=emailCell(r.bridge);
+  const closing=emailCell(r.closing),invitation=emailCell(r.invitation);
+  const items=r.priorities.map((item,i)=>`<tr><td style="padding:22px 0;border-bottom:1px solid #48413a;vertical-align:top;width:42px"><div style="background:#c99b42;color:#171717;border-radius:50%;width:30px;height:30px;line-height:30px;text-align:center;font-size:15px;font-weight:bold">${i+1}</div></td><td style="padding:22px 0 22px 12px;border-bottom:1px solid #48413a"><div style="color:#ffffff;font-size:16px;line-height:23px;font-weight:bold">${emailCell(item.title,180)}</div><div style="color:#d2d0cd;font-size:14px;line-height:23px;padding-top:8px">${emailCell(item.body,1500)}</div></td></tr>`).join('');
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark light"><title>Your Lazy Money Quiz Results</title></head><body style="margin:0;padding:0;background:#efefed;font-family:Arial,Helvetica,sans-serif;color:#ffffff"><div style="display:none;max-height:0;overflow:hidden;opacity:0">Your personalized Lazy Money Quiz results and three areas worth a conversation.</div><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background:#efefed"><tr><td align="center" style="padding:28px 12px"><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:100%;max-width:600px;background:#1a1a1a;border-collapse:collapse"><tr><td align="center" style="padding:34px 26px 26px;border-bottom:2px solid #c99b42"><div style="font-family:Georgia,serif;font-size:38px;font-weight:bold;letter-spacing:5px;color:#c99b42">RIPL.</div><div style="color:#d1d1d1;font-size:11px;letter-spacing:2px;padding-top:9px">YOUR MONEY. YOUR NEXT CHAPTER.</div></td></tr><tr><td align="center" style="padding:34px 28px 28px"><div style="font-size:11px;font-weight:bold;letter-spacing:2px;color:#d5a84f">YOUR PERSONALIZED RESULTS</div><h1 style="font-family:Georgia,serif;font-size:29px;line-height:36px;margin:15px 0 20px;color:#ffffff;font-weight:normal">${heading}</h1><p style="font-size:17px;line-height:27px;color:#ffffff;margin:0 0 12px">${opening}</p><p style="font-size:15px;line-height:25px;color:#d0d0d0;margin:0">${bridge}</p></td></tr><tr><td style="padding:0 22px"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#282828"><tr><td style="padding:25px 22px 4px"><div style="font-size:12px;letter-spacing:2px;font-weight:bold;color:#d5a84f">WHERE I'D START</div><div style="font-family:Georgia,serif;font-size:21px;line-height:29px;padding-top:10px;color:#fff">Three areas worth a conversation</div><p style="color:#c6c6c6;font-size:13px;line-height:21px;margin:9px 0 0">Educational starting points based on your answers, not a financial score or diagnosis.</p><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">${items}</table></td></tr></table></td></tr><tr><td align="center" style="padding:32px 28px 12px"><h2 style="font-family:Georgia,serif;font-weight:normal;font-size:23px;line-height:31px;color:#ffffff;margin:0 0 13px">${closing}</h2><p style="font-size:15px;line-height:25px;color:#d1d1d1;margin:0">${invitation}</p></td></tr><tr><td align="center" style="padding:23px 25px 36px"><a href="https://calendly.com/adam-riplwealth/20-minute-zoom-meeting" style="display:inline-block;background:#c99b42;color:#151515;text-decoration:none;font-weight:bold;font-size:16px;padding:16px 26px;border-radius:30px">Let's Talk — 20 Minutes</a><p style="color:#c4c4c4;font-size:12px;line-height:19px;margin:15px 0 0">A conversation, not a commitment. You can also reply directly to this email.</p></td></tr><tr><td style="border-top:1px solid #48413a;padding:22px 28px 28px;text-align:center;color:#bdbdbd;font-size:11px;line-height:19px">Educational discussion prompts based on self-reported answers. Not individualized financial, tax, or legal advice. Investing involves risk, including possible loss of principal. No outcome is guaranteed.<br><br>Investment advisory services are provided through RIPL Wealth, LLC, a registered investment adviser.<br><br>Sent in response to your request for quiz results. This does not enroll you in marketing emails.</td></tr></table></td></tr></table></body></html>`;
+}
 // Transactional quiz summary delivery. Sends a visitor copy and an archived RIPL copy.
 async function emailQuizResults(request,env){
   if(request.method!=='POST')return json({success:false},405,{Allow:'POST'});
@@ -86,6 +96,12 @@ async function emailQuizResults(request,env){
   if(typeof data.report!=='string'||data.report.length<100||data.report.length>11000)return json({success:false},400);
   const report=data.report.replace(/[\u0000-\u001f]/g,c=>c==='\n'?'\n':' ').slice(0,11000);
   const category=safeText(data.category||'').slice(0,200);
+  const r=data.structured;
+  if(!r||typeof r!=='object'||!Array.isArray(r.priorities)||r.priorities.length!==3||
+     !['heading','opening','bridge','closing','invitation'].every(k=>typeof r[k]==='string'&&r[k].length>0&&r[k].length<1600)||
+     !r.priorities.every(x=>x&&typeof x.title==='string'&&x.title.length>0&&x.title.length<200&&typeof x.body==='string'&&x.body.length>0&&x.body.length<1600))
+    return json({success:false,error:'Invalid report details'},400);
+  const htmlBody=renderQuizEmail(data);
   const textBody=['Your Lazy Money Quiz Results | RIPL Wealth','','Your educational summary:',report,'',
     'This is an educational discussion starter, not individualized financial, tax, or legal advice.',
     'Have a question? Reply to this message or book a free introduction:',
@@ -93,7 +109,7 @@ async function emailQuizResults(request,env){
     '','Investment advisory services are provided through RIPL Wealth, LLC, a registered investment adviser.'].join('\n');
   // An archived RIPL copy is required for each outbound message.
   const delivered=await sendMail(env,{to:[email],bcc:[LEAD_TO],reply_to:LEAD_TO,
-    subject:'Your Personalized Lazy Money Quiz Results | RIPL Wealth',text:textBody});
+    subject:'Your Personalized Lazy Money Quiz Results | RIPL Wealth',text:textBody,html:htmlBody});
   if(!delivered)return json({success:false,error:'Email service unavailable'},503);
   return json({success:true});
 }

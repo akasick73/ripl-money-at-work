@@ -182,7 +182,7 @@ function finish(track=true){
       // This endpoint sends from a verified RIPL domain and copies the archived RIPL mailbox.
       const reportResponse=await fetch('/api/email-quiz-results',{
         method:'POST',headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({email,report:resultText(),category:motivations[answers[0]].heading}),
+        body:JSON.stringify({email,report:resultText(),category:motivations[answers[0]].heading,structured:(()=>{const m=motivations[answers[0]];return {heading:m.heading,opening:m.opening,bridge:m.bridge,priorities:observations(answers).map(x=>({title:x.title,body:x.body})),closing:m.closing,invitation:m.invitation}})()}),
         signal:AbortSignal.timeout(15000)
       });
       const reportStatus=await reportResponse.json().catch(()=>null);
