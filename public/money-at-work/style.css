@@ -804,3 +804,8 @@ a[data-quiz-link]:not(.quiz-entry-button):not(#adaptive-link){color:var(--purple
 .intro-video-inline{margin:0 auto 2rem;max-width:620px;text-align:center}
 .intro-video-inline .video-thumb{max-width:420px;margin:1rem auto 0}
 .intro-video-inline .video-play-button{width:100%}
+
+/* Final approved results CTA: paired meeting and question-form actions. */
+.results-priority-actions{display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:.75rem;margin-top:1.25rem}
+.results-priority-actions .button{min-width:215px}
+@media(max-width:600px){.results-priority-actions{flex-direction:column}.results-priority-actions .button{width:100%}}
