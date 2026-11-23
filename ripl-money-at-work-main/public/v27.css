@@ -51,3 +51,105 @@ body,.v27-scene,.section-band,.section-band--white,.section-band--warm,footer{ba
 .question-section input,.question-section textarea,#hero #results :is(input,textarea){background:#242426!important;color:#F4F3F2!important;border-color:#5D5D60!important}
 .section-band .story-copy p,.section-band p,.section-band li{color:#B7B7B8!important}
 .team-video summary,.quiz-back{color:#C9963A!important}
+
+/* V3 mobile quiz access: the long scroll-driven opening previously hid
+   the existing Quiz navigation link on narrow screens. Keep the original
+   animation and all desktop styles unchanged; expose the jump link. */
+@media (max-width: 760px) {
+  .v27-nav nav { gap: 7px; }
+  .v27-nav nav a[href="#quiz"] {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    padding: 9px 11px;
+    font-size: 12px;
+    font-weight: 700;
+    min-height: 38px;
+    color: var(--v27-silver) !important;
+    border: 1px solid rgba(246,246,245,.45);
+    background: rgba(31,30,29,.85);
+  }
+}
+@media (max-width: 370px) {
+  .v27-nav nav a[href="#quiz"] { padding: 8px 9px; font-size: 11px; }
+  .v27-nav nav .v27-talk { padding: 9px 11px; }
+}
+
+/* RIPL V3 regression fix — mobile touch scrolling across the embedded hero.
+   The opening is an iframe containing a complete homepage. On iOS, a swipe over
+   that frame can scroll the embedded document instead of the landing page,
+   bypassing the adjacent quiz. This transparent touch layer sends the gesture
+   to the parent page without touching the iframe's programmatic animation. */
+@media (max-width: 760px) {
+  .v27-home-scene .v27-scene-pin { isolation: isolate; }
+  .v27-home-scene .v27-scene-pin::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background: transparent;
+    pointer-events: auto;
+    touch-action: pan-y;
+  }
+}
+
+
+/* Guided Climb v1: calm, RIPL-branded controls; no pinned scrolling or scroll hijack. */
+.v27-freedom-scene.v27-guided-climb{height:100svh!important;min-height:610px;position:relative;background:#090909!important}
+.v27-guided-climb .v27-scene-pin{position:relative;top:auto;height:100svh;min-height:610px;overflow:hidden}
+.v27-guided-climb .v27-scene-pin iframe{pointer-events:none;touch-action:pan-y}
+.v27-climb-guide{position:absolute;left:max(30px,calc((100vw - 1200px)/2));right:max(30px,calc((100vw - 1200px)/2));bottom:clamp(22px,4svh,40px);z-index:5;max-width:1200px;color:#F4F3F2;font-family:'DM Sans',sans-serif;pointer-events:auto}
+.v27-climb-guide::before{content:"";position:absolute;z-index:-1;pointer-events:none;left:-50px;right:-50px;bottom:-55px;height:230px;background:linear-gradient(0deg,rgba(9,9,9,.99) 0%,rgba(9,9,9,.85) 35%,transparent 100%)}
+.v27-climb-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:13px;color:#D0CFCB}
+.v27-climb-head-title,.v27-climb-head-count{font-size:10px;letter-spacing:.16em;font-weight:600}
+.v27-climb-head-count{color:#C9963A;white-space:nowrap;font-variant-numeric:tabular-nums}
+.v27-climb-progress{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:9px;margin-bottom:18px}
+.v27-climb-stage{font:500 10px/1.2 'DM Sans',sans-serif;text-transform:uppercase;letter-spacing:.08em;text-align:left;padding:0;min-height:29px;color:#8D8D8E;background:none;border:0;cursor:pointer;display:flex;flex-direction:column;gap:10px;min-width:0}
+.v27-climb-segment{height:3px;width:100%;background:rgba(246,246,245,.22);border-radius:100px;transition:background .35s}
+.v27-climb-stage.is-active .v27-climb-segment,.v27-climb-stage.is-complete .v27-climb-segment{background:#C9963A}
+.v27-climb-stage.is-active{color:#F4F3F2}
+.v27-climb-stage.is-complete{color:#C3B19A}
+.v27-climb-stage:hover .v27-climb-segment,.v27-climb-stage:focus-visible .v27-climb-segment{background:#E3B969}
+.v27-climb-actions{display:grid;grid-template-columns:minmax(125px,1fr) 1fr minmax(165px,1fr);align-items:center;gap:16px}
+.v27-climb-back,.v27-climb-next{font:600 13px/1 'DM Sans',sans-serif;letter-spacing:.01em;border-radius:100px;min-height:48px;padding:13px 23px;cursor:pointer;transition:background .2s,border-color .2s,transform .2s}
+.v27-climb-back{justify-self:start;color:#F4F3F2;background:rgba(29,29,31,.8);border:1px solid rgba(246,246,245,.31)}
+.v27-climb-back:disabled{opacity:.4;cursor:default}
+.v27-climb-next{justify-self:end;color:#090909;background:#C9963A;border:1px solid #C9963A;min-width:175px}
+.v27-climb-next:hover{background:#E5BA6E;border-color:#E5BA6E}
+.v27-climb-back:hover:not(:disabled){background:#29292B;border-color:#E5BA6E}
+.v27-climb-current{text-align:center;font:500 11px/1 'DM Sans',sans-serif;letter-spacing:.24em;color:#E2E0DC}
+.v27-climb-hint{margin:10px 0 0;text-align:center;font:500 10px/1.35 'DM Sans',sans-serif;letter-spacing:.06em;color:#A19F9C}
+.v27-guided-climb button:focus-visible{outline:2px solid #E5BA6E;outline-offset:4px}
+@media(max-width:760px){
+  .v27-freedom-scene.v27-guided-climb{height:100svh!important;min-height:600px}
+  .v27-guided-climb .v27-scene-pin{height:100svh;min-height:600px}
+  .v27-climb-guide{left:20px;right:20px;bottom:max(16px,env(safe-area-inset-bottom,0px))}
+  .v27-climb-guide::before{left:-22px;right:-22px;bottom:-35px;height:185px}
+  .v27-climb-progress{gap:7px;margin-bottom:16px}
+  .v27-climb-stage{min-height:14px;gap:0}
+  .v27-climb-stage-name{display:none}
+  .v27-climb-actions{grid-template-columns:1fr 1fr;gap:12px}
+  .v27-climb-current{display:none}
+  .v27-climb-back,.v27-climb-next{justify-self:stretch;min-width:0;width:100%;padding:12px 12px;min-height:48px;font-size:13px}
+  .v27-climb-head-title{font-size:10px;letter-spacing:.12em}
+  .v27-climb-hint{font-size:10px}
+}
+@media(max-width:380px){.v27-climb-guide{left:14px;right:14px}.v27-climb-head-title{font-size:9px}.v27-climb-progress{gap:5px}}
+@media(prefers-reduced-motion:reduce){.v27-climb-segment,.v27-climb-back,.v27-climb-next{transition:none}}
+
+/* The original climb's editorial typography, rendered on the parent so it's readable
+   even while the mountain canvas initializes in the background. */
+.v27-climb-story{position:absolute;left:max(155px,calc((100vw - 1110px)/2));top:45%;transform:translateY(-50%);z-index:3;max-width:410px;width:calc(100% - 310px);pointer-events:none;text-shadow:0 1px 15px rgba(9,9,9,.4)}
+.v27-climb-story::before{content:"";position:absolute;z-index:-1;inset:-65px -80px;background:radial-gradient(ellipse,rgba(9,9,9,.83) 0%,rgba(9,9,9,.38) 54%,transparent 76%);pointer-events:none}
+.v27-climb-story-kicker{margin:0 0 17px;color:#D9D7D2;font:600 10px/1.4 'DM Sans',sans-serif;letter-spacing:.19em;text-transform:uppercase}
+.v27-climb-story h2{margin:0;color:#F4F3F2;font:300 clamp(33px,3.6vw,51px)/1.09 'Newsreader',Georgia,serif;letter-spacing:-.02em}
+.v27-climb-story-copy{margin:18px 0 0;color:#B6B5B4;font:400 15px/1.65 'DM Sans',sans-serif;max-width:36ch}
+@media(max-width:760px){
+ .v27-climb-story{left:26px;right:26px;top:auto;bottom:clamp(185px,29svh,250px);transform:none;width:auto;max-width:440px}
+ .v27-climb-story::before{inset:-25px -24px;background:linear-gradient(90deg,rgba(9,9,9,.9),rgba(9,9,9,.15))}
+ .v27-climb-story-kicker{font-size:10px;margin-bottom:11px}
+ .v27-climb-story h2{font-size:clamp(29px,8vw,38px)}
+ .v27-climb-story-copy{font-size:14px;line-height:1.55;margin-top:13px;max-width:36ch}
+}
+@media(max-width:390px){.v27-climb-story{left:22px;right:20px;bottom:clamp(178px,29svh,233px)}.v27-climb-story h2{font-size:28px}.v27-climb-story-copy{font-size:13px}}

@@ -1,0 +1,12 @@
+RIPL compliance update — 2026-11-18
+
+Implemented: #1, #3, #5, #6 revised Impact stage headline, #7, #9, #11, #13, #14 guided iframe navigation isolation.
+#2 registration: NOT changed; awaiting confirmation of effective Colorado state registration.
+#8 tax language: NOT changed; on hold for Chase.
+#10 emotional language: NOT changed; on hold for compliance.
+#12 videos: already ICA-approved per user; preserved without modification.
+#4 vendor approvals assumed per user. FormSubmit retained for inbound lead/question delivery.
+
+IMPORTANT: Personalized outgoing email uses existing Cloudflare Worker with RESEND_API_KEY and RIPL_EMAIL_FROM configured for an authorized sender at riplwealth.com. Each successful outgoing email BCCs adam@riplwealth.com for Greenboard archiving. FormSubmit separately notifies adam@riplwealth.com. Without valid Cloudflare email credentials, the site will honestly report that it cannot confirm outgoing email delivery. No claim of live testing.
+
+After deployment test: question form, quiz email delivery to visitor, Greenboard archived copy, FormSubmit lead email, all seven mountain stages on mobile and desktop.
